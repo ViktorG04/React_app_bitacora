@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography } from '@material-ui/core';
+import { Select, MenuItem, FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography } from '@material-ui/core';
 import { addSolicitud } from '../config/axios';
 import { useHistory } from "react-router-dom";
 
@@ -71,11 +71,16 @@ const CrearSolicitud = () => {
                 <Input onChange={(e) => onValueChange(e)} name='idArea' value={idArea} id="my-input" />
             </FormControl>
             <FormControl>
-            <InputLabel htmlFor="my-input">Ha presentado sintomas de fibre, gripe, tos o dolor de cuerpo durante ultimamente?</InputLabel>
-                <select onChange={(e) => onValueChange(e)} name="sintomas" id="sintomas">
-                    <option value={sintomas}>Si</option>
-                    <option value={sintomas}>No</option>
-                </select>
+            <Select
+                labelId="demo-simple-select-label"
+                name='sintomas'
+                value={sintomas}
+                label="Age"
+                onChange={(e) => onValueChange(e)}
+                >
+                <MenuItem value={sintomas}>Si</MenuItem>
+                <MenuItem value={sintomas}>No</MenuItem>
+            </Select>
             </FormControl>
             <FormControl>
             <InputLabel htmlFor="my-input">Ha sido diagnosticado o ha presentado sospechas de COVID-19?</InputLabel>
