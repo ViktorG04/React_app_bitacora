@@ -59,7 +59,6 @@ stages:
     environment: reactApp-staging
   ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
     environment: reactApp-dev
-
     strategy:
       runOnce:
         deploy:
