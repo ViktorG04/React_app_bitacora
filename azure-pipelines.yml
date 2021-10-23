@@ -52,12 +52,12 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-      # Get the correct Environment based on the branch
-  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
+  # Get the correct Environment based on the branch
+    ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
     environment: reactApp-prod
-  ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
+    ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
     environment: reactApp-staging
-  ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
+    ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
     environment: reactApp-dev
     strategy:
       runOnce:
