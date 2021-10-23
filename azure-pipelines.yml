@@ -12,7 +12,7 @@ variables:
   # Container registry service connection established during pipeline creation
   dockerRegistryServiceConnection: 'dd73c5d9-869f-4288-b471-934b371e1e4b'
   imageRepository: 'reactappcontainer'
-  containerRegistry: 'conteinerregistryt1.azurecr.io'
+  containerRegistry: 'bitacorapre.azurecr.io'
   dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
   tag: '$(Build.BuildId)'
 
