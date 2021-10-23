@@ -21,7 +21,7 @@ variables:
   imagePullSecret: 'bitacorapre212616f3-auth'
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
-
+  environment: 'reactApp-prod'
 
 stages:
 - stage: Build
@@ -49,12 +49,7 @@ stages:
 
   jobs:
   - deployment: Deploy
-  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
-    environment: reactApp-prod
-  ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
-    environment: reactApp-staging
-  ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
-    environment: reactApp-dev
+    environment: $(environment)
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
