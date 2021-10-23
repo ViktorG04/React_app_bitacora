@@ -33,6 +33,17 @@ variables:
 
 
 stages:
+– task: PowerShell@2
+  displayName: Determine source branch
+  inputs:
+  targetType: 'inline'
+  script: |
+  switch(${env:BUILD_SOURCEBRANCH}) {
+   'refs/heads/master' {Write-Host "##vso[task.setvariable variable=deployEnvironment]prod"; } 
+   'refs/heads/staging' {Write-Host "##vso[task.setvariable variable=deployEnvironment]staging"; } 
+   'refs/heads/develop' {Write-Host "##vso[task.setvariable variable=deployEnvironment]dev"; } 
+  }
+
 - stage: Build
   displayName: Build stage
   jobs:
@@ -63,7 +74,7 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: ${deployEnvironment}
+    environment: reactApp-${deployEnvironment}
     strategy:
       runOnce:
         deploy:
