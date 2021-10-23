@@ -48,10 +48,10 @@ stages:
 
   jobs:
   - deployment: Deploy
-    environment: reactApp-prod
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
+    environment: reactApp-prod
     strategy:
       runOnce:
         deploy:
