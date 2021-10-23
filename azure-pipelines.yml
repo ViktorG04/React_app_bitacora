@@ -4,6 +4,8 @@
 
 trigger:
 - master
+- develop
+- staging
 
 resources:
 - repo: self
@@ -17,6 +19,14 @@ variables:
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'bitacorapre212616f3-auth'
+  
+  # Get the correct Environment based on the branch
+  ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+    deployEnvironment: reactApp-prod
+  ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
+    deployEnvironment: reactApp-staging
+  ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
+    deployEnvironment: reactApp-dev
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -53,7 +63,7 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: 'reactApp-1946.react-app'
+    environment: ${deployEnvironment}
     strategy:
       runOnce:
         deploy:
