@@ -53,7 +53,7 @@ stages:
     pool:
       vmImage: $(vmImageName)
       # Get the correct Environment based on the branch
-  ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
     environment: reactApp-prod
   ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
     environment: reactApp-staging
