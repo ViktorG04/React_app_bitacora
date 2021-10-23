@@ -33,17 +33,6 @@ variables:
 
 
 stages:
-– task: PowerShell@2
-  displayName: Determine source branch
-  inputs:
-  targetType: 'inline'
-  script: |
-  switch(${env:BUILD_SOURCEBRANCH}) {
-   'refs/heads/master' {Write-Host "##vso[task.setvariable variable=deployEnvironment]prod"; } 
-   'refs/heads/staging' {Write-Host "##vso[task.setvariable variable=deployEnvironment]staging"; } 
-   'refs/heads/develop' {Write-Host "##vso[task.setvariable variable=deployEnvironment]dev"; } 
-  }
-
 - stage: Build
   displayName: Build stage
   jobs:
@@ -61,10 +50,17 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
-
     - upload: manifests
       artifact: manifests
-
+    - task: PowerShell@2
+      inputs:
+        targetType: 'inline'
+        script: |
+          switch(${env:BUILD_SOURCEBRANCH}) {
+            'refs/heads/master' {Write-Host "##vso[task.setvariable variable=deployEnvironment]prod"; } 
+            'refs/heads/staging' {Write-Host "##vso[task.setvariable variable=deployEnvironment]staging"; } 
+            'refs/heads/develop' {Write-Host "##vso[task.setvariable variable=deployEnvironment]dev"; } 
+          }
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
