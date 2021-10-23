@@ -19,15 +19,6 @@ variables:
   dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
   imagePullSecret: 'bitacorapre212616f3-auth'
-  
-  # Get the correct Environment based on the branch
-  ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
-    deployEnvironment: reactApp-prod
-  ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
-    deployEnvironment: reactApp-staging
-  ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
-    deployEnvironment: reactApp-dev
-
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
@@ -52,15 +43,6 @@ stages:
           $(tag)
     - upload: manifests
       artifact: manifests
-    - task: PowerShell@2
-      inputs:
-        targetType: 'inline'
-        script: |
-          switch(${env:BUILD_SOURCEBRANCH}) {
-            'refs/heads/master' {Write-Host "##vso[task.setvariable variable=deployEnvironment]prod"; } 
-            'refs/heads/staging' {Write-Host "##vso[task.setvariable variable=deployEnvironment]staging"; } 
-            'refs/heads/develop' {Write-Host "##vso[task.setvariable variable=deployEnvironment]dev"; } 
-          }
 - stage: Deploy
   displayName: Deploy stage
   dependsOn: Build
@@ -70,7 +52,14 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: reactApp-${deployEnvironment}
+      # Get the correct Environment based on the branch
+    ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+    environment: reactApp-prod
+    ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
+    environment: reactApp-staging
+    ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
+    environment: reactApp-dev
+
     strategy:
       runOnce:
         deploy:
