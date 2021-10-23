@@ -49,16 +49,15 @@ stages:
 
   jobs:
   - deployment: Deploy
+  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
+    environment: reactApp-prod
+  ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
+    environment: reactApp-staging
+  ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
+    environment: reactApp-dev
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-  # Get the correct Environment based on the branch
-    ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
-    environment: reactApp-prod
-    ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
-    environment: reactApp-staging
-    ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
-    environment: reactApp-dev
     strategy:
       runOnce:
         deploy:
