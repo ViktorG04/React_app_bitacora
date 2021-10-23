@@ -22,11 +22,11 @@ variables:
   vmImageName: 'ubuntu-latest'
 
   ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
-    deploymentEnvironment: 'reactApp-prod.react-app'
+    deploymentEnvironment: 'Production.react-app'
   ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
-    deploymentEnvironment: 'reactApp-dev.react-app'
+    deploymentEnvironment: 'Development.react-app-dev'
   ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
-    deploymentEnvironment: 'reactApp-staging.react-app'
+    deploymentEnvironment: 'Staging.react-app-staging'
 
 stages:
 - stage: Build
