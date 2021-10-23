@@ -51,7 +51,7 @@ stages:
     displayName: Deploy
     pool:
       vmImage: $(vmImageName)
-    environment: reactApp-prod
+    environment: 'reactApp-prod'
     strategy:
       runOnce:
         deploy:
