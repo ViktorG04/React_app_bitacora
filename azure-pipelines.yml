@@ -20,7 +20,13 @@ variables:
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
-  deploymentEnvironment: 'reactApp-prod.react-app'
+
+  ${{ if eq(variables['Build.SourceBranchName'], 'main') }}: 
+    deploymentEnvironment: 'reactApp-prod.react-app'
+  ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
+    deploymentEnvironment: 'reactApp-dev.react-app'
+  ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
+    deploymentEnvironment: 'reactApp-staging.react-app'
 
 stages:
 - stage: Build
