@@ -13,7 +13,7 @@ COPY package*.json ./
 #copiar los archivos del repositorio
 COPY . .
 
-ENV REACT_APP_BACKEND_URL=/
+ENV REACT_APP_BACKEND_URL=
 
 #instalar las dependencias requeridas
 RUN npm install
