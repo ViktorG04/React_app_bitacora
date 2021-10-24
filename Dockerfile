@@ -16,9 +16,6 @@ COPY . .
 #instalar las dependencias requeridas
 RUN npm install
 
-#variable de entorno
-ENV REACT_APP_BACKEND_URL=http://159.203.43.147:5000
-
 #compilar proyecto
 RUN npm run build
 
