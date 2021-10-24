@@ -26,9 +26,11 @@ variables:
   ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
     deploymentEnvironment: 'Production.react-app'
     overlay: 'production'
+
   ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
     deploymentEnvironment: 'Development.react-app-dev'
     overlay: 'development'
+    
   ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
     deploymentEnvironment: 'Staging.react-app-staging'
     overlay: 'staging'
