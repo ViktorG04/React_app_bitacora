@@ -26,17 +26,14 @@ variables:
   ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
     deploymentEnvironment: 'Production.react-app'
     overlay: 'production'
-    react.app.backend.url: 'https://bitacora-pre.cloud'
 
   ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
     deploymentEnvironment: 'Development.react-app-dev'
     overlay: 'development'
-    react.app.backend.url:: 'https://dev.bitacora-pre.cloud'
     
   ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
     deploymentEnvironment: 'Staging.react-app-staging'
     overlay: 'staging'
-    react.app.backend.url: 'https://stg.bitacora-pre.cloud'
 
 stages:
 - stage: Build
