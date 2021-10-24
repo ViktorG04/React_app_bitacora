@@ -76,6 +76,13 @@ stages:
               secretName: $(imagePullSecret)
               dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
 
+          - task: DownloadPipelineArtifact@2
+            displayName: Download manifests
+            inputs:
+              buildType: 'current'
+              artifactName: 'manifests'
+              targetPath: '$(Pipeline.Workspace)'
+
           - task: KubernetesManifest@0
             name: bake
             displayName: Bake K8s manifests from kustomization path
