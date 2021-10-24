@@ -1,5 +1,5 @@
-# Docker
-# Build and push an image to Azure Container Registry
+# Deploy to Azure Kubernetes Service
+# Build and push image to Azure Container Registry; Deploy to Azure Kubernetes Service
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
@@ -9,19 +9,28 @@ resources:
 - repo: self
 
 variables:
+
   # Container registry service connection established during pipeline creation
-  dockerRegistryServiceConnection: 'dd73c5d9-869f-4288-b471-934b371e1e4b'
-  imageRepository: 'reactappcontainer'
-  containerRegistry: 'conteinerregistryt1.azurecr.io'
-  dockerfilePath: '$(Build.SourcesDirectory)/Dockerfile'
+  dockerRegistryServiceConnection: 'e9d5762d-719e-4898-b479-04a296e07e4d'
+  imageRepository: 'reactapp'
+  containerRegistry: 'bitacorapre.azurecr.io'
+  dockerfilePath: '**/Dockerfile'
   tag: '$(Build.BuildId)'
+  imagePullSecret: 'bitacorapre7399c0b5-auth'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
 
+  ${{ if eq(variables['Build.SourceBranchName'], 'master') }}: 
+    deploymentEnvironment: 'Production.react-app'
+  ${{ if eq(variables['Build.SourceBranchName'], 'develop') }}: 
+    deploymentEnvironment: 'Development.react-app-dev'
+  ${{ if eq(variables['Build.SourceBranchName'], 'staging') }}: 
+    deploymentEnvironment: 'Staging.react-app-staging'
+
 stages:
 - stage: Build
-  displayName: Build and push stage
+  displayName: Build stage
   jobs:
   - job: Build
     displayName: Build
@@ -37,3 +46,40 @@ stages:
         containerRegistry: $(dockerRegistryServiceConnection)
         tags: |
           $(tag)
+
+    - upload: manifests
+      artifact: manifests
+
+- stage: Deploy
+  displayName: Deploy stage
+  dependsOn: Build
+
+  jobs:
+  - deployment: Deploy
+    displayName: Deploy
+    pool:
+      vmImage: $(vmImageName)
+    environment: $(deploymentEnvironment)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: KubernetesManifest@0
+            displayName: Create imagePullSecret
+            inputs:
+              action: createSecret
+              secretName: $(imagePullSecret)
+              dockerRegistryEndpoint: $(dockerRegistryServiceConnection)
+
+          - task: KubernetesManifest@0
+            displayName: Deploy to Kubernetes cluster
+            inputs:
+              action: deploy
+              manifests: |
+                $(Pipeline.Workspace)/manifests/deployment.yml
+                $(Pipeline.Workspace)/manifests/service.yml
+              imagePullSecrets: |
+                $(imagePullSecret)
+              containers: |
+                $(containerRegistry)/$(imageRepository):$(tag)
+
