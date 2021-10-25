@@ -8,6 +8,13 @@ import UserHome from './views/UserHome';
 import Solicitudes from './views/Solicitudes';
 import CrearSolicitud from './components/CrearSolicitud';
 import EditarSolicitud from './components/EditarSolicitud';
+import oficinas from './views/oficinas';
+import EditarOficina from './components/oficinas/EditarOficina';
+import CrearOficina from './components/oficinas/CrearOficina';
+import Empresas from './views/empresas';
+import EditarEmpresa from './components/empresas/EditarEmpresa';
+import Personas from './views/personas';
+import EditarPersona from './components/personas/EditarPersona';
 
 const useStyles = makeStyles({
   container: {
@@ -28,6 +35,16 @@ function App() {
                     <Route exact path="/solicitudes" component={Solicitudes} />
                     <Route exact path="/crearsolicitud" component={CrearSolicitud} />
                     <Route exact path="/editarsolicitud/:id" component={EditarSolicitud} />
+                    
+                    <Route exact path="/oficinas" component={oficinas} />
+                    <Route exact path="/editarOficina/:id" component={EditarOficina} />
+                    <Route exact path="/crearOficina" component={CrearOficina} />
+
+                    <Route exact path="/empresas" component={Empresas}/>
+                    <Route exact path="/editarEmpresa/:id" component={EditarEmpresa} />
+
+                    <Route exact path="/personas" component={Personas}/>
+                    <Route exact path="/editarPersona/:id" component={EditarPersona} />
                 </Switch>
             </Router>
         </AuthProvider>
