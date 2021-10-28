@@ -4,6 +4,7 @@ import Select from '@material-ui/core/Select/Select';
 import MenuItem from '@material-ui/core/MenuItem/MenuItem';
 import { useParams, useHistory } from "react-router-dom";
 import { buscarEmpresa, editEmpresa } from '../../config/axios';
+import { Link } from 'react-router-dom';
 
 const initialValue = {
     idEmpresa: '',
@@ -24,6 +25,7 @@ const useStyles = makeStyles({
 
 const EditarEmpresa = () => {
     const [empresa, setEmpresa] = useState(initialValue);
+    // eslint-disable-next-line no-unused-vars
     const { idEmpresa, nombre, idTipo, idEstado } = empresa;
     const { id } = useParams();
 
@@ -58,11 +60,11 @@ const EditarEmpresa = () => {
             <Typography variant="h4">Editar Datos Empresa</Typography>
             <FormControl>
                 <InputLabel htmlFor="my-input">Nombre</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='nombre' value={nombre} id="my-input" />
+                <Input onChange={(e) => onValueChange(e)} name='nombre' value={nombre} id="my-input"  inputProps={{maxLength: 20}} required/>
             </FormControl>
             <FormControl fullWidth>
                 <InputLabel htmlFor="my-input">Tipo Empresa</InputLabel>
-                <Select onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="my-input">
+                <Select onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="my-input" required>
                     <MenuItem value={1}>Interno</MenuItem>
                     <MenuItem value={2}>Cliente</MenuItem>
                     <MenuItem value={3}>Proveedor</MenuItem>
@@ -72,13 +74,14 @@ const EditarEmpresa = () => {
 
             <FormControl fullWidth>
                 <InputLabel htmlFor="my-input">Estado Empresa</InputLabel>
-                <Select onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="my-input">
+                <Select onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="my-input" required>
                     <MenuItem value={1}>Activo</MenuItem>
                     <MenuItem value={2}>Inactivo</MenuItem>
                 </Select>
             </FormControl>
             <FormControl>
                 <Button variant="contained" color="primary" onClick={() => editEmpresaDetails()}>Guardar Cambios</Button>
+                <Button variant="contained" color="secondary" style={{marginTop:10}} component={Link} to={`../empresas`}>Cancelar</Button>
             </FormControl>
         </FormGroup>
     );

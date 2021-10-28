@@ -35,12 +35,22 @@ function Container(props) {
     {
       text: "Oficinas",
       icon: <MailIcon />,
-      onClick: () => history.push("/about")
+      onClick: () => history.push("/oficinas")
+    },
+    {
+      text: "Empresas",
+      icon: <MailIcon />,
+      onClick: () => history.push("/empresas")
+    },
+    {
+      text: "Personas",
+      icon: <MailIcon />,
+      onClick: () => history.push("/personas")
     },
     {
       text: "Incapacidades",
       icon: <MailIcon />,
-      onClick: () => history.push("/contact")
+      onClick: () => history.push("/incapacidades")
     }
   ];
 

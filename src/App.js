@@ -15,6 +15,9 @@ import Empresas from './views/empresas';
 import EditarEmpresa from './components/empresas/EditarEmpresa';
 import Personas from './views/personas';
 import EditarPersona from './components/personas/EditarPersona';
+import CrearUsuario from './components/personas/CrearUsuario';
+import Incapacidades from './views/incapacidades';
+import CrearIncapacidad from './components/incapacidades/CrearIncapacidad';
 
 const useStyles = makeStyles({
   container: {
@@ -44,7 +47,11 @@ function App() {
                     <Route exact path="/editarEmpresa/:id" component={EditarEmpresa} />
 
                     <Route exact path="/personas" component={Personas}/>
+                    <Route exact path="/crearEmpleado" component={CrearUsuario}/>
                     <Route exact path="/editarPersona/:id" component={EditarPersona} />
+
+                    <Route exact path="/incapacidades" component={Incapacidades}/>
+                    <Route exact path="/crearIncapacidad" component={CrearIncapacidad} />
                 </Switch>
             </Router>
         </AuthProvider>

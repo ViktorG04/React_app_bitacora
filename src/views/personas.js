@@ -3,6 +3,7 @@ import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles } from '@m
 import { getPersonas, updateEstadoPersona } from '../config/axios';
 import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import { Link } from 'react-router-dom';
 
 const useStyles = makeStyles({
@@ -25,50 +26,59 @@ const useStyles = makeStyles({
 })
 
 const Personas = () => {
-
-
     const [personas, setPersonas] = useState([]);
+
     const classes = useStyles();
 
 
-    const [state, setState] = useState([]);
 
-    const handleChange = (event) => {
-        setState({
-            ...state,
-            [event.target.name]: event.target.checked,
-        });
-    };
+    useEffect(() => {
+        async function getAllPersonas() {
+            const response = await getPersonas();
 
-    useEffect(() => { getAllPersonas();  }, []);
+            var data = response.data;
 
-    const updateStatePerson = async () => {
-        console.log(state);
-      //  const result = await updateEstadoPersona();
-    }
-
-    const getAllPersonas = async () => {
-        let response = await getPersonas();
-        setPersonas(response.data);
-
-        var person = {};
-        let data = [];
-
-        for(const i in response.data){
-
-            person.id = response.data[i]['idPersona']
-            if(response.data[i]['estado'] !== 'Activo'){
-                person.estado = 2;
-            }else{
-                person.estado = 1;
+            for (const i in data) {
+                var action;
+                if (data[i]['estado'] !== 'Activo') {
+                    action = false;
+                } else {
+                    action = true;
+                }
+                data[i].action = action;
             }
+            setPersonas(response.data);
+        };
+        getAllPersonas();
 
-            data.push(person);
-        }
+    }, []);
 
-      setState(data);
-        
-    }
+
+    const handleChange = async(event) => {
+        console.log(event.target.name+"  "+event.target.checked);
+
+       var idEstado = '';
+       if(event.target.checked === true){
+            idEstado= 1;
+       }else{
+           idEstado = 2;
+       }
+        let estado ={
+            id: event.target.name,
+            estado: idEstado
+        };
+       try {
+            await updateEstadoPersona(estado);
+            alert('Estado Actualizado');
+            window.location.reload(false);
+  
+        } catch (error) {
+            var notificacion = error.request.response.split(":");
+            notificacion = notificacion[1].split("}");
+            alert(notificacion[0]);
+        } 
+      };
+
     return (
 
         <Table className={classes.table}>
@@ -91,19 +101,12 @@ const Personas = () => {
                             <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/editarPersona/${per.idPersona}`}>Editar</Button>
                         </TableCell>
                         <TableCell>
-                        <Switch
-                         checked={state}
-                           onChange={handleChange}
-                            inputProps={{ 'aria-label': 'controlled' }}
-                            onClick={() => updateStatePerson()}
-                            />{per.estado}
+                        <FormControlLabel control={<Switch checked={per.action} onChange={handleChange} name={per.idPersona}/>} label={per.estado} />
                         </TableCell>
                     </TableRow>
                 ))}
             </TableBody>
         </Table>
-
-
     );
 }
 

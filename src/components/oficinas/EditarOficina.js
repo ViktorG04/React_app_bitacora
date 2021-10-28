@@ -25,6 +25,7 @@ const useStyles = makeStyles({
 
 const EditarOficina = () => {
     const [oficina, setOficina] = useState(initialValue);
+    // eslint-disable-next-line no-unused-vars
     const { idArea, descripcion, capacidad, idEstado } = oficina;
     const { id } = useParams();
 
@@ -38,14 +39,13 @@ const EditarOficina = () => {
     }
 
     const editOficinaDetails = async () => {
-
         const result = await editOficina(oficina);
         if (result.data['result'] === 'fields affected') {
             alert('Oficina Actualizada');
             history.push('../oficinas');
         } else {
             alert('Error al Actualizar Oficina');
-        }
+        } 
     }
 
     useEffect(() => { loadOficinaDetails(); }, []);
@@ -58,8 +58,8 @@ const EditarOficina = () => {
         <FormGroup className={classes.container}>
             <Typography variant="h4">Editar Oficina</Typography>
             <FormControl>
-                <InputLabel htmlFor="nombre">Nombre</InputLabel>
-                <Input type="text"  name='nombre'  onChange={(e) => onValueChange(e)} value={descripcion} inputProps={{maxLength: 20}} required/>
+                <InputLabel htmlFor="my-input">Nombre</InputLabel>
+                <Input name='descripcion'  onChange={(e) => onValueChange(e)} value={descripcion} inputProps={{maxLength: 20}} required/>
             </FormControl>
             <FormControl>
                 <InputLabel htmlFor="my-input">capacidad Personas</InputLabel>

@@ -35,9 +35,9 @@ const CrearOficina = () => {
 
     const addOfi = async () => {
         if (nombre.trim() === "") {
-            alert("Campo Requerido Nombre");
+            alert("Campo Requerido! Nombre de la oficina");
         } else if (capacidad.trim() === "") {
-            alert("Campo requerido Capacidad")
+            alert("Campo requerido! Capacidad")
         } else {
             oficina.estado = '1';
            const result = await addOficina(oficina);

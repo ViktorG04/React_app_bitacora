@@ -46,7 +46,8 @@ const Oficinas = () => {
             delete array[i]['idEstado'];
         }
         setOficinas(array);
-    }
+    };
+    
     return (
         <Table className={classes.table}>
             <TableHead>
