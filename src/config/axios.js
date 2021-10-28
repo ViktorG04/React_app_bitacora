@@ -1,8 +1,6 @@
 import  axios from 'axios'
 
-//const axiosClient =  process.env.REACT_APP_BACKEND_URL;
-
-const axiosClient = 'http://localhost:5000';
+const axiosClient =  process.env.REACT_APP_BACKEND_URL;
 
 //Solicitudes
 
