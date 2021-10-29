@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Select, MenuItem, FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography } from '@material-ui/core';
-import { addSolicitud } from '../config/axios';
+import { addSolicitud } from '../../config/axios';
 import { useHistory } from "react-router-dom";
 
 const initialValue = {

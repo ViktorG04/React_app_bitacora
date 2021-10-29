@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography } from '@material-ui/core';
-import { buscarSolicitudes, editSolicitud } from '../config/axios';
+import { buscarSolicitudes, editSolicitud } from '../../config/axios';
 import { useHistory, useParams } from "react-router-dom";
 
 const initialValue = {

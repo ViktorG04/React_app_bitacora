@@ -83,7 +83,7 @@ const handleSubmit = (event) => {
     } else if(password.trim() === ""){
       alert("Ingrese su password");
     } else{
-      history.push("/adminhome");
+      history.push("/solicitudes");
       //Pasarlo al action
       //onLogin(correo, password);
       console.log(userRol);

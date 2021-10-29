@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles } from '@material-ui/core'
-import { getSolicitudes } from '../config/axios';
+import { getSolicitudes } from '../../config/axios';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
+    container:{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        marginTop: '60px'
+    },
     table: {
-        width: '90%',
+        width: '100%',
         margin: '20px 0px'
     },
     thead: {
@@ -24,6 +31,7 @@ const useStyles = makeStyles({
 })
 
 const Solicitudes = () => {
+    const history = useHistory();
     const [solicitudes, setSolicitudes] = useState([]);
     const classes = useStyles();
 
@@ -42,6 +50,9 @@ const Solicitudes = () => {
         setSolicitudes(response.data);
     }
     return (
+        <div className={classes.container}>
+            <h2>Solicitudes creadas</h2>
+            <Button variant="outlined" onClick={() => history.push("/crearsolicitud") }>Crear solicitud</Button>
         <Table className={classes.table}>
             <TableHead>
                 <TableRow className={classes.thead}>
@@ -63,7 +74,8 @@ const Solicitudes = () => {
                 ))}
             </TableBody>
         </Table>
+        </div>
     );
 }   
- 
+
 export default Solicitudes;

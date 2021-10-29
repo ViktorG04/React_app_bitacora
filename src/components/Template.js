@@ -15,9 +15,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import { useHistory } from "react-router-dom";
-import Solicitudes from '../views/Solicitudes';
 
 const drawerWidth = 240;
 
@@ -30,7 +28,7 @@ function Container(props) {
     {
       text: "Solicitudes",
       icon: <InboxIcon />,
-      onClick: () => history.push("/adminhome")
+      onClick: () => history.push("/solicitudes")
     },
     {
       text: "Oficinas",
@@ -140,9 +138,6 @@ function Container(props) {
       </Box>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
-        <h2>Solicitudes creadas</h2>
-        <Solicitudes />
-        <Button variant="outlined" onClick={() => history.push("/crearsolicitud") }>Crear solicitud</Button> 
       </Box>
     </Box>
   );
