@@ -30,7 +30,13 @@ const Incapacidades = () => {
     useEffect(() => {
        async function getAllIncapacidades(){
         let response = await getIncapacidades();
-        setIncapacidades(response.data);
+        let vacio = [];
+        if(response.data === ""){
+            setIncapacidades(vacio);
+        }else{
+            setIncapacidades(response.data);
+        }
+       
        };
        getAllIncapacidades();
     }, []);
@@ -54,7 +60,7 @@ const Incapacidades = () => {
                             <TableCell>{obj.fechaInicio}</TableCell>
                             <TableCell>{obj.fechaFin}</TableCell>
                             <TableCell>
-                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/editarOficina/${obj.numIncapacidad}`}>Ir</Button>
+                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/nexosPorIncapacidad/${obj.idIncapacidad}`}>Ir</Button>
                             </TableCell>
                         </TableRow>
                     ))}

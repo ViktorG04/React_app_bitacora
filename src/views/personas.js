@@ -98,7 +98,7 @@ const Personas = () => {
                         <TableCell>{per.docIdentidad}</TableCell>
                         <TableCell>{per.empresa}</TableCell>
                         <TableCell>
-                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/editarPersona/${per.idPersona}`}>Editar</Button>
+                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/editarPersona/${per.idPersona}`} disabled={!per.action}>Editar</Button>
                         </TableCell>
                         <TableCell>
                         <FormControlLabel control={<Switch checked={per.action} onChange={handleChange} name={per.idPersona}/>} label={per.estado} />

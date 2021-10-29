@@ -118,4 +118,18 @@ export const addIncapacidad = async (incapacidad) => {
     return await axios.post(`${axiosClient}/api/incapacidades/`, incapacidad);
 }
 
+//reportes
+export const getVisitas = async=>{
+    return axios.get(`${axiosClient}/api/reportes/visitas`);
+}
+
+export const getVisitasOficina = async (fecha) => {
+    return await axios.post(`${axiosClient}/api/areas/reportes`, fecha);
+}
+
+export const buscarNexoxPorIncapacidad = async (id) => {
+    id = id || '';
+    return await axios.get(`${axiosClient}/api/incapacidades/nexos/${id}`);
+}
+
 export default axiosClient;
