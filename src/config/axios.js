@@ -127,4 +127,9 @@ export const getVisitasOficina = async (fecha) => {
     return await axios.post(`${axiosClient}/api/areas/reportes`, fecha);
 }
 
+export const buscarNexoxPorIncapacidad = async (id) => {
+    id = id || '';
+    return await axios.get(`${axiosClient}/api/incapacidades/nexos/${id}`);
+}
+
 export default axiosClient;

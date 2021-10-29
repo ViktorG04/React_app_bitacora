@@ -60,7 +60,7 @@ const Incapacidades = () => {
                             <TableCell>{obj.fechaInicio}</TableCell>
                             <TableCell>{obj.fechaFin}</TableCell>
                             <TableCell>
-                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/editarOficina/${obj.idIncapacidad}`}>Ir</Button>
+                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/nexosPorIncapacidad/${obj.idIncapacidad}`}>Ir</Button>
                             </TableCell>
                         </TableRow>
                     ))}

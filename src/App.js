@@ -20,6 +20,7 @@ import Incapacidades from './views/incapacidades';
 import CrearIncapacidad from './components/incapacidades/CrearIncapacidad';
 import Visitas from './components/reportes/visitas';
 import VisitasOficina from './components/reportes/oficinas';
+import Nexos from './components/incapacidades/nexos';
 
 const useStyles = makeStyles({
   container: {
@@ -54,9 +55,10 @@ function App() {
 
                     <Route exact path="/incapacidades" component={Incapacidades}/>
                     <Route exact path="/crearIncapacidad" component={CrearIncapacidad} />
+                    <Route exact path="/nexosPorIncapacidad/:id" component={Nexos} />
 
-                    <Route exact path="/reporte/visitas" component={Visitas}/>
-                    <Route exact path="/reporte/oficinas" component={VisitasOficina}/>
+                    <Route exact path="/reportes/visitas" component={Visitas}/>
+                    <Route exact path="/reportes/oficinas" component={VisitasOficina}/>
                 </Switch>
             </Router>
         </AuthProvider>
