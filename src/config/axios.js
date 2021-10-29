@@ -118,4 +118,13 @@ export const addIncapacidad = async (incapacidad) => {
     return await axios.post(`${axiosClient}/api/incapacidades/`, incapacidad);
 }
 
+//reportes
+export const getVisitas = async=>{
+    return axios.get(`${axiosClient}/api/reportes/visitas`);
+}
+
+export const getVisitasOficina = async (fecha) => {
+    return await axios.post(`${axiosClient}/api/areas/reportes`, fecha);
+}
+
 export default axiosClient;
