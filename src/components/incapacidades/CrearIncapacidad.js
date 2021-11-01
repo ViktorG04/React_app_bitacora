@@ -32,7 +32,7 @@ const CrearIncapacidad = () => {
     const [incapacidad, setIncapacidad] = useState(initialValue);
     const { numIncapacidad, motivo } = incapacidad;
     const [empleados, setEmpleados] = useState([]);
-    const [empleado, setValue] = useState(empleados[0])
+    const [empleado, setValue] = useState(empleados[0]);
     const [fechaI, setValueFI] = useState(new Date());
     const [fechaF, setValueFF] = useState(new Date());
 
@@ -47,12 +47,12 @@ const CrearIncapacidad = () => {
     const history = useHistory();
 
     useEffect(() => {
-        async function getAllRoles() {
+        async function getAllEmpleados() {
             const response = await getEmpleados();
             setEmpleados(response.data);
 
         };
-        getAllRoles()
+        getAllEmpleados()
 
     }, []);
 

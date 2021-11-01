@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography } from '@material-ui/core';
 import { buscarSolicitudes, editSolicitud } from '../../config/axios';
 import { useHistory, useParams } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 const initialValue = {
     nombreCompleto: '',
@@ -22,7 +23,7 @@ const useStyles = makeStyles({
 
 const EditarSolicitud = () => {
     const [solicitud, setSolicitud] = useState(initialValue);
-    const { fechaVisita, motivo, Area } = solicitud;
+    const { fechaVisita, motivo, Area, nombreCompleto } = solicitud;
     const { id } = useParams();
     const classes = useStyles();
 
@@ -30,6 +31,7 @@ const EditarSolicitud = () => {
     
     const loadSolicitudDetails =  async() => {
         const response = await buscarSolicitudes(id);
+        console.log(response.data);
         setSolicitud(response.data);
     }
 
@@ -53,7 +55,7 @@ const EditarSolicitud = () => {
             <Typography variant="h4">Agregar solicitud</Typography>
             <FormControl>
                 <InputLabel htmlFor="my-input">Nombre</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='nombreCompleto' value={"prueba"} id="my-input" />
+                <Input onChange={(e) => onValueChange(e)} name='nombreCompleto' value={nombreCompleto} id="my-input" />
             </FormControl>
             <FormControl>
                 <InputLabel htmlFor="my-input">Fecha y Hora visita</InputLabel>
@@ -69,6 +71,7 @@ const EditarSolicitud = () => {
             </FormControl>
             <FormControl>
                 <Button variant="contained" color="primary" onClick={() => editSolicitudDetails()}>Editar usuario</Button>
+                <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../solicitudes`}>Cancelar</Button>
             </FormControl>
         </FormGroup>
     );

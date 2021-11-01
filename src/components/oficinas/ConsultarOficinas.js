@@ -59,7 +59,7 @@ const Oficinas = () => {
     return (
         <div className={classes.container}>
             <h2>Oficinas creadas</h2>
-            <Button variant="outlined" onClick={() => history.push("/crearsolicitud") }>Crear oficina</Button>
+            <Button variant="outlined" onClick={() => history.push("/crearOficina") }>Crear oficina</Button>
             <Table className={classes.table}>
                 <TableHead>
                     <TableRow className={classes.thead}>

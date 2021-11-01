@@ -19,6 +19,7 @@ import CrearIncapacidad from './components/incapacidades/CrearIncapacidad';
 import Visitas from './components/reportes/visitas';
 import VisitasOficina from './components/reportes/oficinas';
 import Nexos from './components/incapacidades/nexos';
+import CrearSolicitudExternos from './components/solicitudes/CrearSolicitudExternos';
 
 const useStyles = makeStyles({
   container: {
@@ -36,6 +37,7 @@ function App() {
                     <Route exact path="/" component={Login} />
                     <Route exact path="/solicitudes" component={vistaSolicitudes} />
                     <Route exact path="/crearsolicitud" component={CrearSolicitud} />
+                    <Route exact path="/crearsolicitudexternos" component={CrearSolicitudExternos} />
                     <Route exact path="/editarsolicitud/:id" component={EditarSolicitud} />
                     
                     <Route exact path="/oficinas" component={VistaOficinas} />

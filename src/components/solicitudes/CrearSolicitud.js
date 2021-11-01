@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
-import { Select, MenuItem, FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography } from '@material-ui/core';
-import { addSolicitud } from '../../config/axios';
+import React, { useState, useEffect } from 'react';
+import { Select, MenuItem, FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography, NativeSelect } from '@material-ui/core';
+import { addSolicitud, getOficinas } from '../../config/axios';
 import { useHistory } from "react-router-dom";
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import TextField from '@mui/material/TextField';
+import DateTimePicker from '@mui/lab/DateTimePicker';
+import { Link } from 'react-router-dom';
 
 const initialValue = {
-    idUsuario: '1',
+    idUsuario: '14',
     fechayHoraVisita: '',
     motivo: '',
     idArea: '',
-    sintomas: '',
-    diagnosticado: '',
-    covidFamiliar: '',
-    viajo: ''
+    sintomas: 'No',
+    diagnosticado: 'No',
+    covidFamiliar: 'No',
+    viajo: 'No'
 }
 
 const useStyles = makeStyles({
@@ -26,27 +31,68 @@ const useStyles = makeStyles({
 
 const CrearSolicitud = () => {
     const [solicitud, setSolicitud] = useState(initialValue);
-    const { idUsuario, fechayHoraVisita, motivo, idArea, sintomas, diagnosticado, covidFamiliar, viajo } = solicitud;
+    const [areas, setAreas] = useState([]);
+    const [fechaI, setValueFI] = useState(new Date());
+    const { idUsuario, motivo, idArea } = solicitud;
     const classes = useStyles();
 
     const history = useHistory();
-    
+
+
+    useEffect(() => {
+        async function getAllOficinas() {
+            const response = await getOficinas();
+            for (const i in response.data) {
+                if (response.data[i]['idEstado'] === 2) {
+                    delete response.data[i]
+                }
+            }
+            setAreas(response.data);
+        };
+        getAllOficinas();
+
+    }, []);
+
     const onValueChange = (e) => {
-        setSolicitud({...solicitud, [e.target.name]: e.target.value})
+        setSolicitud({ ...solicitud, [e.target.name]: e.target.value })
     }
 
-    const addSol = async() => {
-        if (fechayHoraVisita.trim() === ""){
-            alert("Ingrese una fecha valida");   
-        } else if(motivo.trim() === ""){
-            alert("Motivo requerido")
-        } else if(idArea.trim() === ""){
-            alert("Area requerida")
+
+    const addSol = async () => {
+
+        var time = fechaI.getHours() + ':' + fechaI.getMinutes() + ':00';
+        var fechaIngreso = fechaI.toISOString().substr(0, 10);
+        solicitud.fechayHoraVisita = fechaIngreso.split("-").reverse().join("-") + ' ' + time;
+
+        if (fechaI === Date()) {
+            alert("Campo Requerido! Ingrese una fecha valida");
+        } else if (motivo.trim() === "") {
+            alert("Campo Requerido! Ingrese un motivo")
+        } else if (idArea === "") {
+            alert("Campo Requerido! Seleccione una Oficina")
+        } else if (solicitud['sintomas'] !== 'No') {
+            alert("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO 'SI TENER SINTOMAS QUE SE ASEMEJEN" +
+                "A COVID-19', FAVOR PONERSE EN CONTACTO CON RECURSOS HUMANOS");
+        }else if (solicitud['diagnosticado'] !== 'No') {
+            alert("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO 'SI HABER SIDO DIGNOSTICADO POR" +
+                "COVID-19', FAVOR PONERSE EN CONTACTO CON RECURSOS HUMANOS");
+        }else if (solicitud['covidFamiliar'] === 'Si' & solicitud['viajo'] === 'Si') {
+            // history.push(`/editarPersona/${id}`);
+            alert("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO TENER UN FAMILIAR O HABER SALIDO DEL PAIS LOS ULTIMOS 15 DIAS" +
+                " FAVOR DE PONERSE EN CONTACTO CON RECURSOS HUMANOS")
         } else {
-            console.log(solicitud);
-            /*await addSolicitud(solicitud);
-            alert('Solicitud agregada');
-            history.push('./adminhome');*/
+            try {
+                console.log(solicitud);
+                var result = await addSolicitud(solicitud);
+                console.log(result.data);
+                //  history.push('../solicitudes');
+
+            } catch (error) {
+                var notificacion = error.request.response.split(":");
+                notificacion = notificacion[1].split("}");
+                alert(notificacion[0]);
+            }
+
         }
     }
 
@@ -55,59 +101,95 @@ const CrearSolicitud = () => {
         <FormGroup className={classes.container}>
             <Typography variant="h4">Agregar solicitud</Typography>
             <FormControl>
-                <InputLabel htmlFor="my-input">IdUsuario</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='IdUsuario' value={idUsuario} id="my-input" />
-            </FormControl>
-            <FormControl>
-                <InputLabel htmlFor="my-input">Fecha y Hora visita</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='fechayHoraVisita' value={fechayHoraVisita} id="my-input" />
+                <InputLabel htmlFor="my-input">Nombre Completo</InputLabel>
+                <Input onChange={(e) => onValueChange(e)} name="IdUsuario" value={idUsuario} id="idUsuario" />
             </FormControl>
             <FormControl>
                 <InputLabel htmlFor="my-input">Motivo</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='motivo' value={motivo} id="my-input"/>
+                <Input onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo" inputProps={{ maxLength: 40 }} />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="my-input">idArea</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='idArea' value={idArea} id="my-input" />
+                <InputLabel htmlFor="my-input">Seleccione una Oficina</InputLabel>
+                <Select onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required>
+                    {areas?.map(option => {
+                        return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
+                    })}
+                </Select>
             </FormControl>
             <FormControl>
-            <Select
-                labelId="demo-simple-select-label"
-                name='sintomas'
-                value={sintomas}
-                label="Age"
-                onChange={(e) => onValueChange(e)}
-                >
-                <MenuItem value={sintomas}>Si</MenuItem>
-                <MenuItem value={sintomas}>No</MenuItem>
-            </Select>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                        value={fechaI}
+                        label="Fecha y Hora Ingreso"
+                        autoFocus
+                        minDate={new Date()}
+                        onChange={(newValue) => {
+                            setValueFI(newValue);
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
             </FormControl>
             <FormControl>
-            <InputLabel htmlFor="my-input">Ha sido diagnosticado o ha presentado sospechas de COVID-19?</InputLabel>
-                <select onChange={(e) => onValueChange(e)} name="diagnosticado" id="diagnosticado">
-                    <option value={diagnosticado}>Si</option>
-                    <option value={diagnosticado}>No</option>
-                </select>
+                <label htmlFor="my-input">¿Ha presentado síntomas de tos, fiebre moderada a alta, dolor de garganta,
+                    secreción nasal, dificultad para respirar o síntomas similares a los de la gripe en los últimos 15 días?</label>
+                <NativeSelect
+                    defaultValue={"No"}
+                    inputProps={{
+                        name: 'sintomas',
+                        id: 'uncontrolled-native',
+                    }}
+                    onChange={(e) => onValueChange(e)}>
+                    <option value={"Si"}>Si</option>
+                    <option value={"No"}>No</option>
+                </NativeSelect>
             </FormControl>
             <FormControl>
-            <InputLabel htmlFor="my-input">Tiene familiares que hayan sido diagnosticados por COVID-19?</InputLabel>
-                <select onChange={(e) => onValueChange(e)} name="covidFamiliar" id="covidFamiliar">
-                    <option value={covidFamiliar}>Si</option>
-                    <option value={covidFamiliar}>No</option>
-                </select>
+                <label htmlFor="my-input">Ha sido diagnosticado o ha presentado sospechas de COVID-19?</label>
+                <NativeSelect
+                    defaultValue={"No"}
+                    inputProps={{
+                        name: 'diagnosticado',
+                        id: 'uncontrolled-native',
+                    }}
+                    onChange={(e) => onValueChange(e)}>
+                    <option value={"Si"}>Si</option>
+                    <option value={"No"}>No</option>
+                </NativeSelect>
             </FormControl>
             <FormControl>
-            <InputLabel htmlFor="my-input">Ha salido del pais durante los pasados 15 dias?</InputLabel>
-                <select onChange={(e) => onValueChange(e)} name="viajo" id="viajo">
-                    <option value={viajo}>Si</option>
-                    <option value={viajo}>No</option>
-                </select>
+                <label htmlFor="my-input">Tiene familiares que hayan sido diagnosticados por COVID-19?</label>
+                <NativeSelect
+                    defaultValue={"No"}
+                    inputProps={{
+                        name: 'covidFamiliar',
+                        id: 'uncontrolled-native',
+                    }}
+                    onChange={(e) => onValueChange(e)}>
+                    <option value={"Si"}>Si</option>
+                    <option value={"No"}>No</option>
+                </NativeSelect>
             </FormControl>
             <FormControl>
-                <Button variant="contained" color="primary" onClick={() => addSol()}>Agregar usuario</Button>
+                <label htmlFor="my-input">Ha salido del pais durante los ultimos 15 dias?</label>
+                <NativeSelect
+                    defaultValue={"No"}
+                    inputProps={{
+                        name: 'viajo',
+                        id: 'uncontrolled-native',
+                    }}
+                    onChange={(e) => onValueChange(e)}>
+                    <option value={"Si"}>Si</option>
+                    <option value={"No"}>No</option>
+                </NativeSelect>
+            </FormControl>
+
+            <FormControl>
+                <Button variant="contained" color="primary" onClick={() => addSol()}>Ingresar solicitud</Button>
+                <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../solicitudes`}>Cancelar</Button>
             </FormControl>
         </FormGroup>
     );
 }
- 
+
 export default CrearSolicitud;

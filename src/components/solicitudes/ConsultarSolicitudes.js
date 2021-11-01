@@ -33,20 +33,17 @@ const useStyles = makeStyles({
 const Solicitudes = () => {
     const history = useHistory();
     const [solicitudes, setSolicitudes] = useState([]);
+    const [action, setAction] = useState(false);
     const classes = useStyles();
+
 
     useEffect(() => {
         getAllSolicitudes();
     }, []);
 
-    const deleteSolicitud = async (idSolicitud) => {
-        await deleteSolicitud(idSolicitud);
-        getAllSolicitudes();
-    }
-
     const getAllSolicitudes = async () => {
         let response = await getSolicitudes();
-        console.log(response.data)
+     
         setSolicitudes(response.data);
     }
     return (
@@ -59,6 +56,7 @@ const Solicitudes = () => {
                     <TableCell>Id Solicitud</TableCell>
                     <TableCell>fecha de visita</TableCell>
                     <TableCell>Estado</TableCell>
+                    <TableCell>Acciones</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>
@@ -68,7 +66,7 @@ const Solicitudes = () => {
                         <TableCell>{sol.fechaVisita}</TableCell>
                         <TableCell>{sol.estado}</TableCell>
                         <TableCell>
-                            <Button color="primary" variant="contained" style={{marginRight:10}} component={Link} to={`/editarsolicitud/${sol.idSolicitud}`}>Editar</Button>
+                            <Button color="primary" variant="contained" style={{marginRight:10}} component={Link} to={`/editarsolicitud/${sol.idSolicitud}`} disabled={action}>Editar</Button>
                         </TableCell>
                     </TableRow>
                 ))}

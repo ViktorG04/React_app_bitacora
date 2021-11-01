@@ -28,6 +28,7 @@ const EditarEmpresa = () => {
     // eslint-disable-next-line no-unused-vars
     const { idEmpresa, nombre, idTipo, idEstado } = empresa;
     const { id } = useParams();
+    const [action, setAction] = useState(false);
 
     const classes = useStyles();
 
@@ -36,6 +37,10 @@ const EditarEmpresa = () => {
     const loadEmpresaDetails = async () => {
         const response = await buscarEmpresa(id);
         setEmpresa(response.data);
+
+        if(response.data['idEmpresa'] === 1){
+            setAction(true);
+        }
     }
 
     const editEmpresaDetails = async () => {
@@ -60,21 +65,20 @@ const EditarEmpresa = () => {
             <Typography variant="h4">Editar Datos Empresa</Typography>
             <FormControl>
                 <InputLabel htmlFor="my-input">Nombre</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='nombre' value={nombre} id="my-input"  inputProps={{maxLength: 20}} required/>
+                <Input onChange={(e) => onValueChange(e)} name='nombre' value={nombre} id="my-input"  inputProps={{maxLength: 60}} required/>
             </FormControl>
             <FormControl fullWidth>
                 <InputLabel htmlFor="my-input">Tipo Empresa</InputLabel>
-                <Select onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="my-input" required>
+                <Select onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="my-input" required disabled={action}>
                     <MenuItem value={1}>Interno</MenuItem>
                     <MenuItem value={2}>Cliente</MenuItem>
                     <MenuItem value={3}>Proveedor</MenuItem>
                     <MenuItem value={4}>Particular</MenuItem>
                 </Select>
             </FormControl>
-
             <FormControl fullWidth>
                 <InputLabel htmlFor="my-input">Estado Empresa</InputLabel>
-                <Select onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="my-input" required>
+                <Select onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="my-input" required disabled={action}>
                     <MenuItem value={1}>Activo</MenuItem>
                     <MenuItem value={2}>Inactivo</MenuItem>
                 </Select>

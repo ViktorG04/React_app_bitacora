@@ -16,6 +16,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useHistory } from "react-router-dom";
+import { Home } from '@mui/icons-material';
 
 const drawerWidth = 240;
 
@@ -32,7 +33,7 @@ function Container(props) {
     },
     {
       text: "Oficinas",
-      icon: <MailIcon />,
+      icon: < Home/>,
       onClick: () => history.push("/oficinas")
     },
     {

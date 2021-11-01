@@ -77,6 +77,10 @@ export const getEmpleados = async=>{
     return axios.get(`${axiosClient}/api/users/incapacidad`);
 }
 
+export const getPersonasExternos = async (id) =>{
+    return await axios.get(`${axiosClient}/api/persons/search/${id}`);
+}
+
 export const updateEstadoPersona = async (estado) => {
     return await axios.put(`${axiosClient}/api/persons/state`, estado);
 }

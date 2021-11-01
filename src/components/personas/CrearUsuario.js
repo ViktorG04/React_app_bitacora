@@ -88,6 +88,7 @@ const EditarPersona = () => {
                 <Input type="email" onChange={(e) => onValueChange(e)} name="correo" value={correo} id="my-input" inputProps={{ maxLength: 30 }} required/>
             </FormControl>
             <FormControl>
+            <InputLabel htmlFor="my-input">Seleccione un Rol</InputLabel>
                 <Select onChange={(e) => onValueChange(e)} name="idRol" value={idRol} id="my-input" required>
                     {roles?.map(option => {
                         return ( <MenuItem value={option.idRol}> {option.rol} </MenuItem>);

@@ -5,10 +5,17 @@ import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { Link } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
+    container:{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        marginTop: '60px'
+    },
     table: {
-        width: '90%',
+        width: '100%',
         margin: '20px 0px'
     },
     thead: {
@@ -29,7 +36,7 @@ const Personas = () => {
     const [personas, setPersonas] = useState([]);
 
     const classes = useStyles();
-
+    const history = useHistory();
 
 
     useEffect(() => {
@@ -80,7 +87,8 @@ const Personas = () => {
       };
 
     return (
-
+        <div className={classes.container}>
+        <Button variant="outlined" onClick={() => history.push("/crearEmpleado") }>Crear Empleado</Button>
         <Table className={classes.table}>
             <TableHead>
                 <TableRow className={classes.thead}>
@@ -107,6 +115,7 @@ const Personas = () => {
                 ))}
             </TableBody>
         </Table>
+        </div>
     );
 }
 
