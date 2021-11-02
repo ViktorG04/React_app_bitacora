@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles } from '@material-ui/core'
-import { getPersonas, updateEstadoPersona } from '../config/axios';
+import { getPersonas, updateEstadoPersona } from '../../config/axios';
 import Button from '@mui/material/Button';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -11,8 +11,7 @@ const useStyles = makeStyles({
     container:{
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-        marginTop: '60px'
+        marginTop: '80px'
     },
     table: {
         width: '100%',

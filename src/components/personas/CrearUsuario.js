@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography } from '@material-ui/core';
-import Select from '@material-ui/core/Select/Select';
+import { FormGroup, FormControl, Button, makeStyles, Typography } from '@material-ui/core';
+import TextField from '@mui/material/TextField';
 import MenuItem from '@material-ui/core/MenuItem/MenuItem';
 import { useHistory } from "react-router-dom";
 import { addEmpleado, getRoles } from '../../config/axios';
@@ -61,8 +61,8 @@ const EditarPersona = () => {
             try {
                 const result = await addEmpleado(empleado);
                 if (result['data'] === 'fields affected') {
-                alert('Empleado Registrado, su usuario y password han sido enviados al correo electronico registrado');
-                history.push('./personas');
+                    alert('Empleado Registrado, su usuario y password han sido enviados al correo electronico registrado');
+                    history.push('./personas');
                 }
             } catch (error) {
                 var notificacion = error.request.response.split(":");
@@ -74,26 +74,43 @@ const EditarPersona = () => {
 
     return (
         <FormGroup className={classes.container}>
-            <Typography aling="center" variant="h4">Ingresar Datos Empleado</Typography>
+            <Typography align="center" variant="h4">Ingresar Datos Empleado</Typography>
             <FormControl>
-                <InputLabel htmlFor="my-input">Nombre Completo</InputLabel>
-                <Input type="text" onChange={(e) => onValueChange(e)} name="nombre" value={nombre} id="my-input" inputProps={{ maxLength: 40 }} required/>
+                <TextField
+                    label="Ingrese Nombres y Apellidos"
+                    variant="outlined"
+                    required
+                    type="text" name="nombre" value={nombre}
+                    onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 40 }}
+                />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="my-input">Documento Identidad</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name="dui" value={dui} id="my-input" inputProps={{ maxLength: 20 }} required/>
+                <TextField
+                    label="Ingrese Documento Identidad"
+                    variant="outlined"
+                    required
+                    type="text" name="dui" value={dui}
+                    onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 20 }}
+                />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="my-input">Correo</InputLabel>
-                <Input type="email" onChange={(e) => onValueChange(e)} name="correo" value={correo} id="my-input" inputProps={{ maxLength: 30 }} required/>
+                <TextField
+                    label="Ingrese Correo Electronico"
+                    variant="outlined"
+                    required
+                    type="email" name="correo" value={correo}
+                    onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 30 }}
+                />
             </FormControl>
             <FormControl>
-            <InputLabel htmlFor="my-input">Seleccione un Rol</InputLabel>
-                <Select onChange={(e) => onValueChange(e)} name="idRol" value={idRol} id="my-input" required>
+                <TextField
+                    select
+                    label="Seleccione un Rol"
+                    onChange={(e) => onValueChange(e)} name="idRol" value={idRol} id="idRol" required>
                     {roles?.map(option => {
-                        return ( <MenuItem value={option.idRol}> {option.rol} </MenuItem>);
+                        return (<MenuItem value={option.idRol}> {option.rol} </MenuItem>);
                     })}
-                </Select>
+                </TextField>
             </FormControl>
             <FormControl>
                 <Button variant="contained" color="primary" onClick={() => createNewEmpleado()}>Crear Empleado</Button>

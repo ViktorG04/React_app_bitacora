@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography } from '@material-ui/core';
-import Select from '@material-ui/core/Select/Select';
+import { FormGroup, FormControl, Button, makeStyles, Typography } from '@material-ui/core';
+import TextField from '@mui/material/TextField';
 import MenuItem from '@material-ui/core/MenuItem/MenuItem';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -16,7 +16,8 @@ const initialValue = {
     correo: '',
     idRol: '',
     idEstado: '',
-    idEmpresa: ''
+    idEmpresa: '',
+    password: ''
 }
 
 const useStyles = makeStyles({
@@ -127,38 +128,63 @@ const EditarPersona = () => {
     if (!isNaN(idUsuario)) {
         vista = (
             <FormGroup className={classes.container}>
-
-                <Typography variant="h4">Editar Datos Empleado</Typography>
+                <Typography align="center" variant="h4">Editar Datos Empleado</Typography>
                 <FormControl>
-                    <InputLabel htmlFor="my-input">Nombre Completo</InputLabel>
-                    <Input onChange={(e) => onValueChange(e)} name="nombreCompleto" value={nombreCompleto} id="nombreCompleto" maxlength="60" />
+                    <TextField
+                        label="Ingrese Nombres y Apellidos"
+                        variant="outlined"
+                        required
+                        type="text" name="nombreCompleto" value={nombreCompleto}
+                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 60 }}
+                    />
                 </FormControl>
                 <FormControl>
-                    <InputLabel htmlFor="my-input">Documento Identidad</InputLabel>
-                    <Input onChange={(e) => onValueChange(e)} name="docIdentidad" value={docIdentidad} id="docIdentidad" maxlength="20" />
+                    <TextField
+                        label="Ingrese Documento Identidad"
+                        variant="outlined"
+                        required
+                        type="text" name="docIdentidad" value={docIdentidad}
+                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 20 }}
+                    />
                 </FormControl>
                 <FormControl>
-                    <InputLabel htmlFor="my-input">Correo</InputLabel>
-                    <Input onChange={(e) => onValueChange(e)} name="correo" value={correo} id="correo" maxlength="30" />
+                    <TextField
+                        label="Ingrese Correo Electronico"
+                        variant="outlined"
+                        required
+                        type="email" name="correo" value={correo}
+                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 30 }}
+                    />
                 </FormControl>
                 <FormControl>
-                    <Select onChange={(e) => onValueChange(e)} name="idRol" value={idRol} id="idRol" required>
+                    <TextField
+                        select
+                        label="Seleccione un Rol"
+                        onChange={(e) => onValueChange(e)} name="idRol" value={idRol} id="idRol" required>
                         {roles?.map(option => {
                             return (<MenuItem value={option.idRol}> {option.rol} </MenuItem>);
                         })}
-                    </Select>
+                    </TextField>
                 </FormControl>
                 <FormControl fullWidth>
-                    <InputLabel htmlFor="my-input">Estado</InputLabel>
-                    <Select onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" disabled>
+                    <TextField
+                        select
+                        label="Seleccione Estado"
+                        onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required>
                         <MenuItem value={1}>Activo</MenuItem>
                         <MenuItem value={2}>Inactivo</MenuItem>
-                    </Select>
+                    </TextField>
                 </FormControl>
                 <FormControl>
                     <FormControlLabel control={
                         <Switch checked={checked} onChange={handleChange} />} label="Cambiar Password" />
-                    <Input type="password" onChange={(e) => onValueChange(e)} name="password" value={password} id="password" inputProps={{ maxLength: 12 }} disabled={!checked} />
+                    <TextField
+                        variant="outlined"
+                        type="password"
+                        name="password" value={password} id="password"
+                        onChange={(e) => onValueChange(e)}
+                        inputProps={{ maxLength: 12 }} disabled={!checked}
+                    />
                 </FormControl>
                 <FormControl>
                     <Button variant="contained" color="primary" onClick={() => editDataEmpleado()}>Guardar Cambios</Button>
@@ -172,26 +198,41 @@ const EditarPersona = () => {
             <FormGroup className={classes.container}>
                 <Typography variant="h4">Editar Datos Persona</Typography>
                 <FormControl>
-                    <InputLabel htmlFor="my-input">Nombre Completo</InputLabel>
-                    <Input onChange={(e) => onValueChange(e)} name="nombreCompleto" value={nombreCompleto} id="my-input" inputProps={{ maxLength: 40 }} required />
+                    <TextField
+                        label="Ingrese Nombres y Apellidos"
+                        variant="outlined"
+                        required
+                        type="text" name="nombreCompleto" value={nombreCompleto}
+                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 60 }}
+                    />
                 </FormControl>
                 <FormControl>
-                    <InputLabel htmlFor="my-input">Documento de Identidad</InputLabel>
-                    <Input onChange={(e) => onValueChange(e)} name='docIdentidad' value={docIdentidad} id="my-input" inputProps={{ maxLength: 20 }} required />
+                    <TextField
+                        label="Ingrese Documento Identidad"
+                        variant="outlined"
+                        required
+                        type="text" name="docIdentidad" value={docIdentidad}
+                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 20 }}
+                    />
                 </FormControl>
                 <FormControl>
-                    <Select onChange={(e) => onValueChange(e)} name="idEmpresa" value={idEmpresa} id="my-input" required>
+                    <TextField
+                        select
+                        label="Seleccione Empresa"
+                        onChange={(e) => onValueChange(e)} name="idEmpresa" value={idEmpresa} id="idEmpresa" required>
                         {empresas?.map(option => {
                             return (<MenuItem value={option.idEmpresa}> {option.nombre} </MenuItem>);
                         })}
-                    </Select>
+                    </TextField>
                 </FormControl>
                 <FormControl fullWidth>
-                    <InputLabel htmlFor="my-input">Estado</InputLabel>
-                    <Select onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="my-input" disabled>
+                    <TextField
+                        select
+                        label="Seleccione Estado"
+                        onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required>
                         <MenuItem value={1}>Activo</MenuItem>
                         <MenuItem value={2}>Inactivo</MenuItem>
-                    </Select>
+                    </TextField>
                 </FormControl>
                 <FormControl>
                     <Button variant="contained" color="primary" onClick={() => editDataPerson()}>Guardar Cambios</Button>

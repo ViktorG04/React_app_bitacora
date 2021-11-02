@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography } from '@material-ui/core';
+import { FormGroup, FormControl, Button, makeStyles, Typography } from '@material-ui/core';
 import { useHistory } from "react-router-dom";
 import { addIncapacidad, getEmpleados } from '../../config/axios';
 import { Link } from 'react-router-dom';
@@ -50,7 +50,6 @@ const CrearIncapacidad = () => {
         async function getAllEmpleados() {
             const response = await getEmpleados();
             setEmpleados(response.data);
-
         };
         getAllEmpleados()
 
@@ -93,14 +92,25 @@ const CrearIncapacidad = () => {
 
     return (
         <FormGroup className={classes.container}>
-            <Typography variant="h4">Ingresar Incapacidad</Typography>
+            <Typography align="center" variant="h4">Ingresar Incapacidad</Typography>
             <FormControl>
-                <InputLabel htmlFor="numIncapacidad">Numero Incapacidad</InputLabel>
-                <Input type="text" name="numIncapacidad" value={numIncapacidad} onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 10 }} required />
+                <TextField  
+                    label="Ingrese Numero Incapacidad"
+                    variant="outlined"
+                    required
+                    type="text" name="numIncapacidad" value={numIncapacidad}
+                    onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 10 }}
+                />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="motivo">Motivo Incapacidad</InputLabel>
-                <Input type="text" name="motivo" value={motivo} onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 30 }} required />
+                <TextField
+                    label="Motivo de Incapacidad"
+                    variant="outlined"
+                    required
+                    type="text"
+                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
+                    inputProps={{ maxLength: 30 }}
+                />
             </FormControl>
             <FormControl>
                 <Autocomplete

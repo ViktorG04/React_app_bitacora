@@ -33,7 +33,7 @@ const useStyles = makeStyles({
 const Solicitudes = () => {
     const history = useHistory();
     const [solicitudes, setSolicitudes] = useState([]);
-    const [action, setAction] = useState(false);
+    //const [action, setAction] = useState(false);
     const classes = useStyles();
 
 
@@ -53,8 +53,8 @@ const Solicitudes = () => {
         <Table className={classes.table}>
             <TableHead>
                 <TableRow className={classes.thead}>
-                    <TableCell>Id Solicitud</TableCell>
-                    <TableCell>fecha de visita</TableCell>
+                    <TableCell>Solicitud</TableCell>
+                    <TableCell>Fecha de Visita</TableCell>
                     <TableCell>Estado</TableCell>
                     <TableCell>Acciones</TableCell>
                 </TableRow>
@@ -66,7 +66,7 @@ const Solicitudes = () => {
                         <TableCell>{sol.fechaVisita}</TableCell>
                         <TableCell>{sol.estado}</TableCell>
                         <TableCell>
-                            <Button color="primary" variant="contained" style={{marginRight:10}} component={Link} to={`/editarsolicitud/${sol.idSolicitud}`} disabled={action}>Editar</Button>
+                            <Button color="primary" variant="contained" style={{marginRight:10}} component={Link} to={`/editarsolicitud/${sol.idSolicitud}`} >Editar</Button>
                         </TableCell>
                     </TableRow>
                 ))}

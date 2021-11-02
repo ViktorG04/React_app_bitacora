@@ -14,8 +14,8 @@ function Copyright(props) {
   return (
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
-      <Link color="inherit" href="https://www.tecoloco.com.sv">
-        Tecoloco
+      <Link color="inherit" href="https://www.GatorWork.com.sv">
+        GatorWork S.A de C.V
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -83,10 +83,21 @@ const handleSubmit = (event) => {
     } else if(password.trim() === ""){
       alert("Ingrese su password");
     } else{
-      history.push("/solicitudes");
+     // history.push("/solicitudes");
       //Pasarlo al action
-      //onLogin(correo, password);
-      console.log(userRol);
+      onLogin(correo, password);
+      /*
+        1. mandar por post al back
+        2. valida si es corecto
+        (antes) configurar context, y provider
+        3. guardarlo en el context
+        4. guardarlo en el localStorage
+        5. usar hook useStorage para rehidratar el context, por si el usuario presiona f5
+        6. react rbac, o privateRoutes
+      */
+
+
+
 /*       if(userRol === 1){
         history.push("/adminhome");
       } else if (userRol === 2){

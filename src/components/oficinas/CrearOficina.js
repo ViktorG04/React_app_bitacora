@@ -1,6 +1,6 @@
-/* eslint-disable no-const-assign */
 import React, { useState } from 'react';
-import { FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography } from '@material-ui/core';
+import { FormGroup, FormControl, Button, makeStyles, Typography } from '@material-ui/core';
+import TextField from '@mui/material/TextField';
 import { useHistory } from "react-router-dom";
 import { addOficina } from '../../config/axios';
 import { Link } from 'react-router-dom';
@@ -53,14 +53,26 @@ const CrearOficina = () => {
 
     return (
         <FormGroup className={classes.container}>
-         <Typography variant="h4">Agregar oficina</Typography>
+         <Typography align="center" variant="h4">Agregar Oficina</Typography>
             <FormControl>
-                <InputLabel htmlFor="nombre">Nombre Oficina</InputLabel>
-                <Input type="text"  name="nombre"  onChange={(e) => onValueChange(e)} inputProps={{maxLength: 20}} required/>
+                <TextField
+                    label="Nombre Oficina"
+                    variant="outlined"
+                    required
+                    type="text" name="nombre" value={nombre}
+                    onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 20 }}
+                />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="capacidad">capacidad</InputLabel>
-                <Input type="number"  label="Number"  name="capacidad" defaultValue="5" onChange={(e) => onValueChange(e)} inputProps={{ min: 5, max: 25 }} required/>
+                <TextField
+                    label="Capacidad de Personas"
+                    variant="outlined"
+                    required
+                    type="number"
+                    defaultValue="5"
+                    name='capacidad' id="capacidad" value={capacidad}
+                    onChange={(e) => onValueChange(e)}  inputProps={{ min: 5, max: 25 }} 
+                />
             </FormControl>
             <FormControl>
                 <Button variant="contained" color="primary" onClick={() => addOfi()}>Agregar Oficina</Button> 

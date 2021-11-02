@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography } from '@material-ui/core';
-import Select from '@material-ui/core/Select/Select';
+import { FormGroup, FormControl, Button, makeStyles, Typography } from '@material-ui/core';
 import MenuItem from '@material-ui/core/MenuItem/MenuItem';
+import TextField from '@mui/material/TextField';
 import { useParams, useHistory } from "react-router-dom";
-import { buscarEmpresa, editEmpresa } from '../../config/axios';
+import { buscarEmpresa, editEmpresa, getTipos } from '../../config/axios';
 import { Link } from 'react-router-dom';
 
 const initialValue = {
@@ -29,6 +29,7 @@ const EditarEmpresa = () => {
     const { idEmpresa, nombre, idTipo, idEstado } = empresa;
     const { id } = useParams();
     const [action, setAction] = useState(false);
+    const [tipos, setTipos] = useState([]);
 
     const classes = useStyles();
 
@@ -38,7 +39,7 @@ const EditarEmpresa = () => {
         const response = await buscarEmpresa(id);
         setEmpresa(response.data);
 
-        if(response.data['idEmpresa'] === 1){
+        if (response.data['idEmpresa'] === 1) {
             setAction(true);
         }
     }
@@ -46,7 +47,7 @@ const EditarEmpresa = () => {
     const editEmpresaDetails = async () => {
         const result = await editEmpresa(empresa);
 
-       if (result.data['msg'] === 'fields affected') {
+        if (result.data['msg'] === 'fields affected') {
             alert('Datos Actualizados');
             history.push('../empresas');
         } else {
@@ -54,7 +55,20 @@ const EditarEmpresa = () => {
         }
     }
 
-    useEffect(() => { loadEmpresaDetails(); }, []);
+    useEffect(() => {
+        loadEmpresaDetails();
+
+        async function getAllTiposEmpresa() {
+            const response = await getTipos();
+            if (action === false) {
+                delete response.data[0];
+            }
+            setTipos(response.data);
+        };
+        getAllTiposEmpresa();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const onValueChange = (e) => {
         setEmpresa({ ...empresa, [e.target.name]: e.target.value })
@@ -62,30 +76,40 @@ const EditarEmpresa = () => {
 
     return (
         <FormGroup className={classes.container}>
-            <Typography variant="h4">Editar Datos Empresa</Typography>
+            <Typography align="center" variant="h4">Editar Datos Empresa</Typography>
             <FormControl>
-                <InputLabel htmlFor="my-input">Nombre</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name='nombre' value={nombre} id="my-input"  inputProps={{maxLength: 60}} required/>
+                <TextField
+                    label="Nombre Empresa"
+                    variant="outlined"
+                    required
+                    type="text" name="nombre" value={nombre}
+                    onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 60 }}
+                />
             </FormControl>
             <FormControl fullWidth>
-                <InputLabel htmlFor="my-input">Tipo Empresa</InputLabel>
-                <Select onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="my-input" required disabled={action}>
-                    <MenuItem value={1}>Interno</MenuItem>
-                    <MenuItem value={2}>Cliente</MenuItem>
-                    <MenuItem value={3}>Proveedor</MenuItem>
-                    <MenuItem value={4}>Particular</MenuItem>
-                </Select>
+                <TextField
+                    select
+                    label="Seleccione Tipo de Empresa"
+                    disabled={action}
+                    onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="idTipo" required>
+                    {tipos?.map(option => {
+                        return (<MenuItem value={option.idTipo}> {option.tipo} </MenuItem>);
+                    })}
+                </TextField>
             </FormControl>
             <FormControl fullWidth>
-                <InputLabel htmlFor="my-input">Estado Empresa</InputLabel>
-                <Select onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="my-input" required disabled={action}>
+                <TextField
+                    select
+                    label="Seleccione Estado"
+                    disabled={action}
+                    onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required>
                     <MenuItem value={1}>Activo</MenuItem>
                     <MenuItem value={2}>Inactivo</MenuItem>
-                </Select>
+                </TextField>
             </FormControl>
             <FormControl>
                 <Button variant="contained" color="primary" onClick={() => editEmpresaDetails()}>Guardar Cambios</Button>
-                <Button variant="contained" color="secondary" style={{marginTop:10}} component={Link} to={`../empresas`}>Cancelar</Button>
+                <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../empresas`}>Cancelar</Button>
             </FormControl>
         </FormGroup>
     );

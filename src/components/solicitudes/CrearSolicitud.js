@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Select, MenuItem, FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography, NativeSelect } from '@material-ui/core';
+import { MenuItem, FormGroup, FormControl, Button, makeStyles, Typography, NativeSelect } from '@material-ui/core';
 import { addSolicitud, getOficinas } from '../../config/axios';
 import { useHistory } from "react-router-dom";
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
@@ -33,7 +33,7 @@ const CrearSolicitud = () => {
     const [solicitud, setSolicitud] = useState(initialValue);
     const [areas, setAreas] = useState([]);
     const [fechaI, setValueFI] = useState(new Date());
-    const { idUsuario, motivo, idArea } = solicitud;
+    const { motivo, idArea } = solicitud;
     const classes = useStyles();
 
     const history = useHistory();
@@ -85,7 +85,7 @@ const CrearSolicitud = () => {
                 console.log(solicitud);
                 var result = await addSolicitud(solicitud);
                 console.log(result.data);
-                //  history.push('../solicitudes');
+                history.push('../solicitudes');
 
             } catch (error) {
                 var notificacion = error.request.response.split(":");
@@ -101,20 +101,30 @@ const CrearSolicitud = () => {
         <FormGroup className={classes.container}>
             <Typography variant="h4">Agregar solicitud</Typography>
             <FormControl>
-                <InputLabel htmlFor="my-input">Nombre Completo</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name="IdUsuario" value={idUsuario} id="idUsuario" />
+                <TextField
+                    label="Nombre Completo"
+                    variant="outlined"
+                    disabled
+                    defaultValue="Nombre de la persona logueada"
+                />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="my-input">Motivo</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo" inputProps={{ maxLength: 40 }} />
+                <TextField
+                    label="Motivo"
+                    variant="outlined"
+                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
+                    inputProps={{ maxLength: 40 }}
+                />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="my-input">Seleccione una Oficina</InputLabel>
-                <Select onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required>
+                <TextField
+                    select
+                    label="Seleccione una Oficina"
+                    onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required>
                     {areas?.map(option => {
                         return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
                     })}
-                </Select>
+                </TextField>
             </FormControl>
             <FormControl>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>

@@ -1,12 +1,16 @@
 import React, { useCallback } from 'react';
 import AuthContext from "./AuthContext";
-import axiosClient from '../../config/axios';
+import { getLogin } from '../../config/axios';
 
 export default function AuthProvider({ children }) {
 
     const handleLogin = useCallback(async (email, password) =>{
+        console.log(email);
+        let data = { email, password}
+        var result = await getLogin(data);
 
-        await axiosClient.post('/api/login',
+        console.log(result);
+       /* await getLogin('/api/login',
         {
             email, password
         }
@@ -26,7 +30,7 @@ export default function AuthProvider({ children }) {
         })
             .catch((error) => {
             console.log(error);
-        });
+        });*/
     }, []);
 
     

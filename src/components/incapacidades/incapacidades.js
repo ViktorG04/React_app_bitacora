@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles } from '@material-ui/core'
-import { getIncapacidades } from '../config/axios';
+import { getIncapacidades } from '../../config/axios';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles({
+    container: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        marginTop: '80px'
+    },
     table: {
-        width: '90%',
+        width: '100%',
         margin: '20px 0px'
     },
     thead: {
@@ -26,23 +33,26 @@ const useStyles = makeStyles({
 const Incapacidades = () => {
     const [incapacidades, setIncapacidades] = useState([]);
     const classes = useStyles();
+    const history = useHistory();
 
     useEffect(() => {
-       async function getAllIncapacidades(){
-        let response = await getIncapacidades();
-        let vacio = [];
-        if(response.data === ""){
-            setIncapacidades(vacio);
-        }else{
-            setIncapacidades(response.data);
-        }
-       
-       };
-       getAllIncapacidades();
+        async function getAllIncapacidades() {
+            let response = await getIncapacidades();
+            let vacio = [];
+            if (response.data === "") {
+                setIncapacidades(vacio);
+            } else {
+                setIncapacidades(response.data);
+            }
+
+        };
+        getAllIncapacidades();
     }, []);
-    
+
     return (
-       <Table className={classes.table}>
+        <div className={classes.container}>
+            <Button variant="outlined" onClick={() => history.push("/crearIncapacidad")}>Ingresar Incapacidad</Button>
+            <Table className={classes.table}>
                 <TableHead>
                     <TableRow className={classes.thead}>
                         <TableCell>Numero Incapacidad</TableCell>
@@ -66,7 +76,8 @@ const Incapacidades = () => {
                     ))}
                 </TableBody>
             </Table>
+        </div>
     );
-}   
- 
+}
+
 export default Incapacidades;

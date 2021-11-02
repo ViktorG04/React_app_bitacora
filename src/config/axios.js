@@ -2,8 +2,12 @@ import  axios from 'axios'
 
 const axiosClient =  process.env.REACT_APP_BACKEND_URL;
 
-//Solicitudes
+//login
+export const getLogin = async (user) =>{
+    return await axios.post(`${axiosClient}/api/login/`, user);
+}
 
+//Solicitudes
 export const getSolicitudes = async (id) => {
     id = id || '';
     return await axios.get(`${axiosClient}/api/solicitudes/empleado/1/${id}`);//listar solo las solicitudes del usuario logeado
@@ -100,6 +104,11 @@ export const updateEmpleado = async (empleado) => {
 
 export const addEmpleado = async (empleado) => {
     return await axios.post(`${axiosClient}/api/users/`, empleado);
+}
+
+//tipo empresa
+export const getTipos = async =>{
+    return axios.get(`${axiosClient}/api/tipo`);
 }
 
 

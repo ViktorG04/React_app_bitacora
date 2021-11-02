@@ -9,17 +9,18 @@ import EditarSolicitud from './components/solicitudes/EditarSolicitud';
 import VistaOficinas from './views/VistaOficinas';
 import EditarOficina from './components/oficinas/EditarOficina';
 import CrearOficina from './components/oficinas/CrearOficina';
-import Empresas from './views/empresas';
+import VistaEmpresas from './views/vistaEmpresas';
 import EditarEmpresa from './components/empresas/EditarEmpresa';
-import Personas from './views/personas';
+import VistaPersonas from './views/vistaPersonas';
 import EditarPersona from './components/personas/EditarPersona';
 import CrearUsuario from './components/personas/CrearUsuario';
-import Incapacidades from './views/incapacidades';
+import VistaIncapacidades from './views/vistaIncapacidades';
 import CrearIncapacidad from './components/incapacidades/CrearIncapacidad';
 import Visitas from './components/reportes/visitas';
 import VisitasOficina from './components/reportes/oficinas';
 import Nexos from './components/incapacidades/nexos';
 import CrearSolicitudExternos from './components/solicitudes/CrearSolicitudExternos';
+
 
 const useStyles = makeStyles({
   container: {
@@ -44,14 +45,14 @@ function App() {
                     <Route exact path="/editarOficina/:id" component={EditarOficina} />
                     <Route exact path="/crearOficina" component={CrearOficina} />
 
-                    <Route exact path="/empresas" component={Empresas}/>
+                    <Route exact path="/empresas" component={VistaEmpresas}/>
                     <Route exact path="/editarEmpresa/:id" component={EditarEmpresa} />
 
-                    <Route exact path="/personas" component={Personas}/>
+                    <Route exact path="/personas" component={VistaPersonas}/>
                     <Route exact path="/crearEmpleado" component={CrearUsuario}/>
                     <Route exact path="/editarPersona/:id" component={EditarPersona} />
 
-                    <Route exact path="/incapacidades" component={Incapacidades}/>
+                    <Route exact path="/incapacidades" component={VistaIncapacidades}/>
                     <Route exact path="/crearIncapacidad" component={CrearIncapacidad} />
                     <Route exact path="/nexosPorIncapacidad/:id" component={Nexos} />
 

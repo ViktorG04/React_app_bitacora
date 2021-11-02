@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Select, MenuItem, FormGroup, FormControl, InputLabel, Input, Button, makeStyles, Typography, NativeSelect } from '@material-ui/core';
-import { addSolicitud, getEmpresas, getOficinas, getPersonasExternos } from '../../config/axios';
+import { MenuItem, FormGroup, FormControl, Button, makeStyles, Typography } from '@material-ui/core';
+import { addSolicitud, getEmpresas, getOficinas, getPersonasExternos, getTipos } from '../../config/axios';
 import { useHistory } from "react-router-dom";
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -34,15 +34,15 @@ const CrearSolicitudExternos = () => {
     const [areas, setAreas] = useState([]);
     const [fechaI, setValueFI] = useState(new Date());
     const [empresas, setEmpresas] = useState([]);
+    const [tipos, setTipos] = useState([]);
     const [personas, setPersonas] = useState([]);
-    // const [empresa, setValue] = useState(empresas[1]);
     const [valueEmpresa, setValue] = React.useState(null);
     const [valuePersona, setValuePersona] = React.useState(null);
 
     //determina si un campo es editable o no
     const [action, setAction] = useState(true);
 
-    const { idUsuario, motivo, idArea, idTipo } = solicitud;
+    const { motivo, idArea, idTipo } = solicitud;
     const classes = useStyles();
 
     const history = useHistory();
@@ -75,10 +75,13 @@ const CrearSolicitudExternos = () => {
         };
         getAllEmpresas();
 
-        //obtener todas las personas de la empresa seleccionada
-        /*  async function getAllPersonas(){
-             
-          } */
+        async function getAllTiposEmpresa() {
+            const response = await getTipos();
+
+            delete response.data[0];
+            setTipos(response.data);
+        };
+        getAllTiposEmpresa();
 
 
 
@@ -86,19 +89,19 @@ const CrearSolicitudExternos = () => {
 
     const onValueChange = (e) => {
         setSolicitud({ ...solicitud, [e.target.name]: e.target.value })
-    }
+    };
 
+    //obtener todas las personas de la empresa seleccionada
     const getAllPersonas = async (dataEmpresa) => {
         let vacio = [];
         if (dataEmpresa !== null) {
             let id = dataEmpresa.idEmpresa;
             const response = await getPersonasExternos(id);
             setPersonas(response.data);
-        }else{
+        } else {
             setPersonas(vacio);
         }
-
-    }
+    };
 
 
     const addSol = async () => {
@@ -147,22 +150,48 @@ const CrearSolicitudExternos = () => {
 
     return (
         <FormGroup className={classes.container}>
-            <Typography variant="h4">Agregar solicitud</Typography>
+            <Typography align="center" variant="h4">Agregar solicitud</Typography>
             <FormControl>
-                <InputLabel htmlFor="my-input">Nombre Completo</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name="IdUsuario" value={idUsuario} id="idUsuario" />
+                <TextField
+                    label="Nombre Completo"
+                    variant="outlined"
+                    defaultValue="Nombre de la persona logueada"
+                    InputProps={{
+                        readOnly: true,
+                    }}
+                />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="my-input">Motivo</InputLabel>
-                <Input onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo" inputProps={{ maxLength: 40 }} />
+                <TextField
+                    label="Motivo"
+                    variant="outlined"
+                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
+                    inputProps={{ maxLength: 40 }}
+                />
             </FormControl>
             <FormControl>
-                <InputLabel htmlFor="my-input">Seleccione una Oficina</InputLabel>
-                <Select onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required>
+                <TextField
+                    select
+                    label="Seleccione una Oficina"
+                    onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required>
                     {areas?.map(option => {
                         return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
                     })}
-                </Select>
+                </TextField>
+            </FormControl>
+            <FormControl>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                        value={fechaI}
+                        label="Fecha y Hora Ingreso"
+                        autoFocus
+                        minDate={new Date()}
+                        onChange={(newValue) => {
+                            setValueFI(newValue);
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
             </FormControl>
             <FormControl>
                 <Autocomplete
@@ -226,37 +255,26 @@ const CrearSolicitudExternos = () => {
                 />
             </FormControl>
             <FormControl fullWidth>
-                <InputLabel htmlFor="my-input">Seleccione el tipo de empresa</InputLabel>
-                <Select onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="idTipo" required disabled={action}>
-                    <MenuItem value={2}>Cliente</MenuItem>
-                    <MenuItem value={3}>Proveedor</MenuItem>
-                    <MenuItem value={4}>Particular</MenuItem>
-                </Select>
+                <TextField
+                    select
+                    label="Seleccione Tipo de Empresa"
+                    disabled={action}
+                    onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="idTipo" required>
+                    {tipos?.map(option => {
+                        return (<MenuItem value={option.idTipo}> {option.tipo} </MenuItem>);
+                    })}
+                </TextField>
             </FormControl>
             <FormControl>
                 <Autocomplete
                     disablePortal
                     options={personas}
-                    getOptionLabel={(option) => option.nombreCompleto+" DUI: "+option.docIdentidad}
+                    getOptionLabel={(option) => option.nombreCompleto + " DUI: " + option.docIdentidad}
                     onChange={(newValue) => {
                         setValuePersona(newValue);
                     }}
                     renderInput={(params) => <TextField {...params} label="Seleccione un Empleado" />}
                 />
-            </FormControl>
-            <FormControl>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DateTimePicker
-                        value={fechaI}
-                        label="Fecha y Hora Ingreso"
-                        autoFocus
-                        minDate={new Date()}
-                        onChange={(newValue) => {
-                            setValueFI(newValue);
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </LocalizationProvider>
             </FormControl>
             <FormControl>
                 <Button variant="contained" color="primary" onClick={() => addSol()}>Ingresar solicitud</Button>

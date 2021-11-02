@@ -40,6 +40,7 @@ const Nexos = () => {
             }
         };
         getAllVisitas();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
