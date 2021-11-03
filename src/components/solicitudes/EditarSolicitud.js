@@ -12,9 +12,12 @@ import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 
 const initialValue = {
+    empresa: '',
+    estado: '',
     nombreCompleto: '',
     fechaVisita: '',
     motivo: '',
+    idSolicitud: '',
     idArea: '',
     idEstado: ''
 }
@@ -45,10 +48,16 @@ const EditarSolicitud = () => {
 
     const history = useHistory();
 
+    const onValueChange = (e) => {
+        //console.log(e.target.value);
+        setSolicitud({ ...solicitud, [e.target.name]: e.target.value })
+    }
+
     useEffect(() => {
         async function loadSolicitudDetails() {
             const response = await buscarSolicitudes(id);
             setSolicitud(response.data);
+            console.log(response.data);
             setValueFI(response.data['fechaVisita'])
         };
         loadSolicitudDetails();
@@ -73,18 +82,59 @@ const EditarSolicitud = () => {
         };
         getAllEstados();
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const onValueChange = (e) => {
-        //console.log(e.target.value);
-        setSolicitud({ ...solicitud, [e.target.name]: e.target.value })
-    }
 
     const editSolicitudDetails = async () => {
-        console.log(solicitud)
+
+        var result = await validarHorayFecha(fechaI, solicitud['fechaVisita']);
+        delete solicitud['nombreCompleto'];
+        delete solicitud['empresa'];
+        delete solicitud['estado'];
+        delete solicitud['personas'];
+
+        if (motivo.trim() === "") {
+            toast.error("Campo Requerido! Ingrese un motivo")
+        } else if (idArea === "") {
+            toast.error("Campo Requerido! Seleccione una Oficina")
+
+        } else if (result !== "iguales") {
+            solicitud['fechaVisita'] = result;
+        } else {
+            try {
+
+                console.log(solicitud);
+            } catch (error) {
+                var notificacion = error.request.response.split(":");
+                notificacion = notificacion[1].split("}");
+                toast.error(notificacion[0]);
+            }
+
+        }
         //  const response = await editSolicitud(solicitud);
         //history.push('/all');
-    }
+    };
+
+
+    async function validarHorayFecha(cambio, actual) {
+        var time, fechaIngreso, returnFecha;
+
+        if (cambio !== actual) {
+            time = cambio.getHours() + ':' + cambio.getMinutes() + ':00';
+            if (time >= '17:00:00' && time <= '7:59:00') {
+                toast.error("La hora de ingreso solo es valida entre las 08:00 AM y las 05:00 PM");
+            } else {
+                fechaIngreso = fechaI.toISOString().substr(0, 10);
+                returnFecha = fechaIngreso.split("-").reverse().join("-") + ' ' + time;
+            }
+        } else {
+            returnFecha = "iguales";
+        }
+        return returnFecha;
+    };
+
+
 
     return (
         <FormGroup className={classes.container}>
@@ -103,6 +153,7 @@ const EditarSolicitud = () => {
                     <DateTimePicker
                         value={fechaI}
                         label="Fecha y Hora Visita"
+                        minDateTime={new Date()}
                         autoFocus
                         onChange={(newValue) => {
                             setValueFI(newValue);
@@ -122,7 +173,7 @@ const EditarSolicitud = () => {
             <FormControl>
                 <TextField
                     select
-                    label="Seleccione una Oficina"
+                    label="Oficinas"
                     onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required>
                     {areas?.map(option => {
                         return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);

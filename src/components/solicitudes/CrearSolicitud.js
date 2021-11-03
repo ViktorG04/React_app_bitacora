@@ -68,11 +68,11 @@ const CrearSolicitud = () => {
 
         solicitud.idUsuario = userStore.idUsuario;
         var time = fechaI.getHours() + ':' + fechaI.getMinutes() + ':00';
-        var fechaIngreso = fechaI.toISOString().substr(0, 10);
-        solicitud.fechayHoraVisita = fechaIngreso.split("-").reverse().join("-") + ' ' + time;
-        console.log(solicitud);
+
         if (fechaI === Date()) {
             toast.error("Campo Requerido! Ingrese una fecha valida");
+        } else if (time < "08:00:00" || time > "17:00:00") {
+            toast.error("La hora de ingreso solo es valida entre las 08:00 AM y las 05:PM")
         } else if (motivo.trim() === "") {
             toast.error("Campo Requerido! Ingrese un motivo")
         } else if (idArea === "") {
@@ -80,16 +80,18 @@ const CrearSolicitud = () => {
         } else if (solicitud['sintomas'] !== 'No') {
             toast.error("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO 'SI TENER SINTOMAS QUE SE ASEMEJEN" +
                 "A COVID-19', FAVOR PONERSE EN CONTACTO CON RECURSOS HUMANOS");
-        }else if (solicitud['diagnosticado'] !== 'No') {
+        } else if (solicitud['diagnosticado'] !== 'No') {
             toast.error("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO 'SI HABER SIDO DIGNOSTICADO POR" +
                 " COVID-19', FAVOR PONERSE EN CONTACTO CON RECURSOS HUMANOS");
-        }else if (solicitud['covidFamiliar'] === 'Si' & solicitud['viajo'] === 'Si') {
+        } else if (solicitud['covidFamiliar'] === 'Si' & solicitud['viajo'] === 'Si') {
             // history.push(`/editarPersona/${id}`);
             toast.error("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO TENER UN FAMILIAR O HABER SALIDO DEL PAIS LOS ULTIMOS 15 DIAS" +
                 " FAVOR DE PONERSE EN CONTACTO CON RECURSOS HUMANOS")
         } else {
+            var fechaIngreso = fechaI.toISOString().substr(0, 10);
+            solicitud.fechayHoraVisita = fechaIngreso.split("-").reverse().join("-") + ' ' + time;
             try {
-               var result = await addSolicitud(solicitud);
+                var result = await addSolicitud(solicitud);
                 console.log(result.data);
                 history.push('../solicitudes');
 
@@ -112,7 +114,7 @@ const CrearSolicitud = () => {
                     label="Nombre Completo"
                     variant="outlined"
                     defaultValue={userStore.nombreCompleto}
-                    InputProps={{ readOnly: true}}
+                    InputProps={{ readOnly: true }}
                 />
             </FormControl>
             <FormControl>
@@ -139,7 +141,7 @@ const CrearSolicitud = () => {
                         value={fechaI}
                         label="Fecha y Hora Ingreso"
                         autoFocus
-                        minDate={new Date()}
+                        minDateTime={new Date()}
                         onChange={(newValue) => {
                             setValueFI(newValue);
                         }}

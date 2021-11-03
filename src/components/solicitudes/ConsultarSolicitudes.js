@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles } from '@material-ui/core'
 import { getSolicitudes } from '../../config/axios';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import UserLoginContext from '../../context/login/UserLoginContext';
 import decrypt from '../../utils/decrypt';
@@ -37,49 +36,49 @@ const Solicitudes = () => {
     const [solicitudes, setSolicitudes] = useState([]);
     const [action, setAction] = useState(true);
     const classes = useStyles();
-    
+
 
     const userStateEncrypt = useContext(UserLoginContext);
     const userStore = JSON.parse(decrypt(userStateEncrypt.userLogin));
 
-    
+
 
     useEffect(() => {
-       async function getAllSolicitudes(){
-        let response = await getSolicitudes(userStore.idUsuario);
-        setSolicitudes(response.data);
+        async function getAllSolicitudes() {
+            let response = await getSolicitudes(userStore.idUsuario);
+            setSolicitudes(response.data);
 
-       };
-       getAllSolicitudes();
+        };
+        getAllSolicitudes();
 
-        if(userStore.idRol !== 3){
+        if (userStore.idRol !== 3) {
             setAction(false);
         }
 
-    }, []);
+    }, [userStore.idRol, userStore.idUsuario]);
 
-    const redireccionar = async ()=>{
+    const redireccionar = async () => {
 
-        if(userStore.idRol === 1){
+
+        if (userStore.idRol === 1) {
             history.push("/crearsolicitudexternos")
         }
-        else{
+        else {
             history.push("/crearsolicitud")
         }
     }
 
-    const verDetalle = async (idSolicitud)=>{
-
-        if(userStore.idRol !==2){
+    const verDetalle = async (idSolicitud) => {
+        if (userStore.idRol !== 2) {
             history.push(`/verSolicitud/${idSolicitud}`)
-        }else{
+        } else {
             history.push(`/editarsolicitud/${idSolicitud}`)
         }
     }
 
     return (
         <div className={classes.container}>
-            <Button variant="outlined" onClick={() => redireccionar()}  disabled={action}>Crear solicitud</Button>
+            <Button variant="outlined" onClick={() => redireccionar()} disabled={action}>Crear solicitud</Button>
             <Table className={classes.table}>
                 <TableHead>
                     <TableRow className={classes.thead}>
@@ -96,7 +95,7 @@ const Solicitudes = () => {
                             <TableCell>{sol.fechaVisita}</TableCell>
                             <TableCell>{sol.estado}</TableCell>
                             <TableCell>
-                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} onClick={() => verDetalle(sol.idSolicitud)}>Ver</Button>
+                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} onClick={() => verDetalle(sol.idSolicitud)}>Ver</Button>
                             </TableCell>
                         </TableRow>
                     ))}

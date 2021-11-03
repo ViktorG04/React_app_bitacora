@@ -61,9 +61,7 @@ const EditarEmpresa = () => {
 
         async function getAllTiposEmpresa() {
             const response = await getTipos();
-            if (action === false) {
-                delete response.data[0];
-            }
+            
             setTipos(response.data);
         };
         getAllTiposEmpresa();
@@ -88,18 +86,17 @@ const EditarEmpresa = () => {
                     onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 60 }}
                 />
             </FormControl>
-            <FormControl fullWidth>
+            <FormControl>
                 <TextField
                     select
-                    label="Seleccione Tipo de Empresa"
-                    disabled={action}
+                    label="Tipo de Empresa"
                     onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="idTipo" required>
                     {tipos?.map(option => {
                         return (<MenuItem value={option.idTipo}> {option.tipo} </MenuItem>);
                     })}
                 </TextField>
             </FormControl>
-            <FormControl fullWidth>
+            <FormControl>
                 <TextField
                     select
                     label="Seleccione Estado"
