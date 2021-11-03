@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { MenuItem, FormGroup, FormControl, Button, makeStyles, Typography } from '@material-ui/core';
 import { addSolicitud, getEmpresas, getOficinas, getPersonasExternos, getTipos } from '../../config/axios';
 import { useHistory } from "react-router-dom";
@@ -8,9 +8,12 @@ import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
+import UserLoginContext from '../../context/login/UserLoginContext';
+import decrypt from '../../utils/decrypt';
 
 const initialValue = {
-    idUsuario: '1',
+    idUsuario: '',
     fechayHoraVisita: '',
     motivo: '',
     idArea: '',
@@ -46,6 +49,9 @@ const CrearSolicitudExternos = () => {
     const classes = useStyles();
 
     const history = useHistory();
+
+    const userStateEncrypt = useContext(UserLoginContext);
+    const userStore = JSON.parse(decrypt(userStateEncrypt.userLogin));
 
     const filter = createFilterOptions();
 
@@ -106,6 +112,7 @@ const CrearSolicitudExternos = () => {
 
     const addSol = async () => {
 
+        solicitud.idUsuario = userStore.idUsuario;
 
         if (idTipo === "") {
             solicitud.idTipo = valueEmpresa.idTipo;
@@ -124,13 +131,13 @@ const CrearSolicitudExternos = () => {
            solicitud.fechayHoraVisita = fechaIngreso.split("-").reverse().join("-") + ' ' + time;
    
            if (fechaI === Date()) {
-               alert("Campo Requerido! Ingrese una fecha valida");
+               toast.error("Campo Requerido! Ingrese una fecha valida");
            } else if (motivo.trim() === "") {
-               alert("Campo Requerido! Ingrese un motivo")
+               toast.error("Campo Requerido! Ingrese un motivo")
            } else if (idArea === "") {
-               alert("Campo Requerido! Seleccione una Oficina")
+               toast.error("Campo Requerido! Seleccione una Oficina")
            } else if(valueEmpresa === null){
-            alert("Campo requerido! Seleccione o escriba el nombre de la entidad")
+            toast.error("Campo requerido! Seleccione o escriba el nombre de la entidad")
             }else {
                try {
                    console.log(solicitud);
@@ -141,7 +148,7 @@ const CrearSolicitudExternos = () => {
                } catch (error) {
                    var notificacion = error.request.response.split(":");
                    notificacion = notificacion[1].split("}");
-                   alert(notificacion[0]);
+                   toast.error(notificacion[0]);
                }
    
            }*/
@@ -150,12 +157,13 @@ const CrearSolicitudExternos = () => {
 
     return (
         <FormGroup className={classes.container}>
+            <div><Toaster /></div>
             <Typography align="center" variant="h4">Agregar solicitud</Typography>
             <FormControl>
                 <TextField
                     label="Nombre Completo"
                     variant="outlined"
-                    defaultValue="Nombre de la persona logueada"
+                    defaultValue={userStore.nombreCompleto}
                     InputProps={{
                         readOnly: true,
                     }}

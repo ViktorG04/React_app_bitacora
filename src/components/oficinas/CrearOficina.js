@@ -4,6 +4,7 @@ import TextField from '@mui/material/TextField';
 import { useHistory } from "react-router-dom";
 import { addOficina } from '../../config/axios';
 import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 const initialValue = {
     nombre: '',
@@ -35,25 +36,26 @@ const CrearOficina = () => {
 
     const addOfi = async () => {
         if (nombre.trim() === "") {
-            alert("Campo Requerido! Nombre de la oficina");
+            toast.error("Campo Requerido! Nombre de la oficina");
         } else if (capacidad.trim() === "") {
-            alert("Campo requerido! Capacidad")
+            toast.error("Campo requerido! Capacidad")
         } else {
             oficina.estado = '1';
-           const result = await addOficina(oficina);
+            const result = await addOficina(oficina);
 
             if (result.data['result'] === 'fields affected') {
-                alert('Oficina Creada');
+                toast.error('Oficina Creada');
                 history.push('./oficinas');
-            }else{
-                alert('Error al Crear Oficina');
+            } else {
+                toast.error('Error al Crear Oficina');
             }
         }
     };
 
     return (
         <FormGroup className={classes.container}>
-         <Typography align="center" variant="h4">Agregar Oficina</Typography>
+            <div><Toaster /></div>
+            <Typography align="center" variant="h4">Agregar Oficina</Typography>
             <FormControl>
                 <TextField
                     label="Nombre Oficina"
@@ -71,12 +73,12 @@ const CrearOficina = () => {
                     type="number"
                     defaultValue="5"
                     name='capacidad' id="capacidad" value={capacidad}
-                    onChange={(e) => onValueChange(e)}  inputProps={{ min: 5, max: 25 }} 
+                    onChange={(e) => onValueChange(e)} inputProps={{ min: 5, max: 25 }}
                 />
             </FormControl>
             <FormControl>
-                <Button variant="contained" color="primary" onClick={() => addOfi()}>Agregar Oficina</Button> 
-                <Button variant="contained" color="secondary" style={{marginTop:10}} component={Link} to={`./oficinas`}>Cancelar</Button>
+                <Button variant="contained" color="primary" onClick={() => addOfi()}>Agregar Oficina</Button>
+                <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`./oficinas`}>Cancelar</Button>
             </FormControl>
         </FormGroup>
     );

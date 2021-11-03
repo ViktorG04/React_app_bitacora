@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import { useParams, useHistory } from "react-router-dom";
 import { buscarOficina, editOficina } from '../../config/axios';
 import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 const initialValue = {
     idArea: '',
@@ -41,10 +42,10 @@ const EditarOficina = () => {
     const editOficinaDetails = async () => {
         const result = await editOficina(oficina);
         if (result.data['result'] === 'fields affected') {
-            alert('Oficina Actualizada');
+            toast.error('Oficina Actualizada');
             history.push('../oficinas');
         } else {
-            alert('Error al Actualizar Oficina');
+            toast.error('Error al Actualizar Oficina');
         } 
     }
 
@@ -57,6 +58,7 @@ const EditarOficina = () => {
 
     return (
         <FormGroup className={classes.container}>
+            <div><Toaster /></div>
             <Typography align="center" variant="h4">Editar Oficina</Typography>
             <FormControl>
                 <TextField

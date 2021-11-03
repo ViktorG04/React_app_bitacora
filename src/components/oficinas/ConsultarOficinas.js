@@ -10,7 +10,7 @@ const useStyles = makeStyles({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        marginTop: '60px'
+        marginTop: '80px'
     },
     table: {
         width: '100%',

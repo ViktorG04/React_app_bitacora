@@ -5,6 +5,7 @@ import MenuItem from '@material-ui/core/MenuItem/MenuItem';
 import { useHistory } from "react-router-dom";
 import { addEmpleado, getRoles } from '../../config/axios';
 import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 const initialValue = {
     nombre: '',
@@ -49,31 +50,32 @@ const EditarPersona = () => {
 
     const createNewEmpleado = async () => {
         if (nombre.trim() === "") {
-            alert("Campo Requerido! Nombres");
+            toast.error("Campo Requerido! Nombres");
         } else if (dui.trim() === "") {
-            alert("Campo requerido! Documento Identidad")
+            toast.error("Campo requerido! Documento Identidad")
         } else if (correo.trim() === "") {
-            alert("Campo requerido! Correo empleado")
+            toast.error("Campo requerido! Correo empleado")
         } else if (correo.trim() === "") {
-            alert("Campo requerido! Correo empleado")
+            toast.error("Campo requerido! Correo empleado")
         }
         else {
             try {
                 const result = await addEmpleado(empleado);
                 if (result['data'] === 'fields affected') {
-                    alert('Empleado Registrado, su usuario y password han sido enviados al correo electronico registrado');
+                    toast.error('Empleado Registrado, su usuario y password han sido enviados al correo electronico registrado');
                     history.push('./personas');
                 }
             } catch (error) {
                 var notificacion = error.request.response.split(":");
                 notificacion = notificacion[1].split("}");
-                alert(notificacion[0]);
+                toast.error(notificacion[0]);
             }
         }
     };
 
     return (
         <FormGroup className={classes.container}>
+            <div><Toaster /></div>
             <Typography align="center" variant="h4">Ingresar Datos Empleado</Typography>
             <FormControl>
                 <TextField

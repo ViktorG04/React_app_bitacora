@@ -6,9 +6,10 @@ import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { Link } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
+import toast, { Toaster } from 'react-hot-toast';
 
 const useStyles = makeStyles({
-    container:{
+    container: {
         display: 'flex',
         flexDirection: 'column',
         marginTop: '80px'
@@ -60,60 +61,61 @@ const Personas = () => {
     }, []);
 
 
-    const handleChange = async(event) => {
-        console.log(event.target.name+"  "+event.target.checked);
+    const handleChange = async (event) => {
+        console.log(event.target.name + "  " + event.target.checked);
 
-       var idEstado = '';
-       if(event.target.checked === true){
-            idEstado= 1;
-       }else{
-           idEstado = 2;
-       }
-        let estado ={
+        var idEstado = '';
+        if (event.target.checked === true) {
+            idEstado = 1;
+        } else {
+            idEstado = 2;
+        }
+        let estado = {
             id: event.target.name,
             estado: idEstado
         };
-       try {
+        try {
             await updateEstadoPersona(estado);
-            alert('Estado Actualizado');
+            toast.error('Estado Actualizado');
             window.location.reload(false);
-  
+
         } catch (error) {
             var notificacion = error.request.response.split(":");
             notificacion = notificacion[1].split("}");
-            alert(notificacion[0]);
-        } 
-      };
+            toast.error(notificacion[0]);
+        }
+    };
 
     return (
         <div className={classes.container}>
-        <Button variant="outlined" onClick={() => history.push("/crearEmpleado") }>Crear Empleado</Button>
-        <Table className={classes.table}>
-            <TableHead>
-                <TableRow className={classes.thead}>
-                    <TableCell>Nombre y Apellido</TableCell>
-                    <TableCell>Documento Identidad</TableCell>
-                    <TableCell>Empresa</TableCell>
-                    <TableCell>Actualizar Datos</TableCell>
-                    <TableCell>Estado</TableCell>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {personas.map((per) => (
-                    <TableRow className={classes.row}>
-                        <TableCell>{per.nombreCompleto}</TableCell>
-                        <TableCell>{per.docIdentidad}</TableCell>
-                        <TableCell>{per.empresa}</TableCell>
-                        <TableCell>
-                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/editarPersona/${per.idPersona}`} disabled={!per.action}>Editar</Button>
-                        </TableCell>
-                        <TableCell>
-                        <FormControlLabel control={<Switch checked={per.action} onChange={handleChange} name={per.idPersona}/>} label={per.estado} />
-                        </TableCell>
+            <div><Toaster /></div>
+            <Button variant="outlined" onClick={() => history.push("/crearEmpleado")}>Crear Empleado</Button>
+            <Table className={classes.table}>
+                <TableHead>
+                    <TableRow className={classes.thead}>
+                        <TableCell>Nombre y Apellido</TableCell>
+                        <TableCell>Documento Identidad</TableCell>
+                        <TableCell>Empresa</TableCell>
+                        <TableCell>Actualizar Datos</TableCell>
+                        <TableCell>Estado</TableCell>
                     </TableRow>
-                ))}
-            </TableBody>
-        </Table>
+                </TableHead>
+                <TableBody>
+                    {personas.map((per) => (
+                        <TableRow className={classes.row}>
+                            <TableCell>{per.nombreCompleto}</TableCell>
+                            <TableCell>{per.docIdentidad}</TableCell>
+                            <TableCell>{per.empresa}</TableCell>
+                            <TableCell>
+                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/editarPersona/${per.idPersona}`} disabled={!per.action}>Editar</Button>
+                            </TableCell>
+                            <TableCell>
+                                <FormControlLabel control={<Switch checked={per.action} onChange={handleChange} name={per.idPersona} />} label={per.estado} />
+                            </TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
         </div>
     );
 }

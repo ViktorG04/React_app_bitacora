@@ -5,6 +5,7 @@ import TextField from '@mui/material/TextField';
 import { useParams, useHistory } from "react-router-dom";
 import { buscarEmpresa, editEmpresa, getTipos } from '../../config/axios';
 import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 const initialValue = {
     idEmpresa: '',
@@ -48,10 +49,10 @@ const EditarEmpresa = () => {
         const result = await editEmpresa(empresa);
 
         if (result.data['msg'] === 'fields affected') {
-            alert('Datos Actualizados');
+            toast.success('Datos Actualizados');
             history.push('../empresas');
         } else {
-            alert('Error al Actualizar Datos');
+           toast.error('Error al Actualizar Datos');
         }
     }
 
@@ -67,7 +68,7 @@ const EditarEmpresa = () => {
         };
         getAllTiposEmpresa();
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const onValueChange = (e) => {
@@ -76,6 +77,7 @@ const EditarEmpresa = () => {
 
     return (
         <FormGroup className={classes.container}>
+            <div><Toaster /></div>
             <Typography align="center" variant="h4">Editar Datos Empresa</Typography>
             <FormControl>
                 <TextField

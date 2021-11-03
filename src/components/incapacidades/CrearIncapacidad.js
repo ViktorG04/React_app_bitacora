@@ -9,6 +9,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
+import toast, { Toaster } from 'react-hot-toast';
 
 const initialValue = {
     numIncapacidad: '',
@@ -69,29 +70,31 @@ const CrearIncapacidad = () => {
         incapacidad.fechaFin = fechaFin.split("-").reverse().join("-");
        
        if (numIncapacidad.trim() === "") {
-               alert("Campo Requerido! Numero Incapacidad");
+               toast.error("Campo Requerido! Numero Incapacidad");
            } else if (empleado === null) {
-               alert("Campo requerido! Empleado")
+               toast.error("Campo requerido! Empleado")
            } else if (fechaInicio === fechaFin){
-            alert("Campo requerido! Fecha Fin es igual a la fecha Inicio")
+            toast.error("Campo requerido! Fecha Fin es igual a la fecha Inicio")
            } else if (motivo.trim() === "") {
-               alert("Campo requerido! motivo de incapacidad")
+            toast.error("Campo requerido! motivo de incapacidad")
            } else {
             incapacidad.idEmpleado = empleado.idEmpleado;
                try {
                 const result = await addIncapacidad(incapacidad);
-                alert(result.data);
+                toast.success(result.data);
                 history.push('../incapacidades');
                } catch (error) {
                 var notificacion = error.request.response.split(":");
                 notificacion = notificacion[1].split("}");
-                alert(notificacion[0]);
+                toast.error(notificacion[0]);
                }
            }  
     };
 
     return (
+        
         <FormGroup className={classes.container}>
+            <div><Toaster/></div>
             <Typography align="center" variant="h4">Ingresar Incapacidad</Typography>
             <FormControl>
                 <TextField  

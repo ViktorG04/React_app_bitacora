@@ -1,7 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
-import AuthProvider from './context/login/AuthProvider';
 import Login from './views/Login'
 import vistaSolicitudes from './views/vistaSolicitudes';
 import CrearSolicitud from './components/solicitudes/CrearSolicitud';
@@ -20,6 +19,10 @@ import Visitas from './components/reportes/visitas';
 import VisitasOficina from './components/reportes/oficinas';
 import Nexos from './components/incapacidades/nexos';
 import CrearSolicitudExternos from './components/solicitudes/CrearSolicitudExternos';
+import UserLoginContext from './context/login/UserLoginContext';
+import { useLocalStorage } from './hooks/useLocalStorage';
+import VistaPerfil from './views/VistaPerfil';
+import DetalleSolicitud from './components/solicitudes/DetalleSolicitudes';
 
 
 const useStyles = makeStyles({
@@ -30,16 +33,22 @@ const useStyles = makeStyles({
 
 function App() {
   const classes = useStyles();
+  const [userLogin, setUserLogin] = useLocalStorage('userLogIn', '');
+
   return (
     <div className={classes.container}>
-      <AuthProvider>
+          <UserLoginContext.Provider value={{ userLogin, setUserLogin }}>
             <Router>
                 <Switch>
                     <Route exact path="/" component={Login} />
+
+                    <Route exact path="/perfil" component={VistaPerfil}/>
+
                     <Route exact path="/solicitudes" component={vistaSolicitudes} />
                     <Route exact path="/crearsolicitud" component={CrearSolicitud} />
                     <Route exact path="/crearsolicitudexternos" component={CrearSolicitudExternos} />
                     <Route exact path="/editarsolicitud/:id" component={EditarSolicitud} />
+                    <Route exact path="/verSolicitud/:id" component={DetalleSolicitud} />
                     
                     <Route exact path="/oficinas" component={VistaOficinas} />
                     <Route exact path="/editarOficina/:id" component={EditarOficina} />
@@ -60,7 +69,7 @@ function App() {
                     <Route exact path="/reportes/oficinas" component={VisitasOficina}/>
                 </Switch>
             </Router>
-        </AuthProvider>
+          </UserLoginContext.Provider>
     </div>
   );
 }

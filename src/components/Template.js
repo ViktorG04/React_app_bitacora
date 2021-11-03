@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { useState, useContext } from 'react';
 import PropTypes from 'prop-types';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -6,50 +6,70 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
 import Drawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { useHistory } from "react-router-dom";
-import { Home } from '@mui/icons-material';
+import { Link} from "react-router-dom";
+import GroupOutlinedIcon from '@mui/icons-material/GroupOutlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import UserLoginContext from '../context/login/UserLoginContext';
+import HomeWorkOutlinedIcon from '@mui/icons-material/HomeWorkOutlined';
+import LocationCityOutlinedIcon from '@mui/icons-material/LocationCityOutlined';
+import HealthAndSafetyOutlinedIcon from '@mui/icons-material/HealthAndSafetyOutlined';
+import DocumentScannerOutlinedIcon from '@mui/icons-material/DocumentScannerOutlined';
+import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+import decrypt from '../utils/decrypt';
+import './template.css';
+
 
 const drawerWidth = 240;
 
 function Container(props) {
   const { window } = props;
-  const [mobileOpen, setMobileOpen] = React.useState(false);
-  const history = useHistory();
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const userStateEncrypt = useContext(UserLoginContext);
+  const userState = JSON.parse(decrypt(userStateEncrypt.userLogin));
 
   const itemsList = [
     {
+      text: "Cambiar Contraseña",
+      icon: <PersonOutlineOutlinedIcon/>,
+      path: "/perfil"
+    },
+    {
       text: "Solicitudes",
-      icon: <InboxIcon />,
-      onClick: () => history.push("/solicitudes")
+      icon: <DocumentScannerOutlinedIcon/>,
+      path: "/solicitudes"
     },
     {
       text: "Oficinas",
-      icon: < Home/>,
-      onClick: () => history.push("/oficinas")
+      icon: <HomeWorkOutlinedIcon/>,
+      path: "/oficinas"
     },
     {
       text: "Empresas",
-      icon: <MailIcon />,
-      onClick: () => history.push("/empresas")
+      icon: <LocationCityOutlinedIcon />,
+      path: "/empresas"
     },
     {
       text: "Personas",
-      icon: <MailIcon />,
-      onClick: () => history.push("/personas")
+      icon: <GroupOutlinedIcon/>,
+      path: "/personas"
     },
     {
       text: "Incapacidades",
-      icon: <MailIcon />,
-      onClick: () => history.push("/incapacidades")
+      icon: <HealthAndSafetyOutlinedIcon/>,
+      path: "/incapacidades"
+    },
+    {
+      text: "Reportes",
+      icon: <AssessmentOutlinedIcon/>,
+      path: "/Reportes"
     }
   ];
 
@@ -63,13 +83,15 @@ function Container(props) {
       <Divider />
       <List>
         {itemsList.map((item, index) => {
-            const { text, icon, onClick } = item;
-            return (
-              <ListItem button key={text} onClick={onClick}>
+          const { text, icon, path } = item;
+          return (
+            <Link to={path}>
+              <ListItem button key={text}>
                 {icon && <ListItemIcon>{icon}</ListItemIcon>}
                 <ListItemText primary={text} />
               </ListItem>
-            );
+            </Link>
+          );
         })}
       </List>
       <Divider />
@@ -101,7 +123,7 @@ function Container(props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Bienvenido Christian
+            Bienvenido {userState.nombreCompleto}
           </Typography>
         </Toolbar>
       </AppBar>

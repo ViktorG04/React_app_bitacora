@@ -7,6 +7,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import { useParams, useHistory } from "react-router-dom";
 import { buscarPersona, getRoles, getEmpresas, updatePersona, updateEmpleado } from '../../config/axios';
 import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 
 const initialValue = {
     idPersona: '',
@@ -55,13 +56,13 @@ const EditarPersona = () => {
 
         if (checked !== true) {
             if (persona['password']) {
-                alert('si desea aplicar el cambio de password el SW debe estar activado');
+                toast.error('si desea aplicar el cambio de password el SW debe estar activado');
                 history.push(`/editarPersona/${id}`);
             }
             persona.password = "";
         } else {
             if (persona['password'] === undefined) {
-                alert('El campo password esta vacio no se aplicara cambios en la base de datos, si no desea hacer cambios ' +
+                toast.error('El campo password esta vacio no se aplicara cambios en la base de datos, si no desea hacer cambios ' +
                     'desactive el SW de cambio password');
                 history.push(`/editarPersona/${id}`);
             }
@@ -69,12 +70,12 @@ const EditarPersona = () => {
 
         try {
             await updateEmpleado(persona);
-            alert('Datos Actualizados');
+            toast.error('Datos Actualizados');
             history.push('../personas');
         } catch (error) {
             var notificacion = error.request.response.split(":");
             notificacion = notificacion[1].split("}");
-            alert(notificacion[0]);
+            toast.error(notificacion[0]);
         }
     };
 
@@ -84,13 +85,13 @@ const EditarPersona = () => {
         delete persona['idEstado'];
         try {
             await updatePersona(persona);
-            alert('Datos Actualizados');
+            toast.error('Datos Actualizados');
             history.push('../personas');
 
         } catch (error) {
             var notificacion = error.request.response.split(":");
             notificacion = notificacion[1].split("}");
-            alert(notificacion[0]);
+            toast.error(notificacion[0]);
         }
 
     };
@@ -128,6 +129,7 @@ const EditarPersona = () => {
     if (!isNaN(idUsuario)) {
         vista = (
             <FormGroup className={classes.container}>
+                <div><Toaster /></div>
                 <Typography align="center" variant="h4">Editar Datos Empleado</Typography>
                 <FormControl>
                     <TextField
@@ -196,6 +198,7 @@ const EditarPersona = () => {
     else {
         vista = (
             <FormGroup className={classes.container}>
+                <div><Toaster /></div>
                 <Typography variant="h4">Editar Datos Persona</Typography>
                 <FormControl>
                     <TextField

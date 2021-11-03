@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { MenuItem, FormGroup, FormControl, Button, makeStyles, Typography, NativeSelect } from '@material-ui/core';
 import { addSolicitud, getOficinas } from '../../config/axios';
 import { useHistory } from "react-router-dom";
@@ -7,9 +7,12 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import TextField from '@mui/material/TextField';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import { Link } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
+import UserLoginContext from '../../context/login/UserLoginContext';
+import decrypt from '../../utils/decrypt';
 
 const initialValue = {
-    idUsuario: '14',
+    idUsuario: '',
     fechayHoraVisita: '',
     motivo: '',
     idArea: '',
@@ -38,6 +41,9 @@ const CrearSolicitud = () => {
 
     const history = useHistory();
 
+    const userStateEncrypt = useContext(UserLoginContext);
+    const userStore = JSON.parse(decrypt(userStateEncrypt.userLogin));
+
 
     useEffect(() => {
         async function getAllOficinas() {
@@ -60,37 +66,37 @@ const CrearSolicitud = () => {
 
     const addSol = async () => {
 
+        solicitud.idUsuario = userStore.idUsuario;
         var time = fechaI.getHours() + ':' + fechaI.getMinutes() + ':00';
         var fechaIngreso = fechaI.toISOString().substr(0, 10);
         solicitud.fechayHoraVisita = fechaIngreso.split("-").reverse().join("-") + ' ' + time;
-
+        console.log(solicitud);
         if (fechaI === Date()) {
-            alert("Campo Requerido! Ingrese una fecha valida");
+            toast.error("Campo Requerido! Ingrese una fecha valida");
         } else if (motivo.trim() === "") {
-            alert("Campo Requerido! Ingrese un motivo")
+            toast.error("Campo Requerido! Ingrese un motivo")
         } else if (idArea === "") {
-            alert("Campo Requerido! Seleccione una Oficina")
+            toast.error("Campo Requerido! Seleccione una Oficina")
         } else if (solicitud['sintomas'] !== 'No') {
-            alert("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO 'SI TENER SINTOMAS QUE SE ASEMEJEN" +
+            toast.error("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO 'SI TENER SINTOMAS QUE SE ASEMEJEN" +
                 "A COVID-19', FAVOR PONERSE EN CONTACTO CON RECURSOS HUMANOS");
         }else if (solicitud['diagnosticado'] !== 'No') {
-            alert("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO 'SI HABER SIDO DIGNOSTICADO POR" +
-                "COVID-19', FAVOR PONERSE EN CONTACTO CON RECURSOS HUMANOS");
+            toast.error("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO 'SI HABER SIDO DIGNOSTICADO POR" +
+                " COVID-19', FAVOR PONERSE EN CONTACTO CON RECURSOS HUMANOS");
         }else if (solicitud['covidFamiliar'] === 'Si' & solicitud['viajo'] === 'Si') {
             // history.push(`/editarPersona/${id}`);
-            alert("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO TENER UN FAMILIAR O HABER SALIDO DEL PAIS LOS ULTIMOS 15 DIAS" +
+            toast.error("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO TENER UN FAMILIAR O HABER SALIDO DEL PAIS LOS ULTIMOS 15 DIAS" +
                 " FAVOR DE PONERSE EN CONTACTO CON RECURSOS HUMANOS")
         } else {
             try {
-                console.log(solicitud);
-                var result = await addSolicitud(solicitud);
+               var result = await addSolicitud(solicitud);
                 console.log(result.data);
                 history.push('../solicitudes');
 
             } catch (error) {
                 var notificacion = error.request.response.split(":");
                 notificacion = notificacion[1].split("}");
-                alert(notificacion[0]);
+                toast.error(notificacion[0]);
             }
 
         }
@@ -99,13 +105,14 @@ const CrearSolicitud = () => {
 
     return (
         <FormGroup className={classes.container}>
-            <Typography variant="h4">Agregar solicitud</Typography>
+            <div><Toaster /></div>
+            <Typography align="center" variant="h4">Agregar solicitud</Typography>
             <FormControl>
                 <TextField
                     label="Nombre Completo"
                     variant="outlined"
-                    disabled
-                    defaultValue="Nombre de la persona logueada"
+                    defaultValue={userStore.nombreCompleto}
+                    InputProps={{ readOnly: true}}
                 />
             </FormControl>
             <FormControl>

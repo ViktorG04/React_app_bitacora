@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -7,8 +7,11 @@ import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
-import AuthContext from '../context/login/AuthContext';
 import { useHistory } from 'react-router';
+import { getLogin } from '../config/axios';
+import toast, { Toaster } from 'react-hot-toast';
+import UserLoginContext from '../context/login/UserLoginContext';
+import encrypt from '../utils/encrypt';
 
 function Copyright(props) {
   return (
@@ -25,67 +28,51 @@ function Copyright(props) {
 
 export default function SignIn() {
 
-const history = useHistory();
+  const history = useHistory();
 
-//State para iniciar sesion
-const [user, saveUser] = useState({
-  correo: "",
-  password: ""
-})
-
-//Extraer el usuario
-const { correo, password } = user;
-
-//Contexto
-const { isAuthenticated, userRol, onLogin } = useContext(AuthContext);
-
-const checkIfUserIsAuthRef = useRef();
-
-const getId = useRef();
-getId.current = localStorage.getItem("idRol");
-
-//Validando si esta logeado
-const checkifUserIsAuth = () =>{
-  if (isAuthenticated){
-    //history.push("/adminhome");
-    /* if(getId === 1){
-      history.push("/adminhome");
-    } else if (userRol === 2){
-      history.push("/employedhome");
-    } else if (userRol === 3){
-      history.push("/securityhome");
-    } */
-  } else  {
-    history.push("/");
-    console.log("No logeado");
-  }
-}
-
-checkIfUserIsAuthRef.current = checkifUserIsAuth;
-
-useEffect(() => {
-  checkIfUserIsAuthRef?.current()?.catch(null);
-}, []);
-
-const onChange = e => {
-  saveUser({
-    ...user,
-    [e.target.name] : e.target.value
+  //State para iniciar sesion
+  const [user, saveUser] = useState({
+    correo: "",
+    password: ""
   })
-}
 
-const handleSubmit = (event) => {
+  // Acceder al context
+  const userState = useContext(UserLoginContext);
+
+  //Extraer el usuario
+  const { correo, password } = user;
+
+
+  const onChange = e => {
+    saveUser({
+      ...user,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     //Validar campos vacios
-    if(correo.trim() === ""){
-      alert("Ingrese su correo AD");
-    } else if(password.trim() === ""){
-      alert("Ingrese su password");
-    } else{
-     // history.push("/solicitudes");
-      //Pasarlo al action
-      onLogin(correo, password);
+    if (correo.trim() === "") {
+      toast.error("Ingrese su correo");
+
+    } else if (password.trim() === "") {
+      toast.error("Ingrese su password");
+    } else {
+
+      try {
+        const user = await getLogin({ correo, password });
+        userState.setUserLogin(encrypt(JSON.stringify(user.data)));
+        history.push("/solicitudes");
+
+      } catch (error) {
+
+        var notificacion = error.request.response.split(":");
+        notificacion = notificacion[1].split("}");
+        toast.error(notificacion[0]);
+      }
+
       /*
         1. mandar por post al back
         2. valida si es corecto
@@ -95,74 +82,26 @@ const handleSubmit = (event) => {
         5. usar hook useStorage para rehidratar el context, por si el usuario presiona f5
         6. react rbac, o privateRoutes
       */
-
-
-
-/*       if(userRol === 1){
-        history.push("/adminhome");
-      } else if (userRol === 2){
-        history.push("/employedhome");
-      } else if (userRol === 3){
-        history.push("/securityhome");
-      } */
     }
-};
+  };
 
-return (      
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-          }}
-        >
-          <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-            
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Login
-          </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              id="correo"
-              type="email"
-              label="Email"
-              name="correo"
-              autoComplete="email"
-              autoFocus
-              onChange={onChange}
-              value={correo}
-            />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-              onChange={onChange}
-              value={password}
-            />
-            
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Ingresar
-            </Button>
-          </Box>
+  return (
+    <Container component="main" maxWidth="xs">
+      <div><Toaster /></div>
+      <CssBaseline />
+      <Box sx={{ marginTop: 8, display: 'flex', flexDirection: 'column', alignItems: 'center', }}>
+        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+        </Avatar>
+        <Typography component="h1" variant="h5"> Login</Typography>
+        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <TextField margin="normal" required fullWidth id="correo" type="email" label="Email" name="correo" autoComplete="email"
+            autoFocus onChange={onChange} value={correo} />
+          <TextField margin="normal" required fullWidth name="password" label="Password" type="password" id="password" autoComplete="current-password"
+            onChange={onChange} value={password} />
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>Ingresar </Button>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
+      </Box>
+      <Copyright sx={{ mt: 8, mb: 4 }} />
+    </Container>
   );
 }

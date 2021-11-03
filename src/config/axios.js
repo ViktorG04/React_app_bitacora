@@ -7,10 +7,15 @@ export const getLogin = async (user) =>{
     return await axios.post(`${axiosClient}/api/login/`, user);
 }
 
+//cambio password
+export const editPassword = async(perfil) =>{
+    return await axios.put(`${axiosClient}/api/users/password/`, perfil)
+}
+
 //Solicitudes
 export const getSolicitudes = async (id) => {
     id = id || '';
-    return await axios.get(`${axiosClient}/api/solicitudes/empleado/1/${id}`);//listar solo las solicitudes del usuario logeado
+    return await axios.get(`${axiosClient}/api/solicitudes/empleado/${id}`);//listar solo las solicitudes del usuario logeado
 }
 
 export const buscarSolicitudes = async (id) => {
