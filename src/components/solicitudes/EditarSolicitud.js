@@ -1,43 +1,58 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { MenuItem, FormGroup, FormControl, Button, makeStyles, Typography } from '@material-ui/core';
+import { MenuItem, FormGroup, FormControl, Button, makeStyles, Typography, Table, TableCell, TableBody } from '@material-ui/core';
 import TextField from '@mui/material/TextField';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import DateTimePicker from '@mui/lab/DateTimePicker';
-import { buscarSolicitudes, editSolicitud, getOficinas, getEstados } from '../../config/axios';
+import { buscarSolicitudes, editSolicitud, getOficinas, getEstados, editEstadoSol } from '../../config/axios';
 import { useHistory, useParams } from "react-router-dom";
 import UserLoginContext from '../../context/login/UserLoginContext';
 import decrypt from '../../utils/decrypt';
 import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
+import { Box } from '@mui/system';
+import { Stack } from '@mui/material';
 
 const initialValue = {
-    empresa: '',
-    estado: '',
-    nombreCompleto: '',
     fechaVisita: '',
     motivo: '',
     idSolicitud: '',
     idArea: '',
-    idEstado: ''
+    idEstado: '',
+}
+
+const initialDataPerson = {
+    idDetalle: '',
+    nombreCompleto: '',
+    docIdentidad: '',
+    sintomas: '',
+    diagnosticado: '',
+    covidFamiliar: '',
+    viajo: ''
 }
 
 const useStyles = makeStyles({
     container: {
         width: '50%',
-        margin: '5% 0 0 25%',
+        margin: '4% 0 0 2%',
         '& > *': {
-            marginTop: 20
+            marginTop: '12px'
         }
     }
 })
 
 const EditarSolicitud = () => {
     const [solicitud, setSolicitud] = useState(initialValue);
+    const [persona, setPersona] = useState(initialDataPerson);
     const [fechaI, setValueFI] = useState(new Date());
     const [areas, setAreas] = useState([]);
     const [estados, setEstados] = useState([]);
+    const [state, setState] = useState(false);
+    const [action, setAction] = useState(true);
+    const [actionButton, setActionButton] = useState(true);
+    const [name, setName] = useState('REGRESAR');
     const { motivo, idArea, idEstado } = solicitud;
+    const [datosActuales, setDatosActuales] = useState(initialValue);
 
     //datos guardados en Localstorage
     const userStateEncrypt = useContext(UserLoginContext);
@@ -49,16 +64,67 @@ const EditarSolicitud = () => {
     const history = useHistory();
 
     const onValueChange = (e) => {
-        //console.log(e.target.value);
         setSolicitud({ ...solicitud, [e.target.name]: e.target.value })
     }
 
     useEffect(() => {
         async function loadSolicitudDetails() {
             const response = await buscarSolicitudes(id);
+
+            delete response.data['empresa'];
+            delete response.data['estado'];
+            delete response.data['nombreCompleto'];
+
+            setPersona(response.data['personas'][0]);
+            delete response.data['personas'];
+
             setSolicitud(response.data);
-            console.log(response.data);
+            setDatosActuales(response.data);
             setValueFI(response.data['fechaVisita'])
+
+
+            var data = [];
+            const result = await getEstados();
+
+            if (response.data['idEstado'] === 3) {
+
+                data.push(result.data[2]);
+                data.push(result.data[7]);
+
+                if (userStore.idRol === 1) {
+                    data.push(result.data[3]);
+                    data.push(result.data[4]);
+                }
+                setAction(false)
+                setActionButton(false);
+                setName("CANCELAR")
+            } else if (response.data['idEstado'] === 4) {
+                data.push(result.data[3]);
+                data.push(result.data[7]);
+                setName("CANCELAR")
+                setAction(false);
+                setActionButton(false);
+                setState(true);
+
+            } else if (response.data['idEstado'] === 5) {
+                data.push(result.data[4]);
+                setState(true);
+            } else if (response.data['idEstado'] === 6) {
+                data.push(result.data[5]);
+                setState(true);
+            }
+            else if (response.data['idEstado'] === 7) {
+                data.push(result.data[6]);
+                setState(true);
+            }
+            else if (response.data['idEstado'] === 8) {
+                data.push(result.data[7]);
+                setState(true);
+            } else {
+                delete result.data[0];
+                delete result.data[1];
+            }
+            setEstados(data);
         };
         loadSolicitudDetails();
 
@@ -73,47 +139,64 @@ const EditarSolicitud = () => {
         };
         getAllOficinas();
 
-
-        async function getAllEstados() {
-            const response = await getEstados();
-            delete response.data[0];
-            delete response.data[1];
-            setEstados(response.data);
-        };
-        getAllEstados();
-
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
 
     const editSolicitudDetails = async () => {
 
-        var result = await validarHorayFecha(fechaI, solicitud['fechaVisita']);
-        delete solicitud['nombreCompleto'];
-        delete solicitud['empresa'];
-        delete solicitud['estado'];
-        delete solicitud['personas'];
+        var resultFech, estado;
 
-        if (motivo.trim() === "") {
-            toast.error("Campo Requerido! Ingrese un motivo")
-        } else if (idArea === "") {
-            toast.error("Campo Requerido! Seleccione una Oficina")
+        if (solicitud['idEstado'] !== datosActuales['idEstado']) {
+            if (idEstado === 4) {
+                estado = "APROBAR"
+            } else if (idEstado === 5) {
+                estado = "RECHAZAR"
+            } else {
+                estado = "CANCELAR"
+            }
+            toast((t) => (
 
-        } else if (result !== "iguales") {
-            solicitud['fechaVisita'] = result;
+                <span>
+                    <h3><b>HA SELECCIONADO {estado} LA SOLICITUD</b></h3>
+                    ¿Esta seguro de querer realizar esta accion?
+                    <Stack spacing={2} direction="row">
+                        <button onClick={() => updateEstado(userStore.idUsuario, solicitud['idSolicitud'], solicitud['idEstado'])}>SI </button>
+                        <button onClick={() => toast.dismiss(t.id)}>NO</button>
+                    </Stack>
+                </span >
+            ));
         } else {
-            try {
 
-                console.log(solicitud);
-            } catch (error) {
-                var notificacion = error.request.response.split(":");
-                notificacion = notificacion[1].split("}");
-                toast.error(notificacion[0]);
+            resultFech = await validarHorayFecha(fechaI, solicitud['fechaVisita']);
+            if (resultFech !== "iguales") {
+                solicitud['fechaVisita'] = resultFech;
+            } else {
+                solicitud['fechaVisita'] = fechaI;
             }
 
-        }
-        //  const response = await editSolicitud(solicitud);
-        //history.push('/all');
+            if (motivo.trim() === "") {
+                toast.error("Campo Requerido! Ingrese el motivo de la visita")
+            } else if (solicitud['fechaVisita'] !== undefined) {
+
+                if (solicitud['motivo'] !== datosActuales['motivo'] || solicitud['idArea'] !== datosActuales['idArea']
+                    || resultFech !== "iguales") {
+                    delete solicitud['idEstado'];
+                    delete solicitud['idUsuario'];
+                    try {
+                        await editSolicitud(solicitud);
+                        toast.success("Solicitud Actualizada")
+                        history.push("../solicitudes");
+                    } catch (error) {
+                        var notificacion = error.request.response.split(":");
+                        notificacion = notificacion[1].split("}");
+                        toast.error(notificacion[0]);
+                    }
+                } else {
+                    toast.success("No se aplico ningun cambio");
+                }//enviar datos api
+            }//valir rango de horas y campo motivo vacio
+        }//actualizar si el estado no cambio
     };
 
 
@@ -134,65 +217,114 @@ const EditarSolicitud = () => {
         return returnFecha;
     };
 
+    async function updateEstado(idUsuario, idSolicitud, idEstado) {
+
+        try {
+            var result = await editEstadoSol({ idUsuario, idSolicitud, idEstado })
+
+            if (result.data['resultState'] === "fields affected") {
+                toast.success("Estado Actualizado");
+            }else{
+                toast.success(result.data['resultState']);
+            }
+
+        } catch (error) {
+            var notificacion = error.request.response.split(":");
+            notificacion = notificacion[1].split("}");
+            toast.error(notificacion[0]);
+        }
+    }
+
 
 
     return (
         <FormGroup className={classes.container}>
             <div><Toaster /></div>
-            <Typography align="center" variant="h4">Editar Solicitud</Typography>
-            <FormControl>
+            <Typography align="center" variant="h4">Solicitud N°{solicitud.idSolicitud}</Typography>
+            <Box component="form"
+                sx={{
+                    '& > :not(style)': { m: 1, width: '33ch' },
+                }}
+                noValidate
+                autoComplete="off">
                 <TextField
-                    label="Empleado"
+                    label="Nombre Empleado"
                     variant="outlined"
-                    defaultValue={userStore.nombreCompleto}
+                    value={persona.nombreCompleto}
                     InputProps={{ readOnly: true }}
                 />
-            </FormControl>
-            <FormControl>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DateTimePicker
                         value={fechaI}
                         label="Fecha y Hora Visita"
                         minDateTime={new Date()}
                         autoFocus
+                        disabled={state}
                         onChange={(newValue) => {
                             setValueFI(newValue);
                         }}
                         renderInput={(params) => <TextField {...params} />}
                     />
                 </LocalizationProvider>
-            </FormControl>
-            <FormControl>
-                <TextField
-                    label="Motivo"
-                    variant="outlined"
-                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
-                    inputProps={{ maxLength: 40 }}
-                />
-            </FormControl>
-            <FormControl>
+            </Box>
+            <Box component="form"
+                sx={{
+                    '& > :not(style)': { m: 1, width: '33ch' },
+                }}
+                noValidate
+                autoComplete="off">
                 <TextField
                     select
                     label="Oficinas"
-                    onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required>
+                    onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required InputProps={{ readOnly: state }}>
                     {areas?.map(option => {
                         return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
                     })}
                 </TextField>
-            </FormControl>
-            <FormControl>
                 <TextField
                     select
-                    label="Seleccione una Oficina"
-                    onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required>
+                    label="Estado de la Solicitud"
+                    onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required InputProps={{ readOnly: action }}>
                     {estados?.map(option => {
                         return (<MenuItem value={option.idEstado}> {option.estado} </MenuItem>);
                     })}
                 </TextField>
-            </FormControl>
+            </Box>
             <FormControl>
-                <Button variant="contained" color="primary" onClick={() => editSolicitudDetails()}>Guardar Cambios</Button>
-                <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../solicitudes`}>Cancelar</Button>
+                <TextField
+                    label="Motivo"
+                    variant="outlined"
+                    InputProps={{ readOnly: state }}
+                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
+                    inputProps={{ maxLength: 40 }}
+                />
+            </FormControl>
+            <Table>
+                <TableBody>
+                    <TableCell aling="right">
+                        ¿Ha sido diagnosticado o ha presentado sospechas de COVID-19?
+                    </TableCell>
+                    <TableCell><b>{persona.diagnosticado}</b></TableCell>
+                    <TableCell aling="right">
+                        ¿Tiene familiares que hayan sido diagnosticados por COVID-19?
+                    </TableCell>
+                    <TableCell><b>{persona.covidFamiliar}</b></TableCell>
+
+                </TableBody>
+                <TableBody>
+                    <TableCell aling="right">
+                        ¿Ha presentado síntomas similares a los de la gripe en los últimos 15 días?
+                    </TableCell>
+                    <TableCell><b>{persona.sintomas}</b></TableCell>
+                    <TableCell aling="right">
+                        ¿Ha salido del pais durante los ultimos 15 dias?
+                    </TableCell>
+                    <TableCell><b>{persona.viajo}</b></TableCell>
+                </TableBody>
+            </Table>
+            <FormControl>
+                <Button variant="contained" color="primary" onClick={() => editSolicitudDetails()} disabled={actionButton}>GUARDAR CAMBIOS</Button>
+                <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../solicitudes`}>{name}</Button>
             </FormControl>
         </FormGroup>
     );

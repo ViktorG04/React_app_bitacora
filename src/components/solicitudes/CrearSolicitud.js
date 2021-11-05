@@ -25,9 +25,9 @@ const initialValue = {
 const useStyles = makeStyles({
     container: {
         width: '50%',
-        margin: '5% 0 0 25%',
+        margin: '6% 0 0 4%',
         '& > *': {
-            marginTop: 20
+            marginTop: '8px'
         }
     }
 })
@@ -71,8 +71,8 @@ const CrearSolicitud = () => {
 
         if (fechaI === Date()) {
             toast.error("Campo Requerido! Ingrese una fecha valida");
-        } else if (time < "08:00:00" || time > "17:00:00") {
-            toast.error("La hora de ingreso solo es valida entre las 08:00 AM y las 05:PM")
+        } else if (time >= '17:00:00' && time <= '7:59:00') {
+            toast.error("La hora de ingreso solo es valida entre las 08:00 AM y las 05:00 PM")
         } else if (motivo.trim() === "") {
             toast.error("Campo Requerido! Ingrese un motivo")
         } else if (idArea === "") {

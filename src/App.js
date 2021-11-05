@@ -3,8 +3,6 @@ import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core/styles';
 import Login from './views/Login'
 import vistaSolicitudes from './views/vistaSolicitudes';
-import CrearSolicitud from './components/solicitudes/CrearSolicitud';
-import EditarSolicitud from './components/solicitudes/EditarSolicitud';
 import VistaOficinas from './views/VistaOficinas';
 import EditarOficina from './components/oficinas/EditarOficina';
 import CrearOficina from './components/oficinas/CrearOficina';
@@ -23,6 +21,8 @@ import UserLoginContext from './context/login/UserLoginContext';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import VistaPerfil from './views/VistaPerfil';
 import DetalleSolicitud from './components/solicitudes/DetalleSolicitudes';
+import VistaEditarSolicitud from './views/vistaEditarSolicitud';
+import VistaCrearSolicitud from './views/vistaCrearSolicitud';
 
 
 const useStyles = makeStyles({
@@ -45,10 +45,10 @@ function App() {
                     <Route exact path="/perfil" component={VistaPerfil}/>
 
                     <Route exact path="/solicitudes" component={vistaSolicitudes} />
-                    <Route exact path="/crearsolicitud" component={CrearSolicitud} />
+                    <Route exact path="/crearsolicitud" component={VistaCrearSolicitud} />
                     <Route exact path="/crearsolicitudexternos" component={CrearSolicitudExternos} />
-                    <Route exact path="/editarsolicitud/:id" component={EditarSolicitud} />
-                    <Route exact path="/verSolicitud/:id" component={DetalleSolicitud} />
+                    <Route exact path="/editarsolicitud/:id" component={VistaEditarSolicitud} />
+                    <Route exact path="/ingresarPersonas/:id" component={DetalleSolicitud} />
                     
                     <Route exact path="/oficinas" component={VistaOficinas} />
                     <Route exact path="/editarOficina/:id" component={EditarOficina} />

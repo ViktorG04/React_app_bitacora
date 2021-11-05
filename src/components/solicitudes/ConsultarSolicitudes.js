@@ -59,7 +59,6 @@ const Solicitudes = () => {
 
     const redireccionar = async () => {
 
-
         if (userStore.idRol === 1) {
             history.push("/crearsolicitudexternos")
         }
@@ -68,13 +67,21 @@ const Solicitudes = () => {
         }
     }
 
-    const verDetalle = async (idSolicitud) => {
-        if (userStore.idRol !== 2) {
-            history.push(`/verSolicitud/${idSolicitud}`)
-        } else {
+    const verDetalle = async (idSolicitud, idEstado) => {
+
+        if (userStore.idRol === 2) {
             history.push(`/editarsolicitud/${idSolicitud}`)
+        } else if (userStore.idRol === 3) {
+            history.push(`/ingresarPersonas/${idSolicitud}`)
+        } else {
+            if (idEstado === 3 || idEstado === 5 || idEstado === 8) {
+                history.push(`/editarsolicitud/${idSolicitud}`)
+            } else {
+                //estado 4 aprobado, 6 en progeso y 7 finalizado
+               
+            }
         }
-    }
+    };
 
     return (
         <div className={classes.container}>
@@ -83,6 +90,7 @@ const Solicitudes = () => {
                 <TableHead>
                     <TableRow className={classes.thead}>
                         <TableCell>Solicitud</TableCell>
+                        <TableCell>Solicitante</TableCell>
                         <TableCell>Fecha de Visita</TableCell>
                         <TableCell>Estado</TableCell>
                         <TableCell>Acciones</TableCell>
@@ -92,10 +100,11 @@ const Solicitudes = () => {
                     {solicitudes.map((sol) => (
                         <TableRow className={classes.row} key={sol.idSolicitud}>
                             <TableCell>{sol.idSolicitud}</TableCell>
+                            <TableCell>{sol.nombreCompleto}</TableCell>
                             <TableCell>{sol.fechaVisita}</TableCell>
                             <TableCell>{sol.estado}</TableCell>
                             <TableCell>
-                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} onClick={() => verDetalle(sol.idSolicitud)}>Ver</Button>
+                                <Button color="primary" variant="contained"  onClick={() => verDetalle(sol.idSolicitud, sol.idEstado)}>Ver</Button>
                             </TableCell>
                         </TableRow>
                     ))}

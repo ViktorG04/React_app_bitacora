@@ -35,8 +35,12 @@ export const editSolicitud = async (solicitud) => {
     return await axios.put(`${axiosClient}/api/solicitudes/`, solicitud)
 }
 
-export const editEstadoSol = async (id) => {
-    return await axios.put(`${axiosClient}/solicitudes/estado/${id}`)
+export const editEstadoSol = async (estado) => {
+    return await axios.put(`${axiosClient}/api/solicitudes/estado`, estado);
+}
+
+export const addIngreso = async (personas) =>{
+    return await axios.post(`${axiosClient}/api/solicitudes/ingreso`, personas);
 }
 
 //empresa

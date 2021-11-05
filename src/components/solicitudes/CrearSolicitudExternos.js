@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, Fragment } from 'react';
 import { MenuItem, FormGroup, FormControl, Button, makeStyles, Typography } from '@material-ui/core';
 import { addSolicitud, getEmpresas, getOficinas, getPersonasExternos, getTipos } from '../../config/axios';
 import { useHistory } from "react-router-dom";
@@ -39,8 +39,13 @@ const CrearSolicitudExternos = () => {
     const [empresas, setEmpresas] = useState([]);
     const [tipos, setTipos] = useState([]);
     const [personas, setPersonas] = useState([]);
-    const [valueEmpresa, setValue] = React.useState(null);
-    const [valuePersona, setValuePersona] = React.useState(null);
+    const [valueEmpresa, setValue] = useState(null);
+    const [valuePersona, setValuePersona] = useState(null);
+    const [valueDui, setValueDui] = useState(null);
+
+    const [inputFields, setInputFields] = useState([
+        { firstName: '', lastName: '' }
+      ]);
 
     //determina si un campo es editable o no
     const [action, setAction] = useState(true);
@@ -97,6 +102,25 @@ const CrearSolicitudExternos = () => {
         setSolicitud({ ...solicitud, [e.target.name]: e.target.value })
     };
 
+    const handleSubmit = e => {
+        e.preventDefault();
+        console.log("inputFields", inputFields);
+      };
+
+      const handleAddFields = () => {
+        const values = [...inputFields];
+        values.push({ firstName: '', lastName: '' });
+        setInputFields(values);
+      };
+    
+      const handleRemoveFields = index => {
+        const values = [...inputFields];
+        values.splice(index, 1);
+        setInputFields(values);
+      };
+    
+
+
     //obtener todas las personas de la empresa seleccionada
     const getAllPersonas = async (dataEmpresa) => {
         let vacio = [];
@@ -125,82 +149,42 @@ const CrearSolicitudExternos = () => {
 
 
         console.log(solicitud);
+        /*
+        var time = fechaI.getHours() + ':' + fechaI.getMinutes() + ':00';
+        var fechaIngreso = fechaI.toISOString().substr(0, 10);
+        solicitud.fechayHoraVisita = fechaIngreso.split("-").reverse().join("-") + ' ' + time;
 
-        /*   var time = fechaI.getHours() + ':' + fechaI.getMinutes() + ':00';
-           var fechaIngreso = fechaI.toISOString().substr(0, 10);
-           solicitud.fechayHoraVisita = fechaIngreso.split("-").reverse().join("-") + ' ' + time;
-   
-           if (fechaI === Date()) {
-               toast.error("Campo Requerido! Ingrese una fecha valida");
-           } else if (motivo.trim() === "") {
-               toast.error("Campo Requerido! Ingrese un motivo")
-           } else if (idArea === "") {
-               toast.error("Campo Requerido! Seleccione una Oficina")
-           } else if(valueEmpresa === null){
+        if (fechaI === Date()) {
+            toast.error("Campo Requerido! Ingrese una fecha valida");
+        } else if (time >= '17:00:00' && time <= '7:59:00') {
+            toast.error("La hora de ingreso solo es valida entre las 08:00 AM y las 05:00 PM");
+        } else if (motivo.trim() === "") {
+            toast.error("Campo Requerido! Ingrese un motivo")
+        } else if (idArea === "") {
+            toast.error("Campo Requerido! Seleccione una Oficina")
+        } else if (valueEmpresa === null) {
             toast.error("Campo requerido! Seleccione o escriba el nombre de la entidad")
-            }else {
-               try {
-                   console.log(solicitud);
-               //    var result = await addSolicitud(solicitud);
-               //    console.log(result.data);
-                   //  history.push('../solicitudes');
-   
-               } catch (error) {
-                   var notificacion = error.request.response.split(":");
-                   notificacion = notificacion[1].split("}");
-                   toast.error(notificacion[0]);
-               }
-   
-           }*/
+        } else {
+            try {
+                console.log(solicitud);
+                //    var result = await addSolicitud(solicitud);
+                //    console.log(result.data);
+                //  history.push('../solicitudes');
+
+            } catch (error) {
+                var notificacion = error.request.response.split(":");
+                notificacion = notificacion[1].split("}");
+                toast.error(notificacion[0]);
+            }
+
+        }*/
     };
 
 
     return (
         <FormGroup className={classes.container}>
             <div><Toaster /></div>
-            <Typography align="center" variant="h4">Agregar solicitud</Typography>
-            <FormControl>
-                <TextField
-                    label="Nombre Completo"
-                    variant="outlined"
-                    defaultValue={userStore.nombreCompleto}
-                    InputProps={{
-                        readOnly: true,
-                    }}
-                />
-            </FormControl>
-            <FormControl>
-                <TextField
-                    label="Motivo"
-                    variant="outlined"
-                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
-                    inputProps={{ maxLength: 40 }}
-                />
-            </FormControl>
-            <FormControl>
-                <TextField
-                    select
-                    label="Seleccione una Oficina"
-                    onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required>
-                    {areas?.map(option => {
-                        return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
-                    })}
-                </TextField>
-            </FormControl>
-            <FormControl>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DateTimePicker
-                        value={fechaI}
-                        label="Fecha y Hora Ingreso"
-                        autoFocus
-                        minDate={new Date()}
-                        onChange={(newValue) => {
-                            setValueFI(newValue);
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
-                    />
-                </LocalizationProvider>
-            </FormControl>
+            <Typography align="center" variant="h4">Crear Solicitud Visitantes</Typography>
             <FormControl>
                 <Autocomplete
                     disablePortal
@@ -262,6 +246,38 @@ const CrearSolicitudExternos = () => {
                     )}
                 />
             </FormControl>
+            <FormControl>
+                <TextField
+                    label="Motivo"
+                    variant="outlined"
+                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
+                    inputProps={{ maxLength: 40 }}
+                />
+            </FormControl>
+            <FormControl>
+                <TextField
+                    select
+                    label="Seleccione una Oficina"
+                    onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required>
+                    {areas?.map(option => {
+                        return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
+                    })}
+                </TextField>
+            </FormControl>
+            <FormControl>
+                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                    <DateTimePicker
+                        value={fechaI}
+                        label="Fecha y Hora Ingreso"
+                        autoFocus
+                        minDateTime={new Date()}
+                        onChange={(newValue) => {
+                            setValueFI(newValue);
+                        }}
+                        renderInput={(params) => <TextField {...params} />}
+                    />
+                </LocalizationProvider>
+            </FormControl>
             <FormControl fullWidth>
                 <TextField
                     select
@@ -283,6 +299,68 @@ const CrearSolicitudExternos = () => {
                     }}
                     renderInput={(params) => <TextField {...params} label="Seleccione un Empleado" />}
                 />
+
+            <FormControl>
+                    <>
+      <h1>Dynamic Form Fields in React</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="form-row">
+          {inputFields.map((inputField, index) => (
+            <Fragment key={`${inputField}~${index}`}>
+              <div className="form-group col-sm-6">
+                <label htmlFor="firstName">First Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="firstName"
+                  name="firstName"
+                  value={inputField.firstName}
+                />
+              </div>
+              <div className="form-group col-sm-4">
+                <label htmlFor="lastName">Last Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="lastName"
+                  name="lastName"
+                  value={inputField.lastName}
+                />
+              </div>
+              <div className="form-group col-sm-2">
+                <button
+                  className="btn btn-link"
+                  type="button"
+                  onClick={() => handleRemoveFields(index)}
+                >
+                  -
+                </button>
+                <button
+                  className="btn btn-link"
+                  type="button"
+                  onClick={() => handleAddFields()}
+                >
+                  +
+                </button>
+              </div>
+            </Fragment>
+          ))}
+        </div>
+        <div className="submit-button">
+          <button
+            className="btn btn-primary mr-2"
+            type="submit"
+            onSubmit={handleSubmit}
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </>
+                    
+            </FormControl>
+
+
             </FormControl>
             <FormControl>
                 <Button variant="contained" color="primary" onClick={() => addSol()}>Ingresar solicitud</Button>
