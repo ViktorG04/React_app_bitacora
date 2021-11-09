@@ -44,10 +44,10 @@ const Perfil = () => {
     }
 
     const cancelChange = async () => {
-
-        perfil.newPassword = '';
-        perfil.oldPassword = '';
-        perfil.confirmar = '';
+        setPerfil(initialValue);
+       setActionOldPass(false);
+       setActionNewPass(false);
+       setActionConfirmar(false);
 
     }
 

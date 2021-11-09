@@ -233,9 +233,7 @@ const EditarSolicitud = () => {
             notificacion = notificacion[1].split("}");
             toast.error(notificacion[0]);
         }
-    }
-
-
+    };
 
     return (
         <FormGroup className={classes.container}>

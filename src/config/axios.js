@@ -136,6 +136,11 @@ export const getIncapacidades = async =>{
     return axios.get(`${axiosClient}/api/incapacidades`);
 }
 
+export const incapacidadByEmpleado = async (id) => {
+    id = id || '';
+    return await axios.get(`${axiosClient}/api/incapacidades/${id}`);
+}
+
 export const addIncapacidad = async (incapacidad) => {
     return await axios.post(`${axiosClient}/api/incapacidades/`, incapacidad);
 }

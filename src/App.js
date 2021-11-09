@@ -23,6 +23,7 @@ import VistaPerfil from './views/VistaPerfil';
 import DetalleSolicitud from './components/solicitudes/DetalleSolicitudes';
 import VistaEditarSolicitud from './views/vistaEditarSolicitud';
 import VistaCrearSolicitud from './views/vistaCrearSolicitud';
+import VistaReportes from './views/vistaReportes';
 
 
 const useStyles = makeStyles({
@@ -65,6 +66,7 @@ function App() {
                     <Route exact path="/crearIncapacidad" component={CrearIncapacidad} />
                     <Route exact path="/nexosPorIncapacidad/:id" component={Nexos} />
 
+                    <Route exact path="/reportes" component={VistaReportes} />
                     <Route exact path="/reportes/visitas" component={Visitas}/>
                     <Route exact path="/reportes/oficinas" component={VisitasOficina}/>
                 </Switch>

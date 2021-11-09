@@ -45,7 +45,7 @@ const CrearSolicitudExternos = () => {
 
     const [inputFields, setInputFields] = useState([
         { firstName: '', lastName: '' }
-      ]);
+    ]);
 
     //determina si un campo es editable o no
     const [action, setAction] = useState(true);
@@ -105,20 +105,20 @@ const CrearSolicitudExternos = () => {
     const handleSubmit = e => {
         e.preventDefault();
         console.log("inputFields", inputFields);
-      };
+    };
 
-      const handleAddFields = () => {
+    const handleAddFields = () => {
         const values = [...inputFields];
         values.push({ firstName: '', lastName: '' });
         setInputFields(values);
-      };
-    
-      const handleRemoveFields = index => {
+    };
+
+    const handleRemoveFields = index => {
         const values = [...inputFields];
         values.splice(index, 1);
         setInputFields(values);
-      };
-    
+    };
+
 
 
     //obtener todas las personas de la empresa seleccionada
@@ -178,6 +178,27 @@ const CrearSolicitudExternos = () => {
             }
 
         }*/
+    };
+    
+    
+    const viewTipoE = (nuevaE) => {
+        var vista;
+        if (nuevaE === false) {
+            vista = (
+                <FormControl fullWidth>
+                <TextField
+                    select
+                    label="Seleccione Tipo de Empresa"
+                    onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="idTipo" required>
+                    {tipos?.map(option => {
+                        return (<MenuItem value={option.idTipo}> {option.tipo} </MenuItem>);
+                    })}
+                </TextField>
+            </FormControl>
+            );
+        }
+
+        return vista;
     };
 
 
@@ -246,24 +267,27 @@ const CrearSolicitudExternos = () => {
                     )}
                 />
             </FormControl>
+            {viewTipoE(action)}
             <FormControl>
                 <TextField
                     label="Motivo"
                     variant="outlined"
-                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
+                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo" 
+                    required
                     inputProps={{ maxLength: 40 }}
                 />
             </FormControl>
             <FormControl>
-                <TextField
-                    select
-                    label="Seleccione una Oficina"
-                    onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required>
-                    {areas?.map(option => {
-                        return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
-                    })}
-                </TextField>
-            </FormControl>
+                    <TextField
+                        select
+                        label="Seleccione una Oficina"
+                        onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea"
+                        required>
+                        {areas?.map(option => {
+                            return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
+                        })}
+                    </TextField>
+                </FormControl>            
             <FormControl>
                 <LocalizationProvider dateAdapter={AdapterDateFns}>
                     <DateTimePicker
@@ -278,90 +302,29 @@ const CrearSolicitudExternos = () => {
                     />
                 </LocalizationProvider>
             </FormControl>
-            <FormControl fullWidth>
-                <TextField
-                    select
-                    label="Seleccione Tipo de Empresa"
-                    disabled={action}
-                    onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="idTipo" required>
-                    {tipos?.map(option => {
-                        return (<MenuItem value={option.idTipo}> {option.tipo} </MenuItem>);
-                    })}
-                </TextField>
+            <FormControl>
+                <Autocomplete
+                    disablePortal
+                    options={personas}
+                    getOptionLabel={(option) => option.nombreCompleto}
+                    onChange={(newValue) => {
+                        setValuePersona(newValue);
+                    }}
+                    renderInput={(params) => <TextField {...params} label="Nombre del Visitante" />}
+                />
             </FormControl>
             <FormControl>
                 <Autocomplete
                     disablePortal
                     options={personas}
-                    getOptionLabel={(option) => option.nombreCompleto + " DUI: " + option.docIdentidad}
+                    getOptionLabel={(option) => option.docIdentidad}
                     onChange={(newValue) => {
                         setValuePersona(newValue);
                     }}
-                    renderInput={(params) => <TextField {...params} label="Seleccione un Empleado" />}
+                    renderInput={(params) => <TextField {...params} label="Documento del visitante" />}
                 />
-
-            <FormControl>
-                    <>
-      <h1>Dynamic Form Fields in React</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="form-row">
-          {inputFields.map((inputField, index) => (
-            <Fragment key={`${inputField}~${index}`}>
-              <div className="form-group col-sm-6">
-                <label htmlFor="firstName">First Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="firstName"
-                  name="firstName"
-                  value={inputField.firstName}
-                />
-              </div>
-              <div className="form-group col-sm-4">
-                <label htmlFor="lastName">Last Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  id="lastName"
-                  name="lastName"
-                  value={inputField.lastName}
-                />
-              </div>
-              <div className="form-group col-sm-2">
-                <button
-                  className="btn btn-link"
-                  type="button"
-                  onClick={() => handleRemoveFields(index)}
-                >
-                  -
-                </button>
-                <button
-                  className="btn btn-link"
-                  type="button"
-                  onClick={() => handleAddFields()}
-                >
-                  +
-                </button>
-              </div>
-            </Fragment>
-          ))}
-        </div>
-        <div className="submit-button">
-          <button
-            className="btn btn-primary mr-2"
-            type="submit"
-            onSubmit={handleSubmit}
-          >
-            Save
-          </button>
-        </div>
-      </form>
-    </>
-                    
             </FormControl>
 
-
-            </FormControl>
             <FormControl>
                 <Button variant="contained" color="primary" onClick={() => addSol()}>Ingresar solicitud</Button>
                 <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../solicitudes`}>Cancelar</Button>

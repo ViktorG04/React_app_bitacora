@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles } from '@material-ui/core'
-import { getIncapacidades } from '../../config/axios';
+import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles, TextField} from '@material-ui/core'
+import { getEmpleados, getIncapacidades, incapacidadByEmpleado } from '../../config/axios';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
+import { Autocomplete, Stack } from '@mui/material';
 
 const useStyles = makeStyles({
     container: {
@@ -32,26 +33,77 @@ const useStyles = makeStyles({
 
 const Incapacidades = () => {
     const [incapacidades, setIncapacidades] = useState([]);
+
+    //manejar autocomple
+    const [empleados, setEmpleados] = useState([]);
+    const [empleado, setValue] = useState([]);
+    const [inputValue, setInputValue] = useState('');
+
+    //name button
+    const [nameButton, setNameButton] = useState("BUSCAR");
+
     const classes = useStyles();
     const history = useHistory();
 
     useEffect(() => {
-        async function getAllIncapacidades() {
-            let response = await getIncapacidades();
-            let vacio = [];
-            if (response.data === "") {
-                setIncapacidades(vacio);
-            } else {
-                setIncapacidades(response.data);
-            }
-
-        };
+        
         getAllIncapacidades();
+
+        async function getAllEmpleados() {
+            const response = await getEmpleados();
+            setEmpleados(response.data);
+        };
+        getAllEmpleados()
     }, []);
+
+    async function getAllIncapacidades() {
+        let response = await getIncapacidades();
+        let vacio = [];
+        if (response.data === "") {
+            setIncapacidades(vacio);
+        } else {
+            setIncapacidades(response.data);
+        }
+
+    };
+
+    const buscarPorEmpleado = async () => {
+
+        if(nameButton === "BUSCAR" && empleado !== null){
+            var result = await incapacidadByEmpleado(empleado['idEmpleado'])
+ 
+            setIncapacidades(result.data);
+            setNameButton("LIMPIAR");
+        }else{
+            setNameButton("BUSCAR");
+            setValue(null);
+            getAllIncapacidades();
+         }
+    };
 
     return (
         <div className={classes.container}>
-            <Button variant="outlined" onClick={() => history.push("/crearIncapacidad")}>Ingresar Incapacidad</Button>
+            <Stack spacing={4} direction="row">
+
+                <Autocomplete
+                    value={empleado}
+                    onChange={(event, newValue) => {
+                        setValue(newValue);
+                    }}
+                    inputValue={inputValue}
+                    onInputChange={(event, newInputValue) => {
+                        setInputValue(newInputValue);
+                    }}
+                    options={empleados}
+                    getOptionLabel={(option) => option.nombreCompleto}
+                    sx={{ width: 300 }}
+                    renderInput={(params) => <TextField {...params} label="Buscar Empleado" />}
+                />
+                <Button  variant="contained" onClick={() => buscarPorEmpleado()}>{nameButton}</Button>
+
+                <Button variant="contained" color="success" onClick={() => history.push("/crearIncapacidad")}
+                    style={{ marginLeft: "auto" }}>INGRESAR INCAPACIDAD</Button>
+            </Stack>
             <Table className={classes.table}>
                 <TableHead>
                     <TableRow className={classes.thead}>
@@ -70,7 +122,7 @@ const Incapacidades = () => {
                             <TableCell>{obj.fechaInicio}</TableCell>
                             <TableCell>{obj.fechaFin}</TableCell>
                             <TableCell>
-                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/nexosPorIncapacidad/${obj.idIncapacidad}`}>Ir</Button>
+                                <Button color="primary" variant='inherit' style={{ marginRight: 10 }} component={Link} to={`/nexosPorIncapacidad/${obj.idIncapacidad}`}>Ir</Button>
                             </TableCell>
                         </TableRow>
                     ))}

@@ -37,11 +37,8 @@ const Solicitudes = () => {
     const [action, setAction] = useState(true);
     const classes = useStyles();
 
-
     const userStateEncrypt = useContext(UserLoginContext);
     const userStore = JSON.parse(decrypt(userStateEncrypt.userLogin));
-
-
 
     useEffect(() => {
         async function getAllSolicitudes() {
@@ -65,51 +62,83 @@ const Solicitudes = () => {
         else {
             history.push("/crearsolicitud")
         }
-    }
+    };
 
     const verDetalle = async (idSolicitud, idEstado) => {
 
-        if (userStore.idRol === 2) {
-            history.push(`/editarsolicitud/${idSolicitud}`)
-        } else if (userStore.idRol === 3) {
-            history.push(`/ingresarPersonas/${idSolicitud}`)
-        } else {
-            if (idEstado === 3 || idEstado === 5 || idEstado === 8) {
+        if (userStore.idRol !== 2) {
+            if (userStore.idRol === 1 && (idEstado === 3 || idEstado === 5)) {
                 history.push(`/editarsolicitud/${idSolicitud}`)
             } else {
-                //estado 4 aprobado, 6 en progeso y 7 finalizado
-               
+                history.push(`/ingresarPersonas/${idSolicitud}`)
             }
+
+        } else {
+            history.push(`/editarsolicitud/${idSolicitud}`)
         }
     };
+
+    const vistaDetalle = () => {
+        var vista;
+        if (userStore.idRol === 2) {
+            vista = (
+                <Table className={classes.table}>
+                    <TableHead>
+                        <TableRow className={classes.thead}>
+                            <TableCell>Solicitud</TableCell>
+                            <TableCell>Fecha de Visita</TableCell>
+                            <TableCell>Estado</TableCell>
+                            <TableCell>Acciones</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {solicitudes.map((sol) => (
+                            <TableRow className={classes.row} key={sol.idSolicitud}>
+                                <TableCell>{sol.idSolicitud}</TableCell>
+                                <TableCell>{sol.fechaVisita}</TableCell>
+                                <TableCell>{sol.estado}</TableCell>
+                                <TableCell>
+                                    <Button color="primary" variant="contained" onClick={() => verDetalle(sol.idSolicitud, sol.idEstado)}>Ver</Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>)
+        } else {
+            vista = (
+                <Table className={classes.table}>
+                    <TableHead>
+                        <TableRow className={classes.thead}>
+                            <TableCell>Solicitud</TableCell>
+                            <TableCell>Solicitante</TableCell>
+                            <TableCell>Fecha de Visita</TableCell>
+                            <TableCell>Estado</TableCell>
+                            <TableCell>Acciones</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {solicitudes.map((sol) => (
+                            <TableRow className={classes.row} key={sol.idSolicitud}>
+                                <TableCell>{sol.idSolicitud}</TableCell>
+                                <TableCell>{sol.nombreCompleto}</TableCell>
+                                <TableCell>{sol.fechaVisita}</TableCell>
+                                <TableCell>{sol.estado}</TableCell>
+                                <TableCell>
+                                    <Button color="primary" variant="contained" onClick={() => verDetalle(sol.idSolicitud, sol.idEstado)}>Ver</Button>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>)
+        }
+        return vista;
+    };
+
 
     return (
         <div className={classes.container}>
             <Button variant="outlined" onClick={() => redireccionar()} disabled={action}>Crear solicitud</Button>
-            <Table className={classes.table}>
-                <TableHead>
-                    <TableRow className={classes.thead}>
-                        <TableCell>Solicitud</TableCell>
-                        <TableCell>Solicitante</TableCell>
-                        <TableCell>Fecha de Visita</TableCell>
-                        <TableCell>Estado</TableCell>
-                        <TableCell>Acciones</TableCell>
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {solicitudes.map((sol) => (
-                        <TableRow className={classes.row} key={sol.idSolicitud}>
-                            <TableCell>{sol.idSolicitud}</TableCell>
-                            <TableCell>{sol.nombreCompleto}</TableCell>
-                            <TableCell>{sol.fechaVisita}</TableCell>
-                            <TableCell>{sol.estado}</TableCell>
-                            <TableCell>
-                                <Button color="primary" variant="contained"  onClick={() => verDetalle(sol.idSolicitud, sol.idEstado)}>Ver</Button>
-                            </TableCell>
-                        </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
+            {vistaDetalle()}
         </div>
     );
 }
