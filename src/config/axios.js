@@ -18,6 +18,10 @@ export const getSolicitudes = async (id) => {
     return await axios.get(`${axiosClient}/api/solicitudes/empleado/${id}`);//listar solo las solicitudes del usuario logeado
 }
 
+export const getSolicitudByDate = async (fecha) => {
+    return await axios.post(`${axiosClient}/api/reportes/solicituporfecha`, fecha);
+}
+
 export const buscarSolicitudes = async (id) => {
     id = id || '';
     return await axios.get(`${axiosClient}/api/solicitudes/${id}`);

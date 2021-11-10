@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles, TextField } from '@material-ui/core'
-import { getSolicitudes } from '../../config/axios';
+import { getSolicitudByDate, getSolicitudes } from '../../config/axios';
 import Button from '@mui/material/Button';
 import { useHistory } from "react-router-dom";
 import UserLoginContext from '../../context/login/UserLoginContext';
@@ -97,12 +97,13 @@ const Solicitudes = () => {
     };
 
     const buscarPorFecha = async () => {
-        var fechaIngreso = fechaI.toISOString().substr(0, 10);
+        var fecha = fechaI.toISOString().substr(0, 10);
         
-        if(nameButton === "BUSCAR" && fechaIngreso !== null){
+        if(nameButton === "BUSCAR" && fecha !== null){
            //hacer consulta a la db
-           // var result = await incapacidadByEmpleado(empleado['idEmpleado'])
-           // setSolicitudes(result.data);
+           console.log(fecha);
+           var result = await getSolicitudByDate({fecha});
+           setSolicitudes(result.data);
          
             setNameButton("LIMPIAR");
         }else{
