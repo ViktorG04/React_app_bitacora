@@ -12,6 +12,9 @@ import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import { Box } from '@mui/system';
 import { Stack } from '@mui/material';
+import { ThemeProvider } from '@mui/material/styles';
+import Theme from '../../config/ThemeConfig';
+import Template from '../Template'
 
 const initialValue = {
     fechaVisita: '',
@@ -224,7 +227,7 @@ const EditarSolicitud = () => {
 
             if (result.data['resultState'] === "fields affected") {
                 toast.success("Estado Actualizado");
-            }else{
+            } else {
                 toast.success(result.data['resultState']);
             }
 
@@ -236,95 +239,98 @@ const EditarSolicitud = () => {
     };
 
     return (
-        <FormGroup className={classes.container}>
-            <div><Toaster /></div>
-            <Typography align="center" variant="h4">Solicitud N°{solicitud.idSolicitud}</Typography>
-            <Box component="form"
-                sx={{
-                    '& > :not(style)': { m: 1, width: '33ch' },
-                }}
-                noValidate
-                autoComplete="off">
-                <TextField
-                    label="Nombre Empleado"
-                    variant="outlined"
-                    value={persona.nombreCompleto}
-                    InputProps={{ readOnly: true }}
-                />
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DateTimePicker
-                        value={fechaI}
-                        label="Fecha y Hora Visita"
-                        minDateTime={new Date()}
-                        autoFocus
-                        disabled={state}
-                        onChange={(newValue) => {
-                            setValueFI(newValue);
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
+        <ThemeProvider theme={Theme} >
+            <Template />
+            <FormGroup className={classes.container}>
+                <div><Toaster /></div>
+                <Typography align="center" variant="h4">Solicitud N°{solicitud.idSolicitud}</Typography>
+                <Box component="form"
+                    sx={{
+                        '& > :not(style)': { m: 1, width: '33ch' },
+                    }}
+                    noValidate
+                    autoComplete="off">
+                    <TextField
+                        label="Nombre Empleado"
+                        variant="outlined"
+                        value={persona.nombreCompleto}
+                        InputProps={{ readOnly: true }}
                     />
-                </LocalizationProvider>
-            </Box>
-            <Box component="form"
-                sx={{
-                    '& > :not(style)': { m: 1, width: '33ch' },
-                }}
-                noValidate
-                autoComplete="off">
-                <TextField
-                    select
-                    label="Oficinas"
-                    onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required InputProps={{ readOnly: state }}>
-                    {areas?.map(option => {
-                        return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
-                    })}
-                </TextField>
-                <TextField
-                    select
-                    label="Estado de la Solicitud"
-                    onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required InputProps={{ readOnly: action }}>
-                    {estados?.map(option => {
-                        return (<MenuItem value={option.idEstado}> {option.estado} </MenuItem>);
-                    })}
-                </TextField>
-            </Box>
-            <FormControl>
-                <TextField
-                    label="Motivo"
-                    variant="outlined"
-                    InputProps={{ readOnly: state }}
-                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
-                    inputProps={{ maxLength: 40 }}
-                />
-            </FormControl>
-            <Table>
-                <TableBody>
-                    <TableCell aling="right">
-                        ¿Ha sido diagnosticado o ha presentado sospechas de COVID-19?
-                    </TableCell>
-                    <TableCell><b>{persona.diagnosticado}</b></TableCell>
-                    <TableCell aling="right">
-                        ¿Tiene familiares que hayan sido diagnosticados por COVID-19?
-                    </TableCell>
-                    <TableCell><b>{persona.covidFamiliar}</b></TableCell>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DateTimePicker
+                            value={fechaI}
+                            label="Fecha y Hora Visita"
+                            minDateTime={new Date()}
+                            autoFocus
+                            disabled={state}
+                            onChange={(newValue) => {
+                                setValueFI(newValue);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                </Box>
+                <Box component="form"
+                    sx={{
+                        '& > :not(style)': { m: 1, width: '33ch' },
+                    }}
+                    noValidate
+                    autoComplete="off">
+                    <TextField
+                        select
+                        label="Oficinas"
+                        onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required InputProps={{ readOnly: state }}>
+                        {areas?.map(option => {
+                            return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
+                        })}
+                    </TextField>
+                    <TextField
+                        select
+                        label="Estado de la Solicitud"
+                        onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required InputProps={{ readOnly: action }}>
+                        {estados?.map(option => {
+                            return (<MenuItem value={option.idEstado}> {option.estado} </MenuItem>);
+                        })}
+                    </TextField>
+                </Box>
+                <FormControl>
+                    <TextField
+                        label="Motivo"
+                        variant="outlined"
+                        InputProps={{ readOnly: state }}
+                        onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
+                        inputProps={{ maxLength: 40 }}
+                    />
+                </FormControl>
+                <Table>
+                    <TableBody>
+                        <TableCell aling="right">
+                            ¿Ha sido diagnosticado o ha presentado sospechas de COVID-19?
+                        </TableCell>
+                        <TableCell><b>{persona.diagnosticado}</b></TableCell>
+                        <TableCell aling="right">
+                            ¿Tiene familiares que hayan sido diagnosticados por COVID-19?
+                        </TableCell>
+                        <TableCell><b>{persona.covidFamiliar}</b></TableCell>
 
-                </TableBody>
-                <TableBody>
-                    <TableCell aling="right">
-                        ¿Ha presentado síntomas similares a los de la gripe en los últimos 15 días?
-                    </TableCell>
-                    <TableCell><b>{persona.sintomas}</b></TableCell>
-                    <TableCell aling="right">
-                        ¿Ha salido del pais durante los ultimos 15 dias?
-                    </TableCell>
-                    <TableCell><b>{persona.viajo}</b></TableCell>
-                </TableBody>
-            </Table>
-            <FormControl>
-                <Button variant="contained" color="primary" onClick={() => editSolicitudDetails()} disabled={actionButton}>GUARDAR CAMBIOS</Button>
-                <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../solicitudes`}>{name}</Button>
-            </FormControl>
-        </FormGroup>
+                    </TableBody>
+                    <TableBody>
+                        <TableCell aling="right">
+                            ¿Ha presentado síntomas similares a los de la gripe en los últimos 15 días?
+                        </TableCell>
+                        <TableCell><b>{persona.sintomas}</b></TableCell>
+                        <TableCell aling="right">
+                            ¿Ha salido del pais durante los ultimos 15 dias?
+                        </TableCell>
+                        <TableCell><b>{persona.viajo}</b></TableCell>
+                    </TableBody>
+                </Table>
+                <FormControl>
+                    <Button variant="contained" color="primary" onClick={() => editSolicitudDetails()} disabled={actionButton}>GUARDAR CAMBIOS</Button>
+                    <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../solicitudes`}>{name}</Button>
+                </FormControl>
+            </FormGroup>
+        </ThemeProvider>
     );
 }
 

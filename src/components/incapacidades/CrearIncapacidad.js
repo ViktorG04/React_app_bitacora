@@ -10,6 +10,9 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import TextField from '@mui/material/TextField';
 import Autocomplete from '@mui/material/Autocomplete';
 import toast, { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from '@mui/material/styles';
+import Theme from '../../config/ThemeConfig';
+import Template from '../Template'
 
 const initialValue = {
     numIncapacidad: '',
@@ -68,96 +71,99 @@ const CrearIncapacidad = () => {
 
         incapacidad.fechaInicio = fechaInicio.split("-").reverse().join("-");
         incapacidad.fechaFin = fechaFin.split("-").reverse().join("-");
-       
-       if (numIncapacidad.trim() === "") {
-               toast.error("Campo Requerido! Numero Incapacidad");
-           } else if (empleado === null) {
-               toast.error("Campo requerido! Empleado")
-           } else if (fechaInicio === fechaFin){
+
+        if (numIncapacidad.trim() === "") {
+            toast.error("Campo Requerido! Numero Incapacidad");
+        } else if (empleado === null) {
+            toast.error("Campo requerido! Empleado")
+        } else if (fechaInicio === fechaFin) {
             toast.error("Campo requerido! Fecha Fin es igual a la fecha Inicio")
-           } else if (motivo.trim() === "") {
+        } else if (motivo.trim() === "") {
             toast.error("Campo requerido! motivo de incapacidad")
-           } else {
+        } else {
             incapacidad.idEmpleado = empleado.idEmpleado;
-               try {
+            try {
                 const result = await addIncapacidad(incapacidad);
                 toast.success(result.data);
                 history.push('../incapacidades');
-               } catch (error) {
+            } catch (error) {
                 var notificacion = error.request.response.split(":");
                 notificacion = notificacion[1].split("}");
                 toast.error(notificacion[0]);
-               }
-           }  
+            }
+        }
     };
 
     return (
-        
-        <FormGroup className={classes.container}>
-            <div><Toaster/></div>
-            <Typography align="center" variant="h4">Ingresar Incapacidad</Typography>
-            <FormControl>
-                <TextField  
-                    label="Ingrese Numero Incapacidad"
-                    variant="outlined"
-                    required
-                    type="text" name="numIncapacidad" value={numIncapacidad}
-                    onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 10 }}
-                />
-            </FormControl>
-            <FormControl>
-                <TextField
-                    label="Motivo de Incapacidad"
-                    variant="outlined"
-                    required
-                    type="text"
-                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
-                    inputProps={{ maxLength: 30 }}
-                />
-            </FormControl>
-            <FormControl>
-                <Autocomplete
-                    disablePortal
-                    options={empleados}
-                    getOptionLabel={(option) => option.nombreCompleto}
-                    onChange={(newValue) => {
-                        setValue(newValue);
-                    }}
-                    renderInput={(params) => <TextField {...params} label="Seleccione un Empleado" />}
-                />
-            </FormControl>
-            <FormControl>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <MobileDatePicker
-                        name="fechaInicio" value={fechaI}
-                        label="Fecha Inicio de la Incapacidad"
-                        minDate={new Date()}
-                        onChange={(newValue) => {
-                            setValueFI(newValue);
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
+        <ThemeProvider theme={Theme} >
+            <Template />
+            <FormGroup className={classes.container}>
+                <div><Toaster /></div>
+                <Typography align="center" variant="h4">Ingresar Incapacidad</Typography>
+                <FormControl>
+                    <TextField
+                        label="Ingrese Numero Incapacidad"
+                        variant="outlined"
+                        required
+                        type="text" name="numIncapacidad" value={numIncapacidad}
+                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 10 }}
                     />
-                </LocalizationProvider>
-            </FormControl>
-            <FormControl>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <MobileDatePicker name="fechaFin" value={fechaF}
-                        label="Fecha Fin de Incapacidad"
-                        minDate={new Date()}
-                        maxDate={new Date(dateMax)}
-                        onChange={(newValue) => {
-                            setValueFF(newValue);
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
+                </FormControl>
+                <FormControl>
+                    <TextField
+                        label="Motivo de Incapacidad"
+                        variant="outlined"
+                        required
+                        type="text"
+                        onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
+                        inputProps={{ maxLength: 30 }}
                     />
-                </LocalizationProvider>
-            </FormControl>
-            <FormControl></FormControl>
-            <FormControl>
-                <Button variant="contained" color="primary" onClick={() => ingressIncapacidad()}>Ingresar Incapacidad</Button>
-                <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`./incapacidades`}>Cancelar</Button>
-            </FormControl>
-        </FormGroup>
+                </FormControl>
+                <FormControl>
+                    <Autocomplete
+                        disablePortal
+                        options={empleados}
+                        getOptionLabel={(option) => option.nombreCompleto}
+                        onChange={(newValue) => {
+                            setValue(newValue);
+                        }}
+                        renderInput={(params) => <TextField {...params} label="Seleccione un Empleado" />}
+                    />
+                </FormControl>
+                <FormControl>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <MobileDatePicker
+                            name="fechaInicio" value={fechaI}
+                            label="Fecha Inicio de la Incapacidad"
+                            minDate={new Date()}
+                            onChange={(newValue) => {
+                                setValueFI(newValue);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                </FormControl>
+                <FormControl>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <MobileDatePicker name="fechaFin" value={fechaF}
+                            label="Fecha Fin de Incapacidad"
+                            minDate={new Date()}
+                            maxDate={new Date(dateMax)}
+                            onChange={(newValue) => {
+                                setValueFF(newValue);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                </FormControl>
+                <FormControl></FormControl>
+                <FormControl>
+                    <Button variant="contained" color="primary" onClick={() => ingressIncapacidad()}>Ingresar Incapacidad</Button>
+                    <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`./incapacidades`}>Cancelar</Button>
+                </FormControl>
+            </FormGroup>
+
+        </ThemeProvider>
     );
 }
 

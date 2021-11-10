@@ -8,6 +8,9 @@ import { useParams, useHistory } from "react-router-dom";
 import { buscarPersona, getRoles, getEmpresas, updatePersona, updateEmpleado } from '../../config/axios';
 import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from '@mui/material/styles';
+import Theme from '../../config/ThemeConfig';
+import Template from '../Template'
 
 const initialValue = {
     idPersona: '',
@@ -128,120 +131,126 @@ const EditarPersona = () => {
     let vista;
     if (!isNaN(idUsuario)) {
         vista = (
-            <FormGroup className={classes.container}>
-                <div><Toaster /></div>
-                <Typography align="center" variant="h4">Editar Datos Empleado</Typography>
-                <FormControl>
-                    <TextField
-                        label="Ingrese Nombres y Apellidos"
-                        variant="outlined"
-                        required
-                        type="text" name="nombreCompleto" value={nombreCompleto}
-                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 60 }}
-                    />
-                </FormControl>
-                <FormControl>
-                    <TextField
-                        label="Ingrese Documento Identidad"
-                        variant="outlined"
-                        required
-                        type="text" name="docIdentidad" value={docIdentidad}
-                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 20 }}
-                    />
-                </FormControl>
-                <FormControl>
-                    <TextField
-                        label="Ingrese Correo Electronico"
-                        variant="outlined"
-                        required
-                        type="email" name="correo" value={correo}
-                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 30 }}
-                    />
-                </FormControl>
-                <FormControl>
-                    <TextField
-                        select
-                        label="Seleccione un Rol"
-                        onChange={(e) => onValueChange(e)} name="idRol" value={idRol} id="idRol" required>
-                        {roles?.map(option => {
-                            return (<MenuItem value={option.idRol}> {option.rol} </MenuItem>);
-                        })}
-                    </TextField>
-                </FormControl>
-                <FormControl fullWidth>
-                    <TextField
-                        select
-                        label="Seleccione Estado"
-                        onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required>
-                        <MenuItem value={1}>Activo</MenuItem>
-                        <MenuItem value={2}>Inactivo</MenuItem>
-                    </TextField>
-                </FormControl>
-                <FormControl>
-                    <FormControlLabel control={
-                        <Switch checked={checked} onChange={handleChange} />} label="Cambiar Password" />
-                    <TextField
-                        variant="outlined"
-                        type="password"
-                        name="password" value={password} id="password"
-                        onChange={(e) => onValueChange(e)}
-                        inputProps={{ maxLength: 12 }} disabled={!checked}
-                    />
-                </FormControl>
-                <FormControl>
-                    <Button variant="contained" color="primary" onClick={() => editDataEmpleado()}>Guardar Cambios</Button>
-                    <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../personas`}>Cancelar</Button>
-                </FormControl>
-            </FormGroup>
+            <ThemeProvider theme={Theme} >
+                <Template />
+                <FormGroup className={classes.container}>
+                    <div><Toaster /></div>
+                    <Typography align="center" variant="h4">Editar Datos Empleado</Typography>
+                    <FormControl>
+                        <TextField
+                            label="Ingrese Nombres y Apellidos"
+                            variant="outlined"
+                            required
+                            type="text" name="nombreCompleto" value={nombreCompleto}
+                            onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 60 }}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <TextField
+                            label="Ingrese Documento Identidad"
+                            variant="outlined"
+                            required
+                            type="text" name="docIdentidad" value={docIdentidad}
+                            onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 20 }}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <TextField
+                            label="Ingrese Correo Electronico"
+                            variant="outlined"
+                            required
+                            type="email" name="correo" value={correo}
+                            onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 30 }}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <TextField
+                            select
+                            label="Seleccione un Rol"
+                            onChange={(e) => onValueChange(e)} name="idRol" value={idRol} id="idRol" required>
+                            {roles?.map(option => {
+                                return (<MenuItem value={option.idRol}> {option.rol} </MenuItem>);
+                            })}
+                        </TextField>
+                    </FormControl>
+                    <FormControl fullWidth>
+                        <TextField
+                            select
+                            label="Seleccione Estado"
+                            onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required>
+                            <MenuItem value={1}>Activo</MenuItem>
+                            <MenuItem value={2}>Inactivo</MenuItem>
+                        </TextField>
+                    </FormControl>
+                    <FormControl>
+                        <FormControlLabel control={
+                            <Switch checked={checked} onChange={handleChange} />} label="Cambiar Password" />
+                        <TextField
+                            variant="outlined"
+                            type="password"
+                            name="password" value={password} id="password"
+                            onChange={(e) => onValueChange(e)}
+                            inputProps={{ maxLength: 12 }} disabled={!checked}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <Button variant="contained" color="primary" onClick={() => editDataEmpleado()}>Guardar Cambios</Button>
+                        <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../personas`}>Cancelar</Button>
+                    </FormControl>
+                </FormGroup>
+            </ThemeProvider>
         );
     }
     else {
         vista = (
-            <FormGroup className={classes.container}>
-                <div><Toaster /></div>
-                <Typography variant="h4">Editar Datos Persona</Typography>
-                <FormControl>
-                    <TextField
-                        label="Ingrese Nombres y Apellidos"
-                        variant="outlined"
-                        required
-                        type="text" name="nombreCompleto" value={nombreCompleto}
-                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 60 }}
-                    />
-                </FormControl>
-                <FormControl>
-                    <TextField
-                        label="Ingrese Documento Identidad"
-                        variant="outlined"
-                        required
-                        type="text" name="docIdentidad" value={docIdentidad}
-                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 20 }}
-                    />
-                </FormControl>
-                <FormControl>
-                    <TextField
-                        select
-                        label="Seleccione Empresa"
-                        onChange={(e) => onValueChange(e)} name="idEmpresa" value={idEmpresa} id="idEmpresa" required>
-                        {empresas?.map(option => {
-                            return (<MenuItem value={option.idEmpresa}> {option.nombre} </MenuItem>);
-                        })}
-                    </TextField>
-                </FormControl>
-                <FormControl fullWidth>
-                    <TextField
-                        select
-                        label="Seleccione Estado"
-                        onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required>
-                        <MenuItem value={1}>Activo</MenuItem>
-                        <MenuItem value={2}>Inactivo</MenuItem>
-                    </TextField>
-                </FormControl>
-                <FormControl>
-                    <Button variant="contained" color="primary" onClick={() => editDataPerson()}>Guardar Cambios</Button>
-                    <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../personas`}>Cancelar</Button>
-                </FormControl>
-            </FormGroup>
+            <ThemeProvider theme={Theme} >
+                <Template />
+                <FormGroup className={classes.container}>
+                    <div><Toaster /></div>
+                    <Typography variant="h4">Editar Datos Persona</Typography>
+                    <FormControl>
+                        <TextField
+                            label="Ingrese Nombres y Apellidos"
+                            variant="outlined"
+                            required
+                            type="text" name="nombreCompleto" value={nombreCompleto}
+                            onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 60 }}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <TextField
+                            label="Ingrese Documento Identidad"
+                            variant="outlined"
+                            required
+                            type="text" name="docIdentidad" value={docIdentidad}
+                            onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 20 }}
+                        />
+                    </FormControl>
+                    <FormControl>
+                        <TextField
+                            select
+                            label="Seleccione Empresa"
+                            onChange={(e) => onValueChange(e)} name="idEmpresa" value={idEmpresa} id="idEmpresa" required>
+                            {empresas?.map(option => {
+                                return (<MenuItem value={option.idEmpresa}> {option.nombre} </MenuItem>);
+                            })}
+                        </TextField>
+                    </FormControl>
+                    <FormControl fullWidth>
+                        <TextField
+                            select
+                            label="Seleccione Estado"
+                            onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required>
+                            <MenuItem value={1}>Activo</MenuItem>
+                            <MenuItem value={2}>Inactivo</MenuItem>
+                        </TextField>
+                    </FormControl>
+                    <FormControl>
+                        <Button variant="contained" color="primary" onClick={() => editDataPerson()}>Guardar Cambios</Button>
+                        <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../personas`}>Cancelar</Button>
+                    </FormControl>
+                </FormGroup>
+            </ThemeProvider>
         );
 
     }

@@ -11,5 +11,5 @@ const AdminHome = () => {
         </ThemeProvider>
     );
 }
- 
+
 export default AdminHome;

@@ -6,6 +6,9 @@ import { useParams, useHistory } from "react-router-dom";
 import { buscarEmpresa, editEmpresa, getTipos } from '../../config/axios';
 import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from '@mui/material/styles';
+import Theme from '../../config/ThemeConfig';
+import Template from '../Template'
 
 const initialValue = {
     idEmpresa: '',
@@ -74,6 +77,8 @@ const EditarEmpresa = () => {
     };
 
     return (
+        <ThemeProvider theme={Theme} >
+        <Template />
         <FormGroup className={classes.container}>
             <div><Toaster /></div>
             <Typography align="center" variant="h4">Editar Datos Empresa</Typography>
@@ -111,6 +116,7 @@ const EditarEmpresa = () => {
                 <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../empresas`}>Cancelar</Button>
             </FormControl>
         </FormGroup>
+        </ThemeProvider>
     );
 }
 

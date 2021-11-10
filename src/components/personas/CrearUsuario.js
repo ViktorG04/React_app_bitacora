@@ -6,6 +6,9 @@ import { useHistory } from "react-router-dom";
 import { addEmpleado, getRoles } from '../../config/axios';
 import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from '@mui/material/styles';
+import Theme from '../../config/ThemeConfig';
+import Template from '../Template'
 
 const initialValue = {
     nombre: '',
@@ -74,51 +77,54 @@ const EditarPersona = () => {
     };
 
     return (
-        <FormGroup className={classes.container}>
-            <div><Toaster /></div>
-            <Typography align="center" variant="h4">Ingresar Datos Empleado</Typography>
-            <FormControl>
-                <TextField
-                    label="Ingrese Nombres y Apellidos"
-                    variant="outlined"
-                    required
-                    type="text" name="nombre" value={nombre}
-                    onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 40 }}
-                />
-            </FormControl>
-            <FormControl>
-                <TextField
-                    label="Ingrese Documento Identidad"
-                    variant="outlined"
-                    required
-                    type="text" name="dui" value={dui}
-                    onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 20 }}
-                />
-            </FormControl>
-            <FormControl>
-                <TextField
-                    label="Ingrese Correo Electronico"
-                    variant="outlined"
-                    required
-                    type="email" name="correo" value={correo}
-                    onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 30 }}
-                />
-            </FormControl>
-            <FormControl>
-                <TextField
-                    select
-                    label="Seleccione un Rol"
-                    onChange={(e) => onValueChange(e)} name="idRol" value={idRol} id="idRol" required>
-                    {roles?.map(option => {
-                        return (<MenuItem value={option.idRol}> {option.rol} </MenuItem>);
-                    })}
-                </TextField>
-            </FormControl>
-            <FormControl>
-                <Button variant="contained" color="primary" onClick={() => createNewEmpleado()}>Crear Empleado</Button>
-                <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`./personas`}>Cancelar</Button>
-            </FormControl>
-        </FormGroup>
+        <ThemeProvider theme={Theme} >
+            <Template />
+            <FormGroup className={classes.container}>
+                <div><Toaster /></div>
+                <Typography align="center" variant="h4">Ingresar Datos Empleado</Typography>
+                <FormControl>
+                    <TextField
+                        label="Ingrese Nombres y Apellidos"
+                        variant="outlined"
+                        required
+                        type="text" name="nombre" value={nombre}
+                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 40 }}
+                    />
+                </FormControl>
+                <FormControl>
+                    <TextField
+                        label="Ingrese Documento Identidad"
+                        variant="outlined"
+                        required
+                        type="text" name="dui" value={dui}
+                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 20 }}
+                    />
+                </FormControl>
+                <FormControl>
+                    <TextField
+                        label="Ingrese Correo Electronico"
+                        variant="outlined"
+                        required
+                        type="email" name="correo" value={correo}
+                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 30 }}
+                    />
+                </FormControl>
+                <FormControl>
+                    <TextField
+                        select
+                        label="Seleccione un Rol"
+                        onChange={(e) => onValueChange(e)} name="idRol" value={idRol} id="idRol" required>
+                        {roles?.map(option => {
+                            return (<MenuItem value={option.idRol}> {option.rol} </MenuItem>);
+                        })}
+                    </TextField>
+                </FormControl>
+                <FormControl>
+                    <Button variant="contained" color="primary" onClick={() => createNewEmpleado()}>Crear Empleado</Button>
+                    <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`./personas`}>Cancelar</Button>
+                </FormControl>
+            </FormGroup>
+        </ThemeProvider>
     );
 }
 export default EditarPersona;

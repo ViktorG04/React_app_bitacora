@@ -1,11 +1,14 @@
 import React, { useContext, useState } from 'react';
-import { FormGroup, FormControl, Button, makeStyles, Typography, OutlinedInput, InputAdornment, IconButton, InputLabel } from '@material-ui/core';
+import { FormGroup, FormControl, Button, makeStyles, Typography, OutlinedInput, InputAdornment, IconButton, InputLabel} from '@material-ui/core';
 import TextField from '@mui/material/TextField';
 import { editPassword } from '../../config/axios';
 import toast, { Toaster } from 'react-hot-toast';
 import UserLoginContext from '../../context/login/UserLoginContext';
 import decrypt from '../../utils/decrypt';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { ThemeProvider } from '@mui/material/styles';
+import Theme from '../../config/ThemeConfig';
+import Template from '../Template'
 
 const initialValue = {
     idUsuario: '',
@@ -17,7 +20,7 @@ const initialValue = {
 const useStyles = makeStyles({
     container: {
         width: '50%',
-        margin: '6% 0 0 4%',
+        margin: '6% 0 0 8%',
         '& > *': {
             marginTop: '8px'
         }
@@ -45,9 +48,9 @@ const Perfil = () => {
 
     const cancelChange = async () => {
         setPerfil(initialValue);
-       setActionOldPass(false);
-       setActionNewPass(false);
-       setActionConfirmar(false);
+        setActionOldPass(false);
+        setActionNewPass(false);
+        setActionConfirmar(false);
 
     }
 
@@ -112,84 +115,87 @@ const Perfil = () => {
     };
 
     return (
-        <FormGroup className={classes.container}>
-            <div><Toaster /></div>
-            <Typography align="center" variant="h4">Cambiar Contraseña</Typography>
-            <FormControl>
-                <TextField
-                    label="Nombre Completo"
-                    variant="outlined"
-                    defaultValue={userStore.nombreCompleto}
-                    InputProps={{ readOnly: true }}
-                />
-            </FormControl>
-            <FormControl>
-                <TextField
-                    label="Correo Electronico"
-                    variant="outlined"
-                    defaultValue={userStore.correo}
-                    InputProps={{ readOnly: true }}
-                />
-            </FormControl>
-            <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password">Ingrese Contraseña Actual</InputLabel>
-                <OutlinedInput
-                    type={actionOldPass ? 'text' : 'password'}
-                    name="oldPassword"
-                    value={oldPassword}
-                    inputProps={{ maxLength: 12 }}
-                    onChange={(e) => onValueChange(e)}
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton onClick={handleClickShowOldPassword}>
-                                {actionOldPass ? <Visibility /> : <VisibilityOff />}
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                    label="Ingrese Contraseña Actual"
-                />
-            </FormControl>
-            <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password">Ingrese Nueva Contraseña</InputLabel>
-                <OutlinedInput
-                    type={actionNewPass ? 'text' : 'password'}
-                    name="newPassword"
-                    value={newPassword}
-                    inputProps={{ maxLength: 12 }}
-                    onChange={(e) => onValueChange(e)}
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton onClick={handleClickShowNewPassword}>
-                                {actionNewPass ? <Visibility /> : <VisibilityOff />}
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                    label="Ingrese Nueva Contraseña"
-                />
-            </FormControl>
-            <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                <InputLabel htmlFor="outlined-adornment-password">Confirme Contraseña</InputLabel>
-                <OutlinedInput
-                    type={actionConfirmar ? 'text' : 'password'}
-                    name="confirmar"
-                    value={confirmar}
-                    inputProps={{ maxLength: 12 }}
-                    onChange={(e) => onValueChange(e)}
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButton onClick={handleClickShowConfPassword}>
-                                {actionConfirmar ? <Visibility /> : <VisibilityOff />}
-                            </IconButton>
-                        </InputAdornment>
-                    }
-                    label="Confirme Contraseña"
-                />
-            </FormControl>
-            <FormControl>
-                <Button variant="contained" color="primary" onClick={() => changePassword()}>Cambiar Contraseña</Button>
-                <Button variant="contained" color="secondary" onClick={() => cancelChange()} style={{ marginTop: 10 }}>Cancelar</Button>
-            </FormControl>
-        </FormGroup>
+        <ThemeProvider theme={Theme} >
+                <Template />
+            <FormGroup className={classes.container}>
+                <div><Toaster /></div>
+                <Typography align="center" variant="h4">Cambiar Contraseña</Typography>
+                <FormControl>
+                    <TextField
+                        label="Nombre Completo"
+                        variant="outlined"
+                        defaultValue={userStore.nombreCompleto}
+                        InputProps={{ readOnly: true }}
+                    />
+                </FormControl>
+                <FormControl>
+                    <TextField
+                        label="Correo Electronico"
+                        variant="outlined"
+                        defaultValue={userStore.correo}
+                        InputProps={{ readOnly: true }}
+                    />
+                </FormControl>
+                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                    <InputLabel htmlFor="outlined-adornment-password">Ingrese Contraseña Actual</InputLabel>
+                    <OutlinedInput
+                        type={actionOldPass ? 'text' : 'password'}
+                        name="oldPassword"
+                        value={oldPassword}
+                        inputProps={{ maxLength: 12 }}
+                        onChange={(e) => onValueChange(e)}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton onClick={handleClickShowOldPassword}>
+                                    {actionOldPass ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                        label="Ingrese Contraseña Actual"
+                    />
+                </FormControl>
+                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                    <InputLabel htmlFor="outlined-adornment-password">Ingrese Nueva Contraseña</InputLabel>
+                    <OutlinedInput
+                        type={actionNewPass ? 'text' : 'password'}
+                        name="newPassword"
+                        value={newPassword}
+                        inputProps={{ maxLength: 12 }}
+                        onChange={(e) => onValueChange(e)}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton onClick={handleClickShowNewPassword}>
+                                    {actionNewPass ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                        label="Ingrese Nueva Contraseña"
+                    />
+                </FormControl>
+                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+                    <InputLabel htmlFor="outlined-adornment-password">Confirme Contraseña</InputLabel>
+                    <OutlinedInput
+                        type={actionConfirmar ? 'text' : 'password'}
+                        name="confirmar"
+                        value={confirmar}
+                        inputProps={{ maxLength: 12 }}
+                        onChange={(e) => onValueChange(e)}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <IconButton onClick={handleClickShowConfPassword}>
+                                    {actionConfirmar ? <Visibility /> : <VisibilityOff />}
+                                </IconButton>
+                            </InputAdornment>
+                        }
+                        label="Confirme Contraseña"
+                    />
+                </FormControl>
+                <FormControl>
+                    <Button variant="contained" color="primary" onClick={() => changePassword()}>Cambiar Contraseña</Button>
+                    <Button variant="contained" color="secondary" onClick={() => cancelChange()} style={{ marginTop: 10 }}>Cancelar</Button>
+                </FormControl>
+            </FormGroup>
+        </ThemeProvider>
     );
 }
 

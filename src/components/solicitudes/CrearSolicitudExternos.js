@@ -11,6 +11,9 @@ import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import UserLoginContext from '../../context/login/UserLoginContext';
 import decrypt from '../../utils/decrypt';
+import { ThemeProvider } from '@mui/material/styles';
+import Theme from '../../config/ThemeConfig';
+import Template from '../Template'
 
 const initialValue = {
     idUsuario: '',
@@ -179,22 +182,22 @@ const CrearSolicitudExternos = () => {
 
         }*/
     };
-    
-    
+
+
     const viewTipoE = (nuevaE) => {
         var vista;
         if (nuevaE === false) {
             vista = (
                 <FormControl fullWidth>
-                <TextField
-                    select
-                    label="Seleccione Tipo de Empresa"
-                    onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="idTipo" required>
-                    {tipos?.map(option => {
-                        return (<MenuItem value={option.idTipo}> {option.tipo} </MenuItem>);
-                    })}
-                </TextField>
-            </FormControl>
+                    <TextField
+                        select
+                        label="Seleccione Tipo de Empresa"
+                        onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="idTipo" required>
+                        {tipos?.map(option => {
+                            return (<MenuItem value={option.idTipo}> {option.tipo} </MenuItem>);
+                        })}
+                    </TextField>
+                </FormControl>
             );
         }
 
@@ -203,81 +206,83 @@ const CrearSolicitudExternos = () => {
 
 
     return (
-        <FormGroup className={classes.container}>
-            <div><Toaster /></div>
-            <Typography align="center" variant="h4">Crear Solicitud Visitantes</Typography>
-            <FormControl>
-                <Autocomplete
-                    disablePortal
-                    value={valueEmpresa}
-                    onChange={(event, newValue) => {
-                        if (typeof newValue === 'string') {
-                            setValue({
-                                nombre: newValue,
-                            });
-                        } else if (newValue && newValue.inputValue) {
-                            // Create a new value from the user input
-                            setValue({
-                                nombre: newValue.inputValue,
-                            });
-                        } else {
-                            setValue(newValue);
-                            setAction(true);
-                            getAllPersonas(newValue);
-                        }
-                    }}
-                    filterOptions={(options, params) => {
-                        const filtered = filter(options, params);
+        <ThemeProvider theme={Theme} >
+            <Template />
+            <FormGroup className={classes.container}>
+                <div><Toaster /></div>
+                <Typography align="center" variant="h4">Crear Solicitud Visitantes</Typography>
+                <FormControl>
+                    <Autocomplete
+                        disablePortal
+                        value={valueEmpresa}
+                        onChange={(event, newValue) => {
+                            if (typeof newValue === 'string') {
+                                setValue({
+                                    nombre: newValue,
+                                });
+                            } else if (newValue && newValue.inputValue) {
+                                // Create a new value from the user input
+                                setValue({
+                                    nombre: newValue.inputValue,
+                                });
+                            } else {
+                                setValue(newValue);
+                                setAction(true);
+                                getAllPersonas(newValue);
+                            }
+                        }}
+                        filterOptions={(options, params) => {
+                            const filtered = filter(options, params);
 
-                        const { inputValue } = params;
-                        // Suggest the creation of a new value
-                        const isExisting = options.some((option) => inputValue === option.nombre);
-                        if (inputValue !== '' && !isExisting) {
-                            filtered.push({
-                                inputValue,
-                                nombre: `Add "${inputValue}"`,
-                            });
-                            setAction(false);
-                        }
+                            const { inputValue } = params;
+                            // Suggest the creation of a new value
+                            const isExisting = options.some((option) => inputValue === option.nombre);
+                            if (inputValue !== '' && !isExisting) {
+                                filtered.push({
+                                    inputValue,
+                                    nombre: `Add "${inputValue}"`,
+                                });
+                                setAction(false);
+                            }
 
-                        return filtered;
-                    }}
-                    selectOnFocus
-                    clearOnBlur
-                    handleHomeEndKeys
-                    id="seleccionEmpresa"
-                    options={empresas}
-                    getOptionLabel={(option) => {
-                        // Value selected with enter, right from the input
-                        if (typeof option === 'string') {
-                            return option;
-                        }
-                        // Add "xxx" option created dynamically
-                        if (option.inputValue) {
-                            return option.inputValue;
-                        }
-                        // Regular option
-                        return option.nombre;
-                    }}
-                    renderOption={(props, option) => <li {...props}>{option.nombre}</li>}
+                            return filtered;
+                        }}
+                        selectOnFocus
+                        clearOnBlur
+                        handleHomeEndKeys
+                        id="seleccionEmpresa"
+                        options={empresas}
+                        getOptionLabel={(option) => {
+                            // Value selected with enter, right from the input
+                            if (typeof option === 'string') {
+                                return option;
+                            }
+                            // Add "xxx" option created dynamically
+                            if (option.inputValue) {
+                                return option.inputValue;
+                            }
+                            // Regular option
+                            return option.nombre;
+                        }}
+                        renderOption={(props, option) => <li {...props}>{option.nombre}</li>}
 
-                    freeSolo
-                    renderInput={(params) => (
-                        <TextField {...params} label="Escriba el nombre de la empresa" />
-                    )}
-                />
-            </FormControl>
-            {viewTipoE(action)}
-            <FormControl>
-                <TextField
-                    label="Motivo"
-                    variant="outlined"
-                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo" 
-                    required
-                    inputProps={{ maxLength: 40 }}
-                />
-            </FormControl>
-            <FormControl>
+                        freeSolo
+                        renderInput={(params) => (
+                            <TextField {...params} label="Escriba el nombre de la empresa" />
+                        )}
+                    />
+                </FormControl>
+                {viewTipoE(action)}
+                <FormControl>
+                    <TextField
+                        label="Motivo"
+                        variant="outlined"
+                        onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
+                        required
+                        inputProps={{ maxLength: 40 }}
+                    />
+                </FormControl>
+                <FormControl>
                     <TextField
                         select
                         label="Seleccione una Oficina"
@@ -287,49 +292,49 @@ const CrearSolicitudExternos = () => {
                             return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
                         })}
                     </TextField>
-                </FormControl>            
-            <FormControl>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DateTimePicker
-                        value={fechaI}
-                        label="Fecha y Hora Ingreso"
-                        autoFocus
-                        minDateTime={new Date()}
+                </FormControl>
+                <FormControl>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DateTimePicker
+                            value={fechaI}
+                            label="Fecha y Hora Ingreso"
+                            autoFocus
+                            minDateTime={new Date()}
+                            onChange={(newValue) => {
+                                setValueFI(newValue);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                </FormControl>
+                <FormControl>
+                    <Autocomplete
+                        disablePortal
+                        options={personas}
+                        getOptionLabel={(option) => option.nombreCompleto}
                         onChange={(newValue) => {
-                            setValueFI(newValue);
+                            setValuePersona(newValue);
                         }}
-                        renderInput={(params) => <TextField {...params} />}
+                        renderInput={(params) => <TextField {...params} label="Nombre del Visitante" />}
                     />
-                </LocalizationProvider>
-            </FormControl>
-            <FormControl>
-                <Autocomplete
-                    disablePortal
-                    options={personas}
-                    getOptionLabel={(option) => option.nombreCompleto}
-                    onChange={(newValue) => {
-                        setValuePersona(newValue);
-                    }}
-                    renderInput={(params) => <TextField {...params} label="Nombre del Visitante" />}
-                />
-            </FormControl>
-            <FormControl>
-                <Autocomplete
-                    disablePortal
-                    options={personas}
-                    getOptionLabel={(option) => option.docIdentidad}
-                    onChange={(newValue) => {
-                        setValuePersona(newValue);
-                    }}
-                    renderInput={(params) => <TextField {...params} label="Documento del visitante" />}
-                />
-            </FormControl>
-
-            <FormControl>
-                <Button variant="contained" color="primary" onClick={() => addSol()}>Ingresar solicitud</Button>
-                <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../solicitudes`}>Cancelar</Button>
-            </FormControl>
-        </FormGroup>
+                </FormControl>
+                <FormControl>
+                    <Autocomplete
+                        disablePortal
+                        options={personas}
+                        getOptionLabel={(option) => option.docIdentidad}
+                        onChange={(newValue) => {
+                            setValuePersona(newValue);
+                        }}
+                        renderInput={(params) => <TextField {...params} label="Documento del visitante" />}
+                    />
+                </FormControl>
+                <FormControl>
+                    <Button variant="contained" color="primary" onClick={() => addSol()}>Ingresar solicitud</Button>
+                    <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../solicitudes`}>Cancelar</Button>
+                </FormControl>
+            </FormGroup>
+        </ThemeProvider>
     );
 }
 

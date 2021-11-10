@@ -6,6 +6,9 @@ import { useParams, useHistory } from "react-router-dom";
 import { buscarOficina, editOficina } from '../../config/axios';
 import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
+import { ThemeProvider } from '@mui/material/styles';
+import Theme from '../../config/ThemeConfig';
+import Template from '../Template'
 
 const initialValue = {
     idArea: '',
@@ -46,7 +49,7 @@ const EditarOficina = () => {
             history.push('../oficinas');
         } else {
             toast.error('Error al Actualizar Oficina');
-        } 
+        }
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,42 +60,45 @@ const EditarOficina = () => {
     };
 
     return (
-        <FormGroup className={classes.container}>
-            <div><Toaster /></div>
-            <Typography align="center" variant="h4">Editar Oficina</Typography>
-            <FormControl>
-                <TextField
-                    label="Nombre Oficina"
-                    variant="outlined"
-                    required
-                    type="text" name="descripcion" value={descripcion}
-                    onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 20 }}
-                />
-            </FormControl>
-            <FormControl>
-                <TextField
-                    label="Capacidad de Personas"
-                    variant="outlined"
-                    required
-                    type="number"
-                    name='capacidad' value={capacidad} id="capacidad"
-                    onChange={(e) => onValueChange(e)}  inputProps={{ min: 5, max: 25 }} 
-                />
-            </FormControl>
-            <FormControl fullWidth>
-                <TextField
-                    select
-                    label="Seleccione Estado"
-                    onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required>
-                    <MenuItem value={1}>Activo</MenuItem>
-                    <MenuItem value={2}>Inactivo</MenuItem>
-                </TextField>
-            </FormControl>
-            <FormControl>
-                <Button variant="contained" color="primary" onClick={() => editOficinaDetails()}>Guardar Cambios</Button>
-                <Button variant="contained" color="secondary" style={{marginTop:10}} component={Link} to={`../oficinas`}>Cancelar</Button>
-            </FormControl>
-        </FormGroup>
+        <ThemeProvider theme={Theme} >
+            <Template />
+            <FormGroup className={classes.container}>
+                <div><Toaster /></div>
+                <Typography align="center" variant="h4">Editar Oficina</Typography>
+                <FormControl>
+                    <TextField
+                        label="Nombre Oficina"
+                        variant="outlined"
+                        required
+                        type="text" name="descripcion" value={descripcion}
+                        onChange={(e) => onValueChange(e)} inputProps={{ maxLength: 20 }}
+                    />
+                </FormControl>
+                <FormControl>
+                    <TextField
+                        label="Capacidad de Personas"
+                        variant="outlined"
+                        required
+                        type="number"
+                        name='capacidad' value={capacidad} id="capacidad"
+                        onChange={(e) => onValueChange(e)} inputProps={{ min: 5, max: 25 }}
+                    />
+                </FormControl>
+                <FormControl fullWidth>
+                    <TextField
+                        select
+                        label="Seleccione Estado"
+                        onChange={(e) => onValueChange(e)} name="idEstado" value={idEstado} id="idEstado" required>
+                        <MenuItem value={1}>Activo</MenuItem>
+                        <MenuItem value={2}>Inactivo</MenuItem>
+                    </TextField>
+                </FormControl>
+                <FormControl>
+                    <Button variant="contained" color="primary" onClick={() => editOficinaDetails()}>Guardar Cambios</Button>
+                    <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../oficinas`}>Cancelar</Button>
+                </FormControl>
+            </FormGroup>
+        </ThemeProvider>
     );
 }
 

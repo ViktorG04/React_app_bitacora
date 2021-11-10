@@ -10,6 +10,9 @@ import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import UserLoginContext from '../../context/login/UserLoginContext';
 import decrypt from '../../utils/decrypt';
+import { ThemeProvider } from '@mui/material/styles';
+import Theme from '../../config/ThemeConfig';
+import Template from '../Template'
 
 const initialValue = {
     idUsuario: '',
@@ -106,108 +109,110 @@ const CrearSolicitud = () => {
 
 
     return (
-        <FormGroup className={classes.container}>
-            <div><Toaster /></div>
-            <Typography align="center" variant="h4">Agregar solicitud</Typography>
-            <FormControl>
-                <TextField
-                    label="Nombre Completo"
-                    variant="outlined"
-                    defaultValue={userStore.nombreCompleto}
-                    InputProps={{ readOnly: true }}
-                />
-            </FormControl>
-            <FormControl>
-                <TextField
-                    label="Motivo"
-                    variant="outlined"
-                    onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
-                    inputProps={{ maxLength: 40 }}
-                />
-            </FormControl>
-            <FormControl>
-                <TextField
-                    select
-                    label="Seleccione una Oficina"
-                    onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required>
-                    {areas?.map(option => {
-                        return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
-                    })}
-                </TextField>
-            </FormControl>
-            <FormControl>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                    <DateTimePicker
-                        value={fechaI}
-                        label="Fecha y Hora Ingreso"
-                        autoFocus
-                        minDateTime={new Date()}
-                        onChange={(newValue) => {
-                            setValueFI(newValue);
-                        }}
-                        renderInput={(params) => <TextField {...params} />}
+        <ThemeProvider theme={Theme} >
+            <Template />
+            <FormGroup className={classes.container}>
+                <div><Toaster /></div>
+                <Typography align="center" variant="h4">Agregar solicitud</Typography>
+                <FormControl>
+                    <TextField
+                        label="Nombre Completo"
+                        variant="outlined"
+                        defaultValue={userStore.nombreCompleto}
+                        InputProps={{ readOnly: true }}
                     />
-                </LocalizationProvider>
-            </FormControl>
-            <FormControl>
-                <label htmlFor="my-input">¿Ha presentado síntomas de tos, fiebre moderada a alta, dolor de garganta,
-                    secreción nasal, dificultad para respirar o síntomas similares a los de la gripe en los últimos 15 días?</label>
-                <NativeSelect
-                    defaultValue={"No"}
-                    inputProps={{
-                        name: 'sintomas',
-                        id: 'uncontrolled-native',
-                    }}
-                    onChange={(e) => onValueChange(e)}>
-                    <option value={"Si"}>Si</option>
-                    <option value={"No"}>No</option>
-                </NativeSelect>
-            </FormControl>
-            <FormControl>
-                <label htmlFor="my-input">Ha sido diagnosticado o ha presentado sospechas de COVID-19?</label>
-                <NativeSelect
-                    defaultValue={"No"}
-                    inputProps={{
-                        name: 'diagnosticado',
-                        id: 'uncontrolled-native',
-                    }}
-                    onChange={(e) => onValueChange(e)}>
-                    <option value={"Si"}>Si</option>
-                    <option value={"No"}>No</option>
-                </NativeSelect>
-            </FormControl>
-            <FormControl>
-                <label htmlFor="my-input">Tiene familiares que hayan sido diagnosticados por COVID-19?</label>
-                <NativeSelect
-                    defaultValue={"No"}
-                    inputProps={{
-                        name: 'covidFamiliar',
-                        id: 'uncontrolled-native',
-                    }}
-                    onChange={(e) => onValueChange(e)}>
-                    <option value={"Si"}>Si</option>
-                    <option value={"No"}>No</option>
-                </NativeSelect>
-            </FormControl>
-            <FormControl>
-                <label htmlFor="my-input">Ha salido del pais durante los ultimos 15 dias?</label>
-                <NativeSelect
-                    defaultValue={"No"}
-                    inputProps={{
-                        name: 'viajo',
-                        id: 'uncontrolled-native',
-                    }}
-                    onChange={(e) => onValueChange(e)}>
-                    <option value={"Si"}>Si</option>
-                    <option value={"No"}>No</option>
-                </NativeSelect>
-            </FormControl>
-
-            <FormControl>
-                <Button variant="contained" color="primary" onClick={() => addSol()}>Ingresar solicitud</Button>
-                <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../solicitudes`}>Cancelar</Button>
-            </FormControl>
-        </FormGroup>
+                </FormControl>
+                <FormControl>
+                    <TextField
+                        label="Motivo"
+                        variant="outlined"
+                        onChange={(e) => onValueChange(e)} name="motivo" value={motivo} id="motivo"
+                        inputProps={{ maxLength: 40 }}
+                    />
+                </FormControl>
+                <FormControl>
+                    <TextField
+                        select
+                        label="Seleccione una Oficina"
+                        onChange={(e) => onValueChange(e)} name="idArea" value={idArea} id="idArea" required>
+                        {areas?.map(option => {
+                            return (<MenuItem value={option.idArea}> {option.descripcion} </MenuItem>);
+                        })}
+                    </TextField>
+                </FormControl>
+                <FormControl>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}>
+                        <DateTimePicker
+                            value={fechaI}
+                            label="Fecha y Hora Ingreso"
+                            autoFocus
+                            minDateTime={new Date()}
+                            onChange={(newValue) => {
+                                setValueFI(newValue);
+                            }}
+                            renderInput={(params) => <TextField {...params} />}
+                        />
+                    </LocalizationProvider>
+                </FormControl>
+                <FormControl>
+                    <label htmlFor="my-input">¿Ha presentado síntomas de tos, fiebre moderada a alta, dolor de garganta,
+                        secreción nasal, dificultad para respirar o síntomas similares a los de la gripe en los últimos 15 días?</label>
+                    <NativeSelect
+                        defaultValue={"No"}
+                        inputProps={{
+                            name: 'sintomas',
+                            id: 'uncontrolled-native',
+                        }}
+                        onChange={(e) => onValueChange(e)}>
+                        <option value={"Si"}>Si</option>
+                        <option value={"No"}>No</option>
+                    </NativeSelect>
+                </FormControl>
+                <FormControl>
+                    <label htmlFor="my-input">Ha sido diagnosticado o ha presentado sospechas de COVID-19?</label>
+                    <NativeSelect
+                        defaultValue={"No"}
+                        inputProps={{
+                            name: 'diagnosticado',
+                            id: 'uncontrolled-native',
+                        }}
+                        onChange={(e) => onValueChange(e)}>
+                        <option value={"Si"}>Si</option>
+                        <option value={"No"}>No</option>
+                    </NativeSelect>
+                </FormControl>
+                <FormControl>
+                    <label htmlFor="my-input">Tiene familiares que hayan sido diagnosticados por COVID-19?</label>
+                    <NativeSelect
+                        defaultValue={"No"}
+                        inputProps={{
+                            name: 'covidFamiliar',
+                            id: 'uncontrolled-native',
+                        }}
+                        onChange={(e) => onValueChange(e)}>
+                        <option value={"Si"}>Si</option>
+                        <option value={"No"}>No</option>
+                    </NativeSelect>
+                </FormControl>
+                <FormControl>
+                    <label htmlFor="my-input">Ha salido del pais durante los ultimos 15 dias?</label>
+                    <NativeSelect
+                        defaultValue={"No"}
+                        inputProps={{
+                            name: 'viajo',
+                            id: 'uncontrolled-native',
+                        }}
+                        onChange={(e) => onValueChange(e)}>
+                        <option value={"Si"}>Si</option>
+                        <option value={"No"}>No</option>
+                    </NativeSelect>
+                </FormControl>
+                <FormControl>
+                    <Button variant="contained" color="primary" onClick={() => addSol()}>Ingresar solicitud</Button>
+                    <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../solicitudes`}>Cancelar</Button>
+                </FormControl>
+            </FormGroup>
+        </ThemeProvider>
     );
 }
 

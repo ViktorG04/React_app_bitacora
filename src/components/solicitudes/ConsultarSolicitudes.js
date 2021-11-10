@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles } from '@material-ui/core'
+import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles, TextField } from '@material-ui/core'
 import { getSolicitudes } from '../../config/axios';
 import Button from '@mui/material/Button';
 import { useHistory } from "react-router-dom";
 import UserLoginContext from '../../context/login/UserLoginContext';
 import decrypt from '../../utils/decrypt';
+import { Stack } from '@mui/material';
+import { Box } from '@mui/system';
+import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
 
 const useStyles = makeStyles({
     container: {
@@ -35,24 +39,38 @@ const Solicitudes = () => {
     const history = useHistory();
     const [solicitudes, setSolicitudes] = useState([]);
     const [action, setAction] = useState(true);
-    const classes = useStyles();
-
+    //usuario logeado
     const userStateEncrypt = useContext(UserLoginContext);
     const userStore = JSON.parse(decrypt(userStateEncrypt.userLogin));
 
-    useEffect(() => {
-        async function getAllSolicitudes() {
-            let response = await getSolicitudes(userStore.idUsuario);
-            setSolicitudes(response.data);
+    //name button
+    const [nameButton, setNameButton] = useState("BUSCAR");
 
-        };
+    //accion fecha
+    const [fechaI, setValueFI] = useState(null);
+
+    const classes = useStyles();
+
+    useEffect(() => {
         getAllSolicitudes();
 
         if (userStore.idRol !== 3) {
             setAction(false);
         }
 
-    }, [userStore.idRol, userStore.idUsuario]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    async function getAllSolicitudes() {
+        let response = await getSolicitudes(userStore.idUsuario);
+        let vacio = [];
+        if (response.data === "") {
+            setSolicitudes(vacio);
+        } else {
+            setSolicitudes(response.data);
+        }
+
+    };
 
     const redireccionar = async () => {
 
@@ -76,6 +94,23 @@ const Solicitudes = () => {
         } else {
             history.push(`/editarsolicitud/${idSolicitud}`)
         }
+    };
+
+    const buscarPorFecha = async () => {
+        var fechaIngreso = fechaI.toISOString().substr(0, 10);
+        
+        if(nameButton === "BUSCAR" && fechaIngreso !== null){
+           //hacer consulta a la db
+           // var result = await incapacidadByEmpleado(empleado['idEmpleado'])
+           // setSolicitudes(result.data);
+         
+            setNameButton("LIMPIAR");
+        }else{
+            setNameButton("BUSCAR");
+            setValueFI(null);
+            getAllSolicitudes();
+         }
+         
     };
 
     const vistaDetalle = () => {
@@ -106,7 +141,7 @@ const Solicitudes = () => {
                 </Table>)
         } else {
             vista = (
-                <Table className={classes.table}>
+                <Table>
                     <TableHead>
                         <TableRow className={classes.thead}>
                             <TableCell>Solicitud</TableCell>
@@ -134,12 +169,53 @@ const Solicitudes = () => {
         return vista;
     };
 
+    const vistaBotones = () => {
+        var botones;
+        if (userStore.idRol === 2 || userStore.idRol === 1) {
+            if (userStore.idRol === 1) {
+                botones = (
+                    <Box className={classes.container}>
+                        <Stack spacing={4} direction="row" >
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <DesktopDatePicker
+                                    value={fechaI}
+                                    label="Buscar por Fecha"
+                                    autoFocus
+                                    minDate={new Date('2021-10-01')}
+                                    onChange={(newValue) => {
+                                        setValueFI(newValue);
+                                    }}
+                                    renderInput={(params) => <TextField {...params} />}
+                                />
+                            </LocalizationProvider>
+                            <Button variant="outlined" onClick={() => buscarPorFecha()} style={{ marginTop: 10 }}>{nameButton}</Button>
+                            <Button variant="outlined" onClick={() => redireccionar()} disabled={action} style={{ marginLeft: "auto", marginTop: 10 }}>Crear solicitud</Button>
+                        </Stack>
+                        <div style={{ marginTop: 10 }}>{vistaDetalle()}</div>
+                    </Box>
+                );
+            } else {
+                botones = (
+                    <Box className={classes.container}>
+                        <Button variant="outlined" onClick={() => redireccionar()} disabled={action}>Crear solicitud</Button>
+                        <div>{vistaDetalle()}</div>
+                    </Box>
+                )
+            }
+        }
+        else {
+            botones = (
+                <Box className={classes.container}>
+                    <div>{vistaDetalle()}</div>
+                </Box>
+            )
+        }
+        return botones;
+    }
+
 
     return (
-        <div className={classes.container}>
-            <Button variant="outlined" onClick={() => redireccionar()} disabled={action}>Crear solicitud</Button>
-            {vistaDetalle()}
-        </div>
+        <div> {vistaBotones()}</div>
     );
 }
 

@@ -19,12 +19,11 @@ import Nexos from './components/incapacidades/nexos';
 import CrearSolicitudExternos from './components/solicitudes/CrearSolicitudExternos';
 import UserLoginContext from './context/login/UserLoginContext';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import VistaPerfil from './views/VistaPerfil';
 import DetalleSolicitud from './components/solicitudes/DetalleSolicitudes';
-import VistaEditarSolicitud from './views/vistaEditarSolicitud';
-import VistaCrearSolicitud from './views/vistaCrearSolicitud';
+import EditarSolicitud from './components/solicitudes/EditarSolicitud';
+import CrearSolicitud from './components/solicitudes/CrearSolicitud';
 import VistaReportes from './views/vistaReportes';
-
+import Perfil from './components/personas/perfil';
 
 const useStyles = makeStyles({
   container: {
@@ -43,12 +42,12 @@ function App() {
                 <Switch>
                     <Route exact path="/" component={Login} />
 
-                    <Route exact path="/perfil" component={VistaPerfil}/>
+                    <Route exact path="/perfil" component={Perfil}/>
 
                     <Route exact path="/solicitudes" component={vistaSolicitudes} />
-                    <Route exact path="/crearsolicitud" component={VistaCrearSolicitud} />
+                    <Route exact path="/crearsolicitud" component={CrearSolicitud} />
                     <Route exact path="/crearsolicitudexternos" component={CrearSolicitudExternos} />
-                    <Route exact path="/editarsolicitud/:id" component={VistaEditarSolicitud} />
+                    <Route exact path="/editarsolicitud/:id" component={EditarSolicitud} />
                     <Route exact path="/ingresarPersonas/:id" component={DetalleSolicitud} />
                     
                     <Route exact path="/oficinas" component={VistaOficinas} />
