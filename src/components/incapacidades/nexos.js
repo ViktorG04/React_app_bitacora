@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles } from '@material-ui/core'
-import { buscarNexoxPorIncapacidad } from '../../config/axios';
+import { buscarNexoxPorIncapacidad, getOficinas } from '../../config/axios';
 import { useParams} from "react-router-dom";
 
 const useStyles = makeStyles({
     table: {
-        width: '90%',
+        width: '100%',
         margin: '20px 0px'
     },
     thead: {
@@ -36,6 +36,16 @@ const Nexos = () => {
             if (response.data === "") {
                 setNexos(vacio);
             } else {
+
+                const areas = await getOficinas();
+                console.log(areas);
+                for(const i in response.data){
+                    for(const x in areas.data){
+                        if(response.data[i]['Area'] === areas.data[x]['idArea']){
+                            response.data[i]['Area'] = areas.data[x]['descripcion']; 
+                        }
+                    }
+                }
                 setNexos(response.data);
             }
         };
@@ -58,9 +68,9 @@ const Nexos = () => {
             {nexos.map((obj) => (
                 <TableRow className={classes.row}>
                     <TableCell>{obj.nombreCompleto}</TableCell>
-                    <TableCell>{obj.area}</TableCell>
-                    <TableCell>{obj.temperatura}</TableCell>
-                    <TableCell>{obj.fecha}</TableCell>
+                    <TableCell>{obj.Area}</TableCell>
+                    <TableCell align="center">{obj.temperatura}</TableCell>
+                    <TableCell align="center">{obj.fecha}</TableCell>
                 </TableRow>
             ))}
         </TableBody>

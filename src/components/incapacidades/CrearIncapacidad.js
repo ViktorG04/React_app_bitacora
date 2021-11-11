@@ -35,16 +35,17 @@ const useStyles = makeStyles({
 const CrearIncapacidad = () => {
     const [incapacidad, setIncapacidad] = useState(initialValue);
     const { numIncapacidad, motivo } = incapacidad;
+
+    //manejar autocomple
     const [empleados, setEmpleados] = useState([]);
-    const [empleado, setValue] = useState(empleados[0]);
+    const [empleado, setValue] = useState(0);
+
     const [fechaI, setValueFI] = useState(new Date());
     const [fechaF, setValueFF] = useState(new Date());
-
 
     var curr = new Date();
     curr.setDate(curr.getDate() + 30);
     var dateMax = curr.toISOString().substr(0, 10);
-
 
     const classes = useStyles();
 
@@ -55,8 +56,7 @@ const CrearIncapacidad = () => {
             const response = await getEmpleados();
             setEmpleados(response.data);
         };
-        getAllEmpleados()
-
+        getAllEmpleados();
     }, []);
 
     const onValueChange = (e) => {
@@ -98,7 +98,7 @@ const CrearIncapacidad = () => {
         <ThemeProvider theme={Theme} >
             <Template />
             <FormGroup className={classes.container}>
-                <div><Toaster /></div>
+                <div><Toaster/></div>
                 <Typography align="center" variant="h4">Ingresar Incapacidad</Typography>
                 <FormControl>
                     <TextField
@@ -121,13 +121,12 @@ const CrearIncapacidad = () => {
                 </FormControl>
                 <FormControl>
                     <Autocomplete
-                        disablePortal
-                        options={empleados}
-                        getOptionLabel={(option) => option.nombreCompleto}
-                        onChange={(newValue) => {
+                        onChange={(event, newValue) => {
                             setValue(newValue);
                         }}
-                        renderInput={(params) => <TextField {...params} label="Seleccione un Empleado" />}
+                        options={empleados}
+                        getOptionLabel={(option) => option.nombreCompleto}
+                        renderInput={(params) => <TextField {...params} label="Buscar Empleado"/>}
                     />
                 </FormControl>
                 <FormControl>
@@ -162,7 +161,6 @@ const CrearIncapacidad = () => {
                     <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`./incapacidades`}>Cancelar</Button>
                 </FormControl>
             </FormGroup>
-
         </ThemeProvider>
     );
 }

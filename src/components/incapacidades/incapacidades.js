@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles, TextField} from '@material-ui/core'
+import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles, TextField } from '@material-ui/core'
 import { getEmpleados, getIncapacidades, incapacidadByEmpleado } from '../../config/axios';
 import Button from '@mui/material/Button';
-import { Link } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
 import { Autocomplete, Stack } from '@mui/material';
+
 
 const useStyles = makeStyles({
     container: {
@@ -34,10 +34,9 @@ const useStyles = makeStyles({
 const Incapacidades = () => {
     const [incapacidades, setIncapacidades] = useState([]);
 
-    //manejar autocomple
-    const [empleados, setEmpleados] = useState([]);
-    const [empleado, setValue] = useState([]);
-    const [inputValue, setInputValue] = useState('');
+     //manejar autocomple
+     const [empleados, setEmpleados] = useState([]);
+     const [empleado, setValue] = useState(0);
 
     //name button
     const [nameButton, setNameButton] = useState("BUSCAR");
@@ -46,7 +45,7 @@ const Incapacidades = () => {
     const history = useHistory();
 
     useEffect(() => {
-        
+
         getAllIncapacidades();
 
         async function getAllEmpleados() {
@@ -69,37 +68,35 @@ const Incapacidades = () => {
 
     const buscarPorEmpleado = async () => {
 
-        if(nameButton === "BUSCAR" && empleado !== null){
+        if (nameButton === "BUSCAR" && empleado !== null) {
             var result = await incapacidadByEmpleado(empleado['idEmpleado'])
- 
+
             setIncapacidades(result.data);
             setNameButton("LIMPIAR");
-        }else{
+        } else {
             setNameButton("BUSCAR");
             setValue(null);
             getAllIncapacidades();
-         }
+        }
+    };
+
+    const accionIr = async (id) =>{
+        window.open(`/nexosPorIncapacidad/${id}`);
     };
 
     return (
         <div className={classes.container}>
             <Stack spacing={4} direction="row">
-
                 <Autocomplete
-                    value={empleado}
+                    sx={{ width: 300 }}
                     onChange={(event, newValue) => {
                         setValue(newValue);
                     }}
-                    inputValue={inputValue}
-                    onInputChange={(event, newInputValue) => {
-                        setInputValue(newInputValue);
-                    }}
                     options={empleados}
                     getOptionLabel={(option) => option.nombreCompleto}
-                    sx={{ width: 300 }}
                     renderInput={(params) => <TextField {...params} label="Buscar Empleado" />}
                 />
-                <Button  variant="contained" onClick={() => buscarPorEmpleado()}>{nameButton}</Button>
+                <Button variant="contained" onClick={() => buscarPorEmpleado()}>{nameButton}</Button>
 
                 <Button variant="contained" color="success" onClick={() => history.push("/crearIncapacidad")}
                     style={{ marginLeft: "auto" }}>INGRESAR INCAPACIDAD</Button>
@@ -122,7 +119,7 @@ const Incapacidades = () => {
                             <TableCell>{obj.fechaInicio}</TableCell>
                             <TableCell>{obj.fechaFin}</TableCell>
                             <TableCell>
-                                <Button color="primary" variant='inherit' style={{ marginRight: 10 }} component={Link} to={`/nexosPorIncapacidad/${obj.idIncapacidad}`}>Ir</Button>
+                                <Button color="primary" variant='inherit' style={{ marginRight: 10 }} onClick={() =>accionIr(obj.idIncapacidad)}>Ir</Button>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -133,3 +130,6 @@ const Incapacidades = () => {
 }
 
 export default Incapacidades;
+
+
+//`/nexosPorIncapacidad/${obj.idIncapacidad}`
