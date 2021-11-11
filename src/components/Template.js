@@ -139,7 +139,6 @@ function Container() {
       listar = (
         <List>
         {itemsList.map((item, index) => {
-          console.log(item)
           const { text, icon, path } = item;
           return (
             <Link to={path}>

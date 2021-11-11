@@ -22,8 +22,9 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import DetalleSolicitud from './components/solicitudes/DetalleSolicitudes';
 import EditarSolicitud from './components/solicitudes/EditarSolicitud';
 import CrearSolicitud from './components/solicitudes/CrearSolicitud';
-import VistaReportes from './views/vistaReportes';
 import Perfil from './components/personas/perfil';
+import FiltroReportes from './components/reportes/filtroReportes';
+import ReportesContext from './context/ReporteContext';
 
 const useStyles = makeStyles({
   container: {
@@ -34,43 +35,46 @@ const useStyles = makeStyles({
 function App() {
   const classes = useStyles();
   const [userLogin, setUserLogin] = useLocalStorage('userLogIn', '');
+  const [reportes, setReportes] = useLocalStorage('reportes', '');
 
   return (
     <div className={classes.container}>
-          <UserLoginContext.Provider value={{ userLogin, setUserLogin }}>
-            <Router>
-                <Switch>
-                    <Route exact path="/" component={Login} />
+      <UserLoginContext.Provider value={{ userLogin, setUserLogin }}>
+        <Router>
+          <Switch>
+            <Route exact path="/" component={Login} />
 
-                    <Route exact path="/perfil" component={Perfil}/>
+            <Route exact path="/perfil" component={Perfil} />
 
-                    <Route exact path="/solicitudes" component={vistaSolicitudes} />
-                    <Route exact path="/crearsolicitud" component={CrearSolicitud} />
-                    <Route exact path="/crearsolicitudexternos" component={CrearSolicitudExternos} />
-                    <Route exact path="/editarsolicitud/:id" component={EditarSolicitud} />
-                    <Route exact path="/ingresarPersonas/:id" component={DetalleSolicitud} />
-                    
-                    <Route exact path="/oficinas" component={VistaOficinas} />
-                    <Route exact path="/editarOficina/:id" component={EditarOficina} />
-                    <Route exact path="/crearOficina" component={CrearOficina} />
+            <Route exact path="/solicitudes" component={vistaSolicitudes} />
+            <Route exact path="/crearsolicitud" component={CrearSolicitud} />
+            <Route exact path="/crearsolicitudexternos" component={CrearSolicitudExternos} />
+            <Route exact path="/editarsolicitud/:id" component={EditarSolicitud} />
+            <Route exact path="/ingresarPersonas/:id" component={DetalleSolicitud} />
 
-                    <Route exact path="/empresas" component={VistaEmpresas}/>
-                    <Route exact path="/editarEmpresa/:id" component={EditarEmpresa} />
+            <Route exact path="/oficinas" component={VistaOficinas} />
+            <Route exact path="/editarOficina/:id" component={EditarOficina} />
+            <Route exact path="/crearOficina" component={CrearOficina} />
 
-                    <Route exact path="/personas" component={VistaPersonas}/>
-                    <Route exact path="/crearEmpleado" component={CrearUsuario}/>
-                    <Route exact path="/editarPersona/:id" component={EditarPersona} />
+            <Route exact path="/empresas" component={VistaEmpresas} />
+            <Route exact path="/editarEmpresa/:id" component={EditarEmpresa} />
 
-                    <Route exact path="/incapacidades" component={VistaIncapacidades}/>
-                    <Route exact path="/crearIncapacidad" component={CrearIncapacidad} />
-                    <Route exact path="/nexosPorIncapacidad/:id" component={Nexos} />
+            <Route exact path="/personas" component={VistaPersonas} />
+            <Route exact path="/crearEmpleado" component={CrearUsuario} />
+            <Route exact path="/editarPersona/:id" component={EditarPersona} />
 
-                    <Route exact path="/reportes" component={VistaReportes} />
-                    <Route exact path="/reportes/visitas" component={Visitas}/>
-                    <Route exact path="/reportes/oficinas" component={VisitasOficina}/>
-                </Switch>
-            </Router>
-          </UserLoginContext.Provider>
+            <Route exact path="/incapacidades" component={VistaIncapacidades} />
+            <Route exact path="/crearIncapacidad" component={CrearIncapacidad} />
+            <Route exact path="/nexosPorIncapacidad/:id" component={Nexos} />
+            
+            <ReportesContext.Provider value={{ reportes, setReportes }}>
+              <Route exact path="/reportes" component={FiltroReportes} />
+              <Route exact path="/reportes/visitas" component={Visitas} />
+              <Route exact path="/reportes/oficinas" component={VisitasOficina} />
+            </ReportesContext.Provider>
+          </Switch>
+        </Router>
+      </UserLoginContext.Provider>
     </div>
   );
 }

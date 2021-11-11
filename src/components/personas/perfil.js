@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { FormGroup, FormControl, Button, makeStyles, Typography, OutlinedInput, InputAdornment, IconButton, InputLabel} from '@material-ui/core';
+import { FormGroup, FormControl, Button, makeStyles, Typography, OutlinedInput, InputAdornment, IconButton, InputLabel } from '@material-ui/core';
 import TextField from '@mui/material/TextField';
 import { editPassword } from '../../config/axios';
 import toast, { Toaster } from 'react-hot-toast';
@@ -116,7 +116,7 @@ const Perfil = () => {
 
     return (
         <ThemeProvider theme={Theme} >
-                <Template />
+            <Template />
             <FormGroup className={classes.container}>
                 <div><Toaster /></div>
                 <Typography align="center" variant="h4">Cambiar Contraseña</Typography>

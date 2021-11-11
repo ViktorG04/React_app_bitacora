@@ -154,6 +154,19 @@ export const getVisitas = async=>{
     return axios.get(`${axiosClient}/api/reportes/visitas`);
 }
 
+export const getVisitasByDate = async (fechas) => {
+    return await axios.post(`${axiosClient}/api/reportes/visitas/porfecha`, fechas);
+}
+
+export const getVisitasByOficinaAndDate= async (fechasArea) => {
+    return await axios.post(`${axiosClient}/api/reportes/area/fecha`, fechasArea);
+}
+
+export const getVisitasByOficina = async (id) => {
+    id = id || '';
+    return await axios.get(`${axiosClient}/api/reportes/visitas/${id}`);
+}
+
 export const getVisitasOficina = async (fecha) => {
     return await axios.post(`${axiosClient}/api/areas/reportes`, fecha);
 }

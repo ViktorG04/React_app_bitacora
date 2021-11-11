@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Table, TableHead, TableCell, TableRow, TableBody, makeStyles } from '@material-ui/core'
-import { getVisitas } from '../../config/axios';
+import ReportesContext from '../../context/ReporteContext';
+import decrypt from '../../utils/decrypt';
 
 const useStyles = makeStyles({
     table: {
-        width: '90%',
-        margin: '20px 0px'
+        width: '98%',
     },
     thead: {
         '& > *': {
@@ -25,28 +25,28 @@ const Visitas = () => {
     const [visitas, setVisitas] = useState([]);
     const classes = useStyles();
 
+    //data reporte
+    const reporteStateEncrypt = useContext(ReportesContext);
+    const dataVisitas = JSON.parse(decrypt(reporteStateEncrypt.reportes));
+
     useEffect(() => {
-        async function getAllVisitas() {
-            let response = await getVisitas();
             let vacio = [];
-            if (response.data === "") {
+            if (dataVisitas === "") {
                 setVisitas(vacio);
             } else {
-                for (const i in response.data) {
-                    if (response.data[i]['idEstado'] === 7) {
-                        response.data[i]['idEstado'] = 'ingreso'
-                    } else if (response.data[i]['idEstado'] === 6) {
-                        response.data[i]['idEstado'] = 'Adentro'
+                for (const i in dataVisitas) {
+                    if (dataVisitas[i]['idEstado'] === 7) {
+                        dataVisitas[i]['idEstado'] = 'Ingreso'
+                    } else if (dataVisitas[i]['idEstado'] === 6) {
+                        dataVisitas[i]['idEstado'] = 'Ingreso'
                     } else {
-                        response.data[i]['idEstado'] = 'No ingreso'
+                        dataVisitas[i]['idEstado'] = 'No ingreso'
                     }
                 }
-
-                setVisitas(response.data);
+                setVisitas(dataVisitas);
             }
-
-        };
-        getAllVisitas();
+            
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (
@@ -68,14 +68,14 @@ const Visitas = () => {
             <TableBody>
                 {visitas.map((obj) => (
                     <TableRow className={classes.row}>
-                        <TableCell>{obj.idSolicitud}</TableCell>
+                        <TableCell align="center">{obj.idSolicitud}</TableCell>
                         <TableCell>{obj.nombreCompleto}</TableCell>
                         <TableCell>{obj.docIdentidad}</TableCell>
                         <TableCell>{obj.empresa}</TableCell>
                         <TableCell>{obj.oficina}</TableCell>
                         <TableCell>{obj.fechaHoraIngreso}</TableCell>
                         <TableCell>{obj.fechaHoraSalida}</TableCell>
-                        <TableCell>{obj.temperatura}</TableCell>
+                        <TableCell align="center">{obj.temperatura}</TableCell>
                         <TableCell>{obj.idEstado}</TableCell>
                     </TableRow>
                 ))}
