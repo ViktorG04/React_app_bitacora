@@ -16,4 +16,4 @@ spec:
         - name: reactapp 
           image: bitacorapre.azurecr.io/reactapp
           ports:
-          - containerPort: 80
+          - containerPort: 3000
