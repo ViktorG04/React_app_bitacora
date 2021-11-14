@@ -65,13 +65,19 @@ const EditarPersona = () => {
             try {
                 const result = await addEmpleado(empleado);
                 if (result['data'] === 'fields affected') {
-                    toast.error('Empleado Registrado, su usuario y password han sido enviados al correo electronico registrado');
-                    history.push('./personas');
+                    toast.success('Empleado Registrado, su usuario y password han sido enviados al correo electronico registrado');
+                    setTimeout(() => {
+                        history.push('../personas');
+                     }, 2000);
                 }
             } catch (error) {
+                if (error.request.response !== '') {
                 var notificacion = error.request.response.split(":");
                 notificacion = notificacion[1].split("}");
                 toast.error(notificacion[0]);
+                }else {
+                    toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor");
+                }
             }
         }
     };

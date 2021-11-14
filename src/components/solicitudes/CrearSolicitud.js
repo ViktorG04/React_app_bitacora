@@ -96,12 +96,18 @@ const CrearSolicitud = () => {
             try {
                 var result = await addSolicitud(solicitud);
                 console.log(result.data);
-                history.push('../solicitudes');
+                setTimeout(() => {
+                    history.push('../solicitudes');
+                }, 2000);
 
             } catch (error) {
-                var notificacion = error.request.response.split(":");
-                notificacion = notificacion[1].split("}");
-                toast.error(notificacion[0]);
+                if (error.request.response !== '') {
+                    var notificacion = error.request.response.split(":");
+                    notificacion = notificacion[1].split("}");
+                    toast.error(notificacion[0]);
+                } else {
+                    toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor");
+                }
             }
 
         }

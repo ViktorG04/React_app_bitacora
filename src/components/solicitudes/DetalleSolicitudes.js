@@ -139,7 +139,10 @@ const DetalleSolicitud = () => {
             } else {
                 ingreso = await IngresarPersonas(personaIngreso, solicitud.idSolicitud);
                 if (ingreso !== undefined) {
-                    history.push("../solicitudes");
+                    toast.success('Captura de temperatura correcto');
+                    setTimeout(() => {
+                        history.push('../solicitudes');
+                     }, 2000);
                 }
             }
         }

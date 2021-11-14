@@ -47,8 +47,10 @@ const CrearOficina = () => {
             const result = await addOficina(oficina);
 
             if (result.data['result'] === 'fields affected') {
-                toast.error('Oficina Creada');
-                history.push('./oficinas');
+                toast.success('Oficina Creada');
+                setTimeout(() => {
+                    history.push('../oficinas');
+                 }, 2000);
             } else {
                 toast.error('Error al Crear Oficina');
             }

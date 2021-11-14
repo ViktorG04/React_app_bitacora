@@ -53,7 +53,9 @@ const EditarEmpresa = () => {
 
         if (result.data['msg'] === 'fields affected') {
             toast.success('Datos Actualizados');
-            history.push('../empresas');
+            setTimeout(() => {
+                history.push('../empresas');
+             }, 2000);
         } else {
            toast.error('Error al Actualizar Datos');
         }

@@ -73,12 +73,18 @@ const EditarPersona = () => {
 
         try {
             await updateEmpleado(persona);
-            toast.error('Datos Actualizados');
-            history.push('../personas');
+            toast.success('Datos Actualizados');
+            setTimeout(() => {
+                history.push('../personas');
+            }, 2000);
         } catch (error) {
-            var notificacion = error.request.response.split(":");
-            notificacion = notificacion[1].split("}");
-            toast.error(notificacion[0]);
+            if (error.request.response !== '') {
+                var notificacion = error.request.response.split(":");
+                notificacion = notificacion[1].split("}");
+                toast.error(notificacion[0]);
+            } else {
+                toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor");
+            }
         }
     };
 
@@ -88,13 +94,18 @@ const EditarPersona = () => {
         delete persona['idEstado'];
         try {
             await updatePersona(persona);
-            toast.error('Datos Actualizados');
-            history.push('../personas');
-
+            toast.success('Datos Actualizados');
+            setTimeout(() => {
+                history.push('../personas');
+            }, 2000);
         } catch (error) {
-            var notificacion = error.request.response.split(":");
-            notificacion = notificacion[1].split("}");
-            toast.error(notificacion[0]);
+            if (error.request.response !== '') {
+                var notificacion = error.request.response.split(":");
+                notificacion = notificacion[1].split("}");
+                toast.error(notificacion[0]);
+            } else {
+                toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor");
+            }
         }
 
     };

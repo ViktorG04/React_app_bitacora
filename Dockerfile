@@ -1,5 +1,5 @@
 #version de node
-FROM node:14-alpine3.14 AS build-step
+FROM node:14-alpine3.14
 
 #crear una carpeta app
 RUN mkdir -p /app
@@ -18,11 +18,11 @@ ENV REACT_APP_BACKEND_URL=
 #instalar las dependencias requeridas
 RUN npm install
 
+#instalar servidor serve
+RUN npm i -g serve
+
 #compilar proyecto
 RUN npm run build
 
-#imagen de nginx
-FROM nginx:1.21.3-alpine
-
-#copiamos la carpeta build en la ruta de nginx
-COPY --from=build-step /app/build /usr/share/nginx/html
+#correr el build
+CMD ["serve", "-s", "build"]
