@@ -9,6 +9,7 @@ import { Stack } from '@mui/material';
 import { Box } from '@mui/system';
 import { DesktopDatePicker, LocalizationProvider } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import toast, { Toaster } from 'react-hot-toast';
 
 const useStyles = makeStyles({
     container: {
@@ -43,8 +44,14 @@ const Solicitudes = () => {
     const userStateEncrypt = useContext(UserLoginContext);
     const userStore = JSON.parse(decrypt(userStateEncrypt.userLogin));
 
-    //name button
+    //button name
     const [nameButton, setNameButton] = useState("BUSCAR");
+
+    //button color
+    const [colorButton, setColorButton] = useState("primary");
+
+    //editable oficina
+    const [stateEditable, setStateEditable] = useState(false);
 
     //accion fecha
     const [fechaI, setValueFI] = useState(null);
@@ -58,7 +65,7 @@ const Solicitudes = () => {
             setAction(false);
         }
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     async function getAllSolicitudes() {
@@ -97,21 +104,31 @@ const Solicitudes = () => {
     };
 
     const buscarPorFecha = async () => {
-        var fecha = fechaI.toISOString().substr(0, 10);
-        
-        if(nameButton === "BUSCAR" && fecha !== null){
-           //hacer consulta a la db
-           console.log(fecha);
-           var result = await getSolicitudByDate({fecha});
-           setSolicitudes(result.data);
-         
-            setNameButton("LIMPIAR");
-        }else{
+
+
+        if (nameButton === "BUSCAR") {
+
+            if (fechaI !== null) {
+                var fecha = fechaI.toISOString().substr(0, 10);
+
+                //hacer consulta a la db
+                var result = await getSolicitudByDate({ fecha });
+                setSolicitudes(result.data);
+
+                setNameButton("LIMPIAR");
+                setColorButton("secondary")
+                setStateEditable(true);
+            }else{
+                toast.error("Seleccione una fecha");
+            }
+        } else {
             setNameButton("BUSCAR");
+            setColorButton("primary")
+            setStateEditable(false);
             setValueFI(null);
             getAllSolicitudes();
-         }
-         
+        }
+
     };
 
     const vistaDetalle = () => {
@@ -176,6 +193,7 @@ const Solicitudes = () => {
             if (userStore.idRol === 1) {
                 botones = (
                     <Box className={classes.container}>
+                        <div><Toaster/></div>
                         <Stack spacing={4} direction="row" >
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DesktopDatePicker
@@ -183,13 +201,17 @@ const Solicitudes = () => {
                                     label="Buscar por Fecha"
                                     autoFocus
                                     minDate={new Date('2021-10-01')}
+                                    disabled={stateEditable}
                                     onChange={(newValue) => {
                                         setValueFI(newValue);
                                     }}
                                     renderInput={(params) => <TextField {...params} />}
                                 />
                             </LocalizationProvider>
-                            <Button variant="outlined" onClick={() => buscarPorFecha()} style={{ marginTop: 10 }}>{nameButton}</Button>
+                            <Button variant="outlined"
+                                color={colorButton}
+                                onClick={() => buscarPorFecha()}
+                                style={{ marginTop: 10 }}>{nameButton}</Button>
                             <Button variant="outlined" onClick={() => redireccionar()} disabled={action} style={{ marginLeft: "auto", marginTop: 10 }}>Crear solicitud</Button>
                         </Stack>
                         <div style={{ marginTop: 10 }}>{vistaDetalle()}</div>

@@ -20,9 +20,9 @@ const initialValue = {
 const useStyles = makeStyles({
     container: {
         width: '50%',
-        margin: '6% 0 0 8%',
+        margin: '5% 0 0 15%',
         '& > *': {
-            marginTop: '8px'
+            marginTop: 20
         }
     }
 })
@@ -79,11 +79,7 @@ const Perfil = () => {
         }
     };
 
-
-
     const changePassword = async () => {
-
-
         if (oldPassword.trim() === "") {
             toast.error("Campo Requerido! Ingrese contraseña actual");
         } else if (newPassword.trim() === "") {
@@ -106,9 +102,13 @@ const Perfil = () => {
                     toast.success('Contraseña Actualizada');
                 }
             } catch (error) {
-                var notificacion = error.request.response.split(":");
-                notificacion = notificacion[1].split("}");
-                toast.error(notificacion[0]);
+                if (error.request.response !== '') {
+                    var notificacion = error.request.response.split(":");
+                    notificacion = notificacion[1].split("}");
+                    toast.error(notificacion[0]);
+                } else {
+                    toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor");
+                }
             }
 
         }

@@ -100,7 +100,10 @@ const FiltroReportes = () => {
             setNameButton("LIMPIAR");
             setColorOfi("secondary");
             setStateOficina(true);
-            window.open("/reportes/oficinas");
+            setTimeout(() => {
+                window.open("/reportes/oficinas");
+            }, 2000);
+
         } else {
             setNameButton("GENERAR REPORTE");
             setColorOfi("primary")
@@ -124,7 +127,9 @@ const FiltroReportes = () => {
                     toast.success("reporte de una oficina entre un rango de fechas")
                     const response = await getVisitasByOficinaAndDate({ fechaI, fechaF, idArea });
                     reportes.setReportes(encrypt(JSON.stringify(response.data)));
-                    window.open("/reportes/visitas");
+                    setTimeout(() => {
+                        window.open("/reportes/visitas");
+                    }, 2000);
                 }
             } else if (fechaVF !== null && fechaVI !== null && idArea === 0) {
                 fechaI = fechaVI.toISOString().substr(0, 10);
@@ -135,7 +140,9 @@ const FiltroReportes = () => {
                     toast.success("reporte de todas las oficina entre un rango de fechas")
                     const response = await getVisitasByDate({ fechaI, fechaF });
                     reportes.setReportes(encrypt(JSON.stringify(response.data)));
-                    window.open("/reportes/visitas");
+                    setTimeout(() => {
+                        window.open("/reportes/visitas");
+                    }, 2000);
                 }
 
             } else if (fechaVI !== null && fechaVF === null) {
@@ -146,12 +153,16 @@ const FiltroReportes = () => {
                 toast.success("reporte general de una oficina");
                 const response = await getVisitasByOficina(idArea);
                 reportes.setReportes(encrypt(JSON.stringify(response.data)));
-                window.open("/reportes/visitas");
+                setTimeout(() => {
+                    window.open("/reportes/visitas");
+                }, 2000);
             } else {
                 toast.success("reporte general sin filtros");
                 const response = await getVisitas();
                 reportes.setReportes(encrypt(JSON.stringify(response.data)));
-                window.open("/reportes/visitas");
+                setTimeout(() => {
+                    window.open("/reportes/visitas");
+                }, 2000);
             }
             setNameButtonV("LIMPIAR");
             setColorVi("secondary");

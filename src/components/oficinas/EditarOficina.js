@@ -20,7 +20,7 @@ const initialValue = {
 const useStyles = makeStyles({
     container: {
         width: '50%',
-        margin: '5% 0 0 25%',
+        margin: '5% 0 0 18%',
         '& > *': {
             marginTop: 20
         }
@@ -45,8 +45,10 @@ const EditarOficina = () => {
     const editOficinaDetails = async () => {
         const result = await editOficina(oficina);
         if (result.data['result'] === 'fields affected') {
-            toast.error('Oficina Actualizada');
-            history.push('../oficinas');
+            toast.success('Oficina Actualizada');
+            setTimeout(() => {
+                history.push('../oficinas');
+             }, 2000);
         } else {
             toast.error('Error al Actualizar Oficina');
         }

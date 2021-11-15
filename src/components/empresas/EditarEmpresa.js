@@ -20,7 +20,7 @@ const initialValue = {
 const useStyles = makeStyles({
     container: {
         width: '50%',
-        margin: '5% 0 0 25%',
+        margin: '5% 0 0 18%',
         '& > *': {
             marginTop: 20
         }
@@ -53,7 +53,9 @@ const EditarEmpresa = () => {
 
         if (result.data['msg'] === 'fields affected') {
             toast.success('Datos Actualizados');
-            history.push('../empresas');
+            setTimeout(() => {
+                history.push('../empresas');
+             }, 2000);
         } else {
            toast.error('Error al Actualizar Datos');
         }

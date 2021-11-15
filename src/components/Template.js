@@ -119,37 +119,37 @@ function Container() {
     }
   ];
 
-  const mostrarMenu = () =>{
+  const mostrarMenu = () => {
     var listar;
 
-    if(userState.idRol !== 1){
-      listar =(
+    if (userState.idRol !== 1) {
+      listar = (
         <List>
           <Link to={"/solicitudes"}>
             <ListItem button key="Solicitudes">
-              <ListItemIcon> 
-              <DocumentScannerOutlinedIcon/>
-                </ListItemIcon>
-               <ListItemText primary="Solicitudes"/>
-           </ListItem>
+              <ListItemIcon>
+                <DocumentScannerOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Solicitudes" />
+            </ListItem>
           </Link>
         </List>
       )
-    }else{
+    } else {
       listar = (
         <List>
-        {itemsList.map((item, index) => {
-          const { text, icon, path } = item;
-          return (
-            <Link to={path}>
-              <ListItem button key={text}>
-                {icon && <ListItemIcon>{icon}</ListItemIcon>}
-                <ListItemText primary={text} />
-              </ListItem>
-            </Link>
-          );
-        })}
-      </List>
+          {itemsList.map((item, index) => {
+            const { text, icon, path } = item;
+            return (
+              <Link to={path}>
+                <ListItem button key={text}>
+                  {icon && <ListItemIcon>{icon}</ListItemIcon>}
+                  <ListItemText primary={text} />
+                </ListItem>
+              </Link>
+            );
+          })}
+        </List>
       )
     }
 
@@ -160,24 +160,24 @@ function Container() {
     <div>
       <Toolbar />
       <List>
-        <Link to={"/perfil"}>
-          <ListItem button key="Cambiar Contraseña">
-            <ListItemIcon> 
-              <PersonOutlineOutlinedIcon/>
-              </ListItemIcon>
-              <ListItemText primary="Cambiar Contraseña"/>
-          </ListItem>
-        </Link>
         <Link to={"/"}>
           <ListItem button key="Cerrar Sesion">
-            <ListItemIcon> 
-              <LogoutIcon/>
-              </ListItemIcon>
-              <ListItemText primary="Cerrar Sesion"/>
+            <ListItemIcon>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Cerrar Sesion" />
+          </ListItem>
+        </Link>
+        <Link to={"/perfil"}>
+          <ListItem button key="Cambiar Contraseña">
+            <ListItemIcon>
+              <PersonOutlineOutlinedIcon />
+            </ListItemIcon>
+            <ListItemText primary="Cambiar Contraseña" />
           </ListItem>
         </Link>
       </List>
-     {mostrarMenu()}
+      {mostrarMenu()}
     </div>
   );
 

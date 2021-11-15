@@ -25,7 +25,7 @@ const initialValue = {
 const useStyles = makeStyles({
     container: {
         width: '50%',
-        margin: '5% 0 0 25%',
+        margin: '5% 0 0 18%',
         '& > *': {
             marginTop: 20
         }
@@ -85,11 +85,18 @@ const CrearIncapacidad = () => {
             try {
                 const result = await addIncapacidad(incapacidad);
                 toast.success(result.data);
-                history.push('../incapacidades');
+                setTimeout(() => {
+                    history.push('../incapacidades');
+                 }, 2000);
             } catch (error) {
-                var notificacion = error.request.response.split(":");
-                notificacion = notificacion[1].split("}");
-                toast.error(notificacion[0]);
+                if (error.request.response !== '') {
+                    var notificacion = error.request.response.split(":");
+                    notificacion = notificacion[1].split("}");
+                    toast.error(notificacion[0]);
+                    setIncapacidad(initialValue);
+                } else {
+                    toast.error("ERROR NETWORK, no se obtuvo respuesta con la parte del servidor");
+                }
             }
         }
     };
@@ -98,7 +105,7 @@ const CrearIncapacidad = () => {
         <ThemeProvider theme={Theme} >
             <Template />
             <FormGroup className={classes.container}>
-                <div><Toaster/></div>
+                <div><Toaster /></div>
                 <Typography align="center" variant="h4">Ingresar Incapacidad</Typography>
                 <FormControl>
                     <TextField
@@ -126,7 +133,7 @@ const CrearIncapacidad = () => {
                         }}
                         options={empleados}
                         getOptionLabel={(option) => option.nombreCompleto}
-                        renderInput={(params) => <TextField {...params} label="Buscar Empleado"/>}
+                        renderInput={(params) => <TextField {...params} label="Buscar Empleado" />}
                     />
                 </FormControl>
                 <FormControl>

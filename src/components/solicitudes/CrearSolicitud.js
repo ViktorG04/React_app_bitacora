@@ -28,9 +28,9 @@ const initialValue = {
 const useStyles = makeStyles({
     container: {
         width: '50%',
-        margin: '6% 0 0 4%',
+        margin: '5% 0 0 18%',
         '& > *': {
-            marginTop: '8px'
+            marginTop: 20
         }
     }
 })
@@ -46,7 +46,6 @@ const CrearSolicitud = () => {
 
     const userStateEncrypt = useContext(UserLoginContext);
     const userStore = JSON.parse(decrypt(userStateEncrypt.userLogin));
-
 
     useEffect(() => {
         async function getAllOficinas() {
@@ -87,7 +86,6 @@ const CrearSolicitud = () => {
             toast.error("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO 'SI HABER SIDO DIGNOSTICADO POR" +
                 " COVID-19', FAVOR PONERSE EN CONTACTO CON RECURSOS HUMANOS");
         } else if (solicitud['covidFamiliar'] === 'Si' & solicitud['viajo'] === 'Si') {
-            // history.push(`/editarPersona/${id}`);
             toast.error("SU SOLICITUD NO PUEDE SER CREADA YA QUE HA SELECCIONADO TENER UN FAMILIAR O HABER SALIDO DEL PAIS LOS ULTIMOS 15 DIAS" +
                 " FAVOR DE PONERSE EN CONTACTO CON RECURSOS HUMANOS")
         } else {
@@ -95,15 +93,23 @@ const CrearSolicitud = () => {
             solicitud.fechayHoraVisita = fechaIngreso.split("-").reverse().join("-") + ' ' + time;
             try {
                 var result = await addSolicitud(solicitud);
-                console.log(result.data);
-                history.push('../solicitudes');
-
+                if(result.data !== ''){
+                    toast.success("Solicitud Registrada, se ha notificado al area encargada para su aprobacion")
+                    setTimeout(() => {
+                        history.push('../solicitudes');
+                    }, 2000);
+                }
             } catch (error) {
-                var notificacion = error.request.response.split(":");
-                notificacion = notificacion[1].split("}");
-                toast.error(notificacion[0]);
+                if (error.request.response !== '') {
+                    var notificacion = error.request.response.split(":");
+                    notificacion = notificacion[1].split("}");
+                    toast.error(notificacion[0]);
+                    setSolicitud(initialValue);
+                    setValueFI(new Date());
+                } else {
+                    toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor");
+                }
             }
-
         }
     }
 
