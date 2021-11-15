@@ -1,8 +1,6 @@
 import toast from "react-hot-toast";
 import { addIngreso, editEstadoSol } from "../../config/axios";
 
-
-
 export const IngresarPersonas = async (personas, idSolicitud) => {
     var data = {};
     var detalle = [];
@@ -26,9 +24,13 @@ export const IngresarPersonas = async (personas, idSolicitud) => {
             msj = result.data['msj'];
 
         } catch (error) {
-            var notificacion = error.request.response.split(":");
-            notificacion = notificacion[1].split("}");
-            toast.error(notificacion[0]);
+            if (error.request.response !== '') {
+                var notificacion = error.request.response.split(":");
+                notificacion = notificacion[1].split("}");
+                toast.error(notificacion[0]);
+            } else {
+                toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor");
+            }
         }
     }
 
@@ -36,21 +38,27 @@ export const IngresarPersonas = async (personas, idSolicitud) => {
 };
 
 
-export const updateEstado = async (idUsuario, idSolicitud, idEstado) => {
+export const updateEstado = async (idUsuario, idSolicitud, idEstado, history) => {
     var msj;
     try {
         var result = await editEstadoSol({ idUsuario, idSolicitud, idEstado })
         msj = result.data['resultState'];
         if (msj === "fields affected") {
             toast.success("Estado Actualizado");
+            setTimeout(() => {
+                history.push('../solicitudes');
+            }, 2000);
         } else {
             toast.success(result.data['resultState']);
         }
 
     } catch (error) {
-        var notificacion = error.request.response.split(":");
-        notificacion = notificacion[1].split("}");
-        toast.error(notificacion[0]);
+        if (error.request.response !== '') {
+            var notificacion = error.request.response.split(":");
+            notificacion = notificacion[1].split("}");
+            toast.error(notificacion[0]);
+        } else {
+            toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor");
+        }
     }
-
 };

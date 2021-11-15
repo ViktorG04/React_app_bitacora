@@ -30,9 +30,9 @@ const valueSolicitud = {
 const useStyles = makeStyles({
     container: {
         width: '50%',
-        margin: '5% 0 0 25%',
+        margin: '5% 0 0 15%',
         '& > *': {
-            marginTop: 8
+            marginTop: 10
         }
     }
 })
@@ -127,7 +127,7 @@ const DetalleSolicitud = () => {
                     <h3><b>HA SELECCIONADO {estado} LA SOLICITUD</b></h3>
                     ¿Esta seguro de querer realizar esta accion?
                     <Stack spacing={2} direction="row">
-                        <button onClick={() => updateEstado(userStore.idUsuario, solicitud.idSolicitud, solicitud.idEstado)}>SI </button>
+                        <button onClick={() => updateEstado(userStore.idUsuario, solicitud.idSolicitud, solicitud.idEstado, history)}>SI </button>
                         <button onClick={() => toast.dismiss(t.id)}>NO</button>
                     </Stack>
                 </span >
@@ -135,7 +135,7 @@ const DetalleSolicitud = () => {
         } else {
 
             if (personaIngreso === null) {
-                toast.error("Campo Requerido! No ha Ingreso Temperatura")
+                toast.error("Campo Requerido! No ha ingresado la Temperatura")
             } else {
                 ingreso = await IngresarPersonas(personaIngreso, solicitud.idSolicitud);
                 if (ingreso !== undefined) {

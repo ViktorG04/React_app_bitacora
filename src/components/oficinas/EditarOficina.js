@@ -20,7 +20,7 @@ const initialValue = {
 const useStyles = makeStyles({
     container: {
         width: '50%',
-        margin: '5% 0 0 25%',
+        margin: '5% 0 0 18%',
         '& > *': {
             marginTop: 20
         }

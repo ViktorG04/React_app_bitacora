@@ -20,7 +20,7 @@ const initialValue = {
 const useStyles = makeStyles({
     container: {
         width: '50%',
-        margin: '5% 0 0 25%',
+        margin: '5% 0 0 18%',
         '& > *': {
             marginTop: 20
         }
@@ -75,6 +75,7 @@ const EditarPersona = () => {
                 var notificacion = error.request.response.split(":");
                 notificacion = notificacion[1].split("}");
                 toast.error(notificacion[0]);
+                setEmpleado(initialValue);
                 }else {
                     toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor");
                 }

@@ -37,9 +37,9 @@ const initialDataPerson = {
 const useStyles = makeStyles({
     container: {
         width: '50%',
-        margin: '4% 0 0 2%',
+        margin: '5% 0 0 15%',
         '& > *': {
-            marginTop: '12px'
+            marginTop: 10
         }
     }
 })
