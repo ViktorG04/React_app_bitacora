@@ -90,7 +90,8 @@ const FiltroReportes = () => {
     };
 
     const reporteOficinas = async () => {
-        var fecha = fechaI.toISOString().substr(0, 10);
+        var format = fechaI.toISOString().substr(0, 10);
+        var fecha = format.split("-").reverse().join("-")
 
         if (nameButton === "GENERAR REPORTE") {
             toast.success("generando reporte")
@@ -109,7 +110,6 @@ const FiltroReportes = () => {
             setColorOfi("primary")
             setStateOficina(false);
             setValueFI(new Date());
-
         }
     };
 
