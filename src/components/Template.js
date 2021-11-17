@@ -29,7 +29,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 
 function Container() {
   //abrir o cerrar menu
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -205,6 +205,7 @@ function Container() {
           <Toolbar sx={{
             display: 'flex',
             alignItems: 'center',
+            
             justifyContent: 'flex-end',
             px: [1],
           }}

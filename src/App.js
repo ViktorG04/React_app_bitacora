@@ -6,7 +6,6 @@ import vistaSolicitudes from './views/vistaSolicitudes';
 import VistaOficinas from './views/VistaOficinas';
 import EditarOficina from './components/oficinas/EditarOficina';
 import CrearOficina from './components/oficinas/CrearOficina';
-import VistaEmpresas from './views/vistaEmpresas';
 import EditarEmpresa from './components/empresas/EditarEmpresa';
 import VistaPersonas from './views/vistaPersonas';
 import EditarPersona from './components/personas/EditarPersona';
@@ -25,6 +24,7 @@ import CrearSolicitud from './components/solicitudes/CrearSolicitud';
 import Perfil from './components/personas/perfil';
 import FiltroReportes from './components/reportes/filtroReportes';
 import ReportesContext from './context/ReporteContext';
+import Empresas from './components/empresas/empresas';
 
 const useStyles = makeStyles({
   container: {
@@ -56,7 +56,7 @@ function App() {
             <Route exact path="/editarOficina/:id" component={EditarOficina} />
             <Route exact path="/crearOficina" component={CrearOficina} />
 
-            <Route exact path="/empresas" component={VistaEmpresas} />
+            <Route exact path="/empresas" component={Empresas} />
             <Route exact path="/editarEmpresa/:id" component={EditarEmpresa} />
 
             <Route exact path="/personas" component={VistaPersonas} />

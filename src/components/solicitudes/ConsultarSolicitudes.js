@@ -13,10 +13,31 @@ import toast, { Toaster } from 'react-hot-toast';
 
 const useStyles = makeStyles({
     container: {
+        width: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        marginTop: '80px'
+        margin: '5% 0 0 18%',
+        '& > *': {
+            marginTop: 20
+        }
+    },
+    containerV: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        margin: '5% 0 0 20%',
+        '& > *': {
+            marginTop: 60
+        }
+    },
+    containerE: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        margin: '5% 0 0 50%'
     },
     table: {
         width: '100%',
@@ -24,7 +45,7 @@ const useStyles = makeStyles({
     },
     thead: {
         '& > *': {
-            fontSize: 20,
+            fontSize: 22,
             background: '#cccc',
             color: '#000000'
         }
@@ -69,14 +90,20 @@ const Solicitudes = () => {
     }, []);
 
     async function getAllSolicitudes() {
-        let response = await getSolicitudes(userStore.idUsuario);
         let vacio = [];
-        if (response.data === "") {
-            setSolicitudes(vacio);
-        } else {
+        try {
+            const response = await getSolicitudes(userStore.idUsuario);
             setSolicitudes(response.data);
+        } catch (error) {
+            if (error.request.response !== '') {
+                var notificacion = error.request.response.split(":");
+                notificacion = notificacion[1].split("}");
+                toast.error(notificacion[0]);
+                setSolicitudes(vacio);
+            } else {
+                toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor");
+            }
         }
-
     };
 
     const redireccionar = async () => {
@@ -118,7 +145,7 @@ const Solicitudes = () => {
                 setNameButton("LIMPIAR");
                 setColorButton("secondary")
                 setStateEditable(true);
-            }else{
+            } else {
                 toast.error("Seleccione una fecha");
             }
         } else {
@@ -193,12 +220,13 @@ const Solicitudes = () => {
             if (userStore.idRol === 1) {
                 botones = (
                     <Box className={classes.container}>
-                        <div><Toaster/></div>
+                        <div><Toaster /></div>
                         <Stack spacing={4} direction="row" >
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <DesktopDatePicker
                                     value={fechaI}
                                     label="Buscar por Fecha"
+                                    inputFormat = "dd-MM-yyyy"
                                     autoFocus
                                     minDate={new Date('2021-10-01')}
                                     disabled={stateEditable}
@@ -219,16 +247,16 @@ const Solicitudes = () => {
                 );
             } else {
                 botones = (
-                    <Box className={classes.container}>
-                        <Button variant="outlined" onClick={() => redireccionar()} disabled={action}>Crear solicitud</Button>
-                        <div>{vistaDetalle()}</div>
+                    <Box className={classes.containerE}>
+                        <div style={{ marginTop: 40 }}> <Button variant="outlined" onClick={() => redireccionar()} disabled={action}>Crear solicitud</Button></div>
+                        {vistaDetalle()}
                     </Box>
                 )
             }
         }
         else {
             botones = (
-                <Box className={classes.container}>
+                <Box className={classes.containerV}>
                     <div>{vistaDetalle()}</div>
                 </Box>
             )

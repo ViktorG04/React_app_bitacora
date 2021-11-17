@@ -151,6 +151,7 @@ const CrearSolicitud = () => {
                         <DateTimePicker
                             value={fechaI}
                             label="Fecha y Hora Ingreso"
+                            inputFormat="dd-MM-yyyy hh:mm a"
                             autoFocus
                             minDateTime={new Date()}
                             onChange={(newValue) => {

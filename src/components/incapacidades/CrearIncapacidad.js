@@ -87,7 +87,7 @@ const CrearIncapacidad = () => {
                 toast.success(result.data);
                 setTimeout(() => {
                     history.push('../incapacidades');
-                 }, 2000);
+                }, 2000);
             } catch (error) {
                 if (error.request.response !== '') {
                     var notificacion = error.request.response.split(":");
@@ -140,6 +140,7 @@ const CrearIncapacidad = () => {
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <MobileDatePicker
                             name="fechaInicio" value={fechaI}
+                            inputFormat="dd-MM-yyyy"
                             label="Fecha Inicio de la Incapacidad"
                             minDate={new Date()}
                             onChange={(newValue) => {
@@ -152,6 +153,7 @@ const CrearIncapacidad = () => {
                 <FormControl>
                     <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <MobileDatePicker name="fechaFin" value={fechaF}
+                            inputFormat="dd-MM-yyyy"
                             label="Fecha Fin de Incapacidad"
                             minDate={new Date()}
                             maxDate={new Date(dateMax)}
