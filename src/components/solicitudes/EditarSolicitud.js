@@ -47,7 +47,7 @@ const useStyles = makeStyles({
 const EditarSolicitud = () => {
     const [solicitud, setSolicitud] = useState(initialValue);
     const [persona, setPersona] = useState(initialDataPerson);
-    const [fechaI, setValueFI] = useState(new Date());
+    const [fechaI, setValueFI] = useState();
     const [areas, setAreas] = useState([]);
     const [estados, setEstados] = useState([]);
     const [state, setState] = useState(false);
@@ -73,6 +73,7 @@ const EditarSolicitud = () => {
     useEffect(() => {
         async function loadSolicitudDetails() {
             const response = await buscarSolicitudes(id);
+            var fecha = '';
 
             delete response.data['empresa'];
             delete response.data['estado'];
@@ -83,8 +84,12 @@ const EditarSolicitud = () => {
 
             setSolicitud(response.data);
             setDatosActuales(response.data);
-            setValueFI(response.data['fechaVisita'])
 
+            //formato fecha
+            fecha = response.data['fechaVisita'];
+            var formato = fecha.split(" ");
+            var newDate = formato[0].split("/").reverse().join("/") + ' ' +formato[1]+' '+formato[2];
+            setValueFI(Date.parse(newDate));
 
             var data = [];
             const result = await getEstados();
@@ -235,9 +240,12 @@ const EditarSolicitud = () => {
                 toast.success("Estado Actualizado");
                 setTimeout(() => {
                     history.push('../solicitudes');
-                }, 2000);
+                }, 4000);
             } else {
                 toast.success(result.data['resultState']);
+                setTimeout(() => {
+                    history.push('../solicitudes');
+                }, 4000);
             }
 
         } catch (error) {
@@ -273,8 +281,8 @@ const EditarSolicitud = () => {
                         <DateTimePicker
                             value={fechaI}
                             label="Fecha y Hora Visita"
-                            minDateTime={new Date()}
-                            autoFocus
+                            inputFormat="dd-MM-yyyy hh:mm a"
+                            minDate={new Date()}
                             disabled={state}
                             onChange={(newValue) => {
                                 setValueFI(newValue);
