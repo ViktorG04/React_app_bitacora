@@ -12,7 +12,10 @@ const useStyles = makeStyles({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        marginTop: '80px'
+        margin: '5% 0 0 3%',
+        '& > *': {
+            marginTop: '10px'
+        }
     },
     table: {
         width: '100%',
@@ -41,20 +44,26 @@ const Personas = () => {
 
     useEffect(() => {
         async function getAllPersonas() {
-            const response = await getPersonas();
 
-            var data = response.data;
-
-            for (const i in data) {
-                var action;
-                if (data[i]['estado'] !== 'Activo') {
-                    action = false;
-                } else {
-                    action = true;
+            var data = [];
+            try {
+                const response = await getPersonas();
+                data = response.data;
+                for (const i in data) {
+                    var action;
+                    if (data[i]['estado'] !== 'Activo') {
+                        action = false;
+                    } else {
+                        action = true;
+                    }
+                    data[i].action = action;
                 }
-                data[i].action = action;
+                setPersonas(response.data);
+
+            } catch (error) {
+                setPersonas(data);
+                toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor")
             }
-            setPersonas(response.data);
         };
         getAllPersonas();
 
@@ -76,7 +85,7 @@ const Personas = () => {
         };
         try {
             await updateEstadoPersona(estado);
-            toast.error('Estado Actualizado');
+            toast.success('Estado Actualizado');
             window.location.reload(false);
 
         } catch (error) {

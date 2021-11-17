@@ -198,6 +198,7 @@ const FiltroReportes = () => {
                                 <DesktopDatePicker
                                     value={fechaI}
                                     label="Buscar por Fecha"
+                                    inputFormat = "dd-MM-yyyy"
                                     autoFocus
                                     disabled={stateOficina}
                                     minDate={new Date('2021-10-01')}
@@ -223,6 +224,7 @@ const FiltroReportes = () => {
                                 <DesktopDatePicker
                                     value={fechaVI}
                                     label="Fecha Inicio"
+                                    inputFormat = "dd-MM-yyyy"
                                     autoFocus
                                     disabled={stateVisitas}
                                     minDate={new Date('2021-10-01')}
@@ -234,6 +236,7 @@ const FiltroReportes = () => {
                                 <DesktopDatePicker
                                     value={fechaVF}
                                     label="Fecha Fin"
+                                    inputFormat = "dd-MM-yyyy"
                                     autoFocus
                                     disabled={stateVisitas}
                                     minDate={new Date('2021-10-01')}

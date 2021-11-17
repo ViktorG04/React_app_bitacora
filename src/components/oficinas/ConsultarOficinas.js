@@ -4,13 +4,17 @@ import { getOficinas } from '../../config/axios';
 import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
+import toast, { Toaster } from 'react-hot-toast';
 
 const useStyles = makeStyles({
-    container:{
+    container: {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        marginTop: '80px'
+        margin: '5% 0 0 20%',
+        '& > *': {
+            marginTop: '10px'
+        }
     },
     table: {
         width: '100%',
@@ -18,10 +22,11 @@ const useStyles = makeStyles({
     },
     thead: {
         '& > *': {
-            fontSize: 20,
+            fontSize: 22,
             background: '#cccc',
-            color: '#000000'
-        }
+            color: '#000000',
+        },
+        textAlign: 'center'
     },
     row: {
         '& > *': {
@@ -40,25 +45,34 @@ const Oficinas = () => {
     }, []);
 
     const getAllOficinas = async () => {
-        let response = await getOficinas();
-        let array = {};
-        let estado = "";
-        array = response.data;
-        for(const i in array){
-            if(array[i]['idEstado'] !==1){
-                estado = "Inactivo";
-            }else{
-                estado = "Activo"
+        let array = [];
+
+        const response = await getOficinas();
+
+        if(response.data === ''){
+            toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor");
+            setOficinas(array);
+        }else{
+            array = response.data;
+
+            let estado = "";
+            for (const i in array) {
+                if (array[i]['idEstado'] !== 1) {
+                    estado = "Inactivo";
+                } else {
+                    estado = "Activo"
+                }
+                array[i].estado = estado;
+                delete array[i]['idEstado'];
             }
-            array[i].estado = estado;
-            delete array[i]['idEstado'];
+            setOficinas(array);
         }
-        setOficinas(array);
     };
-    
+
     return (
         <div className={classes.container}>
-            <Button variant="outlined" onClick={() => history.push("/crearOficina") }>Crear oficina</Button>
+            <div><Toaster /></div>
+            <Button variant="outlined" onClick={() => history.push("/crearOficina")}>Crear oficina</Button>
             <Table className={classes.table}>
                 <TableHead>
                     <TableRow className={classes.thead}>
@@ -75,7 +89,7 @@ const Oficinas = () => {
                             <TableCell>{ofi.capacidad}</TableCell>
                             <TableCell>{ofi.estado}</TableCell>
                             <TableCell>
-                                <Button color="primary" variant="contained" style={{marginRight:10}} component={Link} to={`/editarOficina/${ofi.idArea}`}>Editar</Button>
+                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/editarOficina/${ofi.idArea}`}>Editar</Button>
                             </TableCell>
                         </TableRow>
                     ))}
@@ -83,6 +97,6 @@ const Oficinas = () => {
             </Table>
         </div>
     );
-}   
- 
+}
+
 export default Oficinas;
