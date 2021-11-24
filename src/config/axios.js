@@ -31,6 +31,10 @@ export const addSolicitud = async (solicitud) => {
     return await axios.post(`${axiosClient}/api/solicitudes/empleado`, solicitud);
 }
 
+export const addSolicitudVisitas = async (solicitud) => {
+    return await axios.post(`${axiosClient}/api/solicitudes/visitas`, solicitud);
+}
+
 export const deleteSolicitud = async (idSolicitud) => {
     return await axios.delete(`${axiosClient}/${idSolicitud}`);
 }
