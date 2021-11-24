@@ -1,13 +1,12 @@
 import { useState, useEffect, useContext } from 'react';
 import { MenuItem, FormGroup, FormControl, Button, makeStyles, Typography, IconButton } from '@material-ui/core';
-import { addSolicitud, getEmpresas, getOficinas, getPersonasExternos, getTipos } from '../../config/axios';
+import { addSolicitudVisitas, getEmpresas, getOficinas, getPersonasExternos, getTipos } from '../../config/axios';
 import { useHistory } from "react-router-dom";
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import Autocomplete, { createFilterOptions } from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
 import DateTimePicker from '@mui/lab/DateTimePicker';
-import { Link } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import UserLoginContext from '../../context/login/UserLoginContext';
 import decrypt from '../../utils/decrypt';
@@ -23,7 +22,7 @@ const initialValue = {
     fechayHoraVisita: '',
     motivo: '',
     idArea: '',
-    idTipo: '',
+    idTipoEmpresa: '',
     idEmpresa: '',
     empresa: '',
     personas: []
@@ -54,16 +53,13 @@ const CrearSolicitudExternos = () => {
     const [personas, setPersonas] = useState([]);
 
     const [valueEmpresa, setValue] = useState(null);
-    const [valuePersona, setValuePersona] = useState([]);
-    const [valueDui, setValueDui] = useState(null);
+    // eslint-disable-next-line no-unused-vars
+    const [valuePersona, setValuePersona] = useState(null);
 
     const [inputFields, setInputFields] = useState([initialPerson]);
 
-    const [numClick, setNumClick] = useState(1);
-
     //determina si un campo es editable o no
     const [action, setAction] = useState(true);
-
 
     //editable agregar persona
     const [stateBtnAdd, setStateBtnAdd] = useState(false);
@@ -71,7 +67,10 @@ const CrearSolicitudExternos = () => {
     //editable eliminar persona
     const [stateBtnDelete, setStateBtnDelete] = useState(true);
 
-    const { motivo, idArea, idTipo } = solicitud;
+    //ingresar numero de dui si esta persona es nueva
+    const [stateInputDui, setStateInputDui] = useState(true);
+
+    const { motivo, idArea, idTipoEmpresa } = solicitud;
 
 
     const classes = useStyles();
@@ -138,7 +137,7 @@ const CrearSolicitudExternos = () => {
                     <TextField
                         select
                         label="Seleccione Tipo de Empresa"
-                        onChange={(e) => onValueChange(e)} name="idTipo" value={idTipo} id="idTipo" required>
+                        onChange={(e) => onValueChange(e)} name="idTipo" value={idTipoEmpresa} id="idTipo" required>
                         {tipos?.map(option => {
                             return (<MenuItem value={option.idTipo}> {option.tipo} </MenuItem>);
                         })}
@@ -146,20 +145,35 @@ const CrearSolicitudExternos = () => {
                 </FormControl>
             );
         }
-
         return vista;
     };
 
+    const addNewPerson = async (index, data) => {
 
-    const handleAddFields = () => {
+        if (data !== null) {
+            if (data.inputValue !== undefined) {
+                inputFields[index].idPersona = 0;
+                inputFields[index].dui = '';
+                inputFields[index].nombre = data.inputValue;
+                setStateInputDui(false);
+            } else {
+                inputFields[index].idPersona = data.idPersona;
+                inputFields[index].dui = data.dui;
+                inputFields[index].nombre = data.nombre;
+            }
+        } else {
+            inputFields[index].idPersona = '';
+            inputFields[index].dui = '';
+            inputFields[index].nombre = '';
+            setStateInputDui(true);
+        }
+        setInputFields(inputFields);
+    };
+
+    const handleAddFields = (index) => {
         const values = [...inputFields];
-
-        var num = numClick + 1;
-
-        setNumClick(num);
-
-
-        if (valuePersona === null) {
+        var id = values[index]['idPersona']
+        if (id === '') {
             toast.error("seleccione un nombre antes de agregar otro espacio")
         } else {
             if (values.length === 5) {
@@ -167,49 +181,44 @@ const CrearSolicitudExternos = () => {
                 toast.error("el maximo de Personas para una solicitud es 5");
             } else {
                 setStateBtnDelete(false);
-                const values = [...inputFields];
-                if (valuePersona.idPersona === undefined) {
-                    values.push({
-                        idPersona: 0,
-                        nombre: valuePersona.nombre,
-                        dui: ''
-                    })
 
-                } else {
-                    values.push({
-                        idPersona: valuePersona.idPersona,
-                        nombre: valuePersona.nombre,
-                        dui: valuePersona.dui
-                    });
+                values.push({
+                    idPersona: '',
+                    nombre: '',
+                    dui: ''
+                });
 
+                if (id !== 0) {
                     for (const i in personas) {
-                        if (personas[i]['idPersona'] === valuePersona.idPersona) {
+                        if (personas[i]['idPersona'] === id) {
                             delete personas[i]
                         }
                     }
                     setPersonas(personas)
                 }
                 setInputFields(values);
-                setValuePersona(null);
             }
         }
     };
 
     const handleRemoveFields = index => {
         const values = [...inputFields];
-        if (values.length === 2) {
-            setStateBtnDelete(true);
+
+        if (values[index]['idPersona'] !== 0) {
+            personas.push(values[index]);
+            setPersonas(personas);
         }
-        setStateBtnAdd(false);
-        values.splice(index, 1);
-        setInputFields(values);
+        delete values[index];
+        var valuesLimpio = values.filter(function (e) { return e != null; });
+
+        setInputFields(valuesLimpio);
+
+        if (valuesLimpio.length === 1) {
+            setStateBtnDelete(true);
+        } else {
+            setStateBtnAdd(false);
+        }
     };
-
-    const viewDocIdentidad = async (data) => {
-
-        console.log(data);
-    }
-
 
 
     const addSol = async () => {
@@ -219,60 +228,56 @@ const CrearSolicitudExternos = () => {
         solicitud.fechayHoraVisita = fechaIngreso.split("-").reverse().join("-") + ' ' + time;
 
         solicitud.idUsuario = userStore.idUsuario;
-        var flag = 0;
 
-        if (idTipo === "") {
-            solicitud.idTipo = valueEmpresa.idTipo;
-            solicitud.idEmpresa = valueEmpresa.idEmpresa;
-            solicitud.empresa = valueEmpresa.nombre;
-        } else {
-            solicitud.empresa = valueEmpresa.nombre;
-            solicitud.idEmpresa = 0;
-        }
+        var index = inputFields.length;
+        index = index - 1;
 
-        if (fechaI === Date()) {
-            toast.error("Campo Requerido! Ingrese una fecha valida");
-        } else if (time >= '17:00:00' && time <= '7:59:00') {
-            toast.error("La hora de ingreso solo es valida entre las 08:00 AM y las 05:00 PM");
+        if (valueEmpresa === null) {
+            toast.error("Campo requerido! Seleccione o escriba el nombre de la empresa")
         } else if (motivo.trim() === "") {
             toast.error("Campo Requerido! Ingrese un motivo")
         } else if (idArea === "") {
             toast.error("Campo Requerido! Seleccione una Oficina")
-        } else if (valueEmpresa === null) {
-            toast.error("Campo requerido! Seleccione o escriba el nombre de la entidad")
-        } else if(inputFields.length === 1 && valuePersona === null){
-            toast.error("Ingrese un nombre y documento del visitante");
-        }else if( inputFields.length === 1 && valuePersona !== null ){
-            inputFields.push(valuePersona);
-        }else if (numClick === 1){
-            if(valuePersona !== null){
-                inputFields.push(valuePersona);
-            }else{
-                toast.error("Ingrese un nombre y documento del visitante");
-            }
+        } else if (time >= '17:00:00' && time <= '7:59:00') {
+            toast.error("La hora de ingreso solo es valida entre las 08:00 AM y las 05:00 PM");
+        } else if (inputFields[index]['idPersona'] === '') {
+            toast.error("Ingrese nombre y documento de identidad del visitante");
         } else {
-
-            var data = inputFields;
-            delete data[0];
-            var personas = data.filter(function (e) { return e != null; })
-
-            for (const i in personas) {
-                if (personas[i]['idPersona'] === valuePersona['idPersona']) {
+            if (idTipoEmpresa === "") {
+                solicitud.idTipoEmpresa = valueEmpresa.idTipo;
+                solicitud.idEmpresa = valueEmpresa.idEmpresa;
+                solicitud.empresa = valueEmpresa.nombre;
+            } else {
+                solicitud.empresa = valueEmpresa.nombre;
+                solicitud.idEmpresa = 0;
+            }
+            solicitud.personas = inputFields;
+            try {
+                var result = await addSolicitudVisitas(solicitud);
+                toast.success(result.data['capacidad']);
+                setTimeout(() => {
+                    history.push('../solicitudes');
+                }, 4000);
+            } catch (error) {
+                if (error.request.response !== '') {
+                    var notificacion = error.request.response.split(":");
+                    notificacion = notificacion[1].split("}");
+                    toast.error(notificacion[0]);
+                    setSolicitud(initialValue);
+                    setValueFI(new Date());
                 } else {
-                    flag = 1;
+                    toast.error("ERROR NETWORK, no se obtuvo respuesta con el servidor");
                 }
             }
-            if (flag !== 0) {
-                personas.push(valuePersona);
-            }
-
         }
+    };
 
-
-        solicitud.personas = personas;
-
-        console.log(solicitud);
-
+    const cancelAccion = async () => {
+        setSolicitud(initialValue);
+        setInputFields(initialPerson);
+        setValuePersona(null);
+        setPersonas([]);
+        history.push('../solicitudes');
     };
 
 
@@ -280,12 +285,11 @@ const CrearSolicitudExternos = () => {
         setSolicitud({ ...solicitud, [e.target.name]: e.target.value })
     };
 
-    const onValueChangeDocIdentidad = (e) => {
-        setValueDui({ ...valueDui, [e.target.name]: e.target.value })
+    const onValueChangeDocIdentidad = (index, e) => {
+        const values = [...inputFields];
+        values[index].dui = e.target.value
+        setInputFields(values);
     }
-
-
-
 
     return (
         <ThemeProvider theme={Theme} >
@@ -376,9 +380,9 @@ const CrearSolicitudExternos = () => {
                     </LocalizationProvider>
                 </FormControl>
                 {inputFields.map((inputField, index) => (
-                    <Stack direction="row" justifyContent="center" alignItems="baseline" spacing={2} key={`${inputField}~${index}`}>
+                    <Stack direction="row" justifyContent="center" spacing={4} key={`${inputField}~${index}`}>
                         <Autocomplete
-                            value={inputField.nombreCompleto}
+                            value={inputField.nombre}
                             onChange={(event, newValue) => {
                                 if (typeof newValue === 'string') {
                                     setValuePersona({
@@ -389,8 +393,10 @@ const CrearSolicitudExternos = () => {
                                     setValuePersona({
                                         nombre: newValue.inputValue,
                                     });
+                                    addNewPerson(index, newValue);
                                 } else {
                                     setValuePersona(newValue);
+                                    addNewPerson(index, newValue);
                                 }
                             }}
                             filterOptions={(options, params) => {
@@ -427,14 +433,23 @@ const CrearSolicitudExternos = () => {
                                 <TextField {...params} label="Nombre del Visitante" />
                             )}
                         />
+                        <TextField
+                            label="Documento de Identidad"
+                            variant="outlined"
+                            value={inputField.dui}
+                            onChange={(e) => onValueChangeDocIdentidad(index, e)} name="dui" id="dui"
+                            required
+                            sx={{ width: 300 }}
+                            inputProps={{ maxLength: 20, readOnly: stateInputDui }}
+                        />
 
-                        <IconButton color="inherit" edge="start" disabled={stateBtnDelete} onClick={() => handleRemoveFields()}><RemoveIcon /></IconButton>
-                        <IconButton color="inherit" edge="start" disabled={stateBtnAdd} onClick={() => handleAddFields()}><AddIcon /></IconButton>
+                        <IconButton color="inherit" edge="start" disabled={stateBtnDelete} onClick={() => handleRemoveFields(index)}><RemoveIcon /></IconButton>
+                        <IconButton color="inherit" edge="start" disabled={stateBtnAdd} onClick={() => handleAddFields(index)}><AddIcon /></IconButton>
                     </Stack>
                 ))}
                 <FormControl>
                     <Button variant="contained" color="primary" onClick={() => addSol()}>Ingresar solicitud</Button>
-                    <Button variant="contained" color="secondary" style={{ marginTop: 10 }} component={Link} to={`../solicitudes`}>Cancelar</Button>
+                    <Button variant="contained" color="secondary" style={{ marginTop: 10 }} onClick={() => cancelAccion()}>Cancelar</Button>
                 </FormControl>
             </FormGroup>
         </ThemeProvider>
